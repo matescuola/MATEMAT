@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esercizio Interattivo – Famiglia di Funzioni</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Code+Pro:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --surface2: #eef1f8;
+    --border: #d0d7e3;
+    --accent: #c47f0a;
+    --accent2: #2563eb;
+    --accent3: #16a34a;
+    --danger: #dc2626;
+    --text: #1e2a3a;
+    --text-muted: #5a6a80;
+    --correct: #dcfce7;
+    --correct-border: #16a34a;
+    --wrong: #fee2e2;
+    --wrong-border: #dc2626;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #e8edf8 0%, #f0f4fc 60%, #eaf0fb 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,168,56,0.12) 0%, transparent 70%);
+  }
+  header::after {
+    content: '∫';
+    position: absolute;
+    right: 2rem; top: 1rem;
+    font-size: 7rem;
+    color: rgba(196,127,10,0.10);
+    font-family: 'Playfair Display', serif;
+    line-height: 1;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(232,168,56,0.15);
+    border: 1px solid rgba(232,168,56,0.4);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  header h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+  header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 300;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .progress-track {
+    flex: 1;
+    height: 5px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-family: 'Source Code Pro', monospace;
+  }
+  .score-display {
+    background: rgba(232,168,56,0.1);
+    border: 1px solid rgba(232,168,56,0.3);
+    color: var(--accent);
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* FUNCTION CARD */
+  .function-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+  .function-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+  }
+  .formula {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .formula-sub {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  /* STEP CARD */
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .step.active { border-color: rgba(232,168,56,0.4); }
+  .step.completed { border-color: rgba(63,185,80,0.4); }
+  .step.locked { opacity: 0.45; pointer-events: none; }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .step-num {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Source Code Pro', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    background: rgba(232,168,56,0.15);
+    border: 1.5px solid rgba(232,168,56,0.4);
+    color: var(--accent);
+    transition: all 0.3s;
+  }
+  .step.completed .step-num {
+    background: rgba(63,185,80,0.15);
+    border-color: rgba(63,185,80,0.5);
+    color: var(--accent3);
+  }
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    flex: 1;
+    line-height: 1.3;
+  }
+  .step-status {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .step.completed .step-status { color: var(--accent3); }
+  .step.active .step-status { color: var(--accent); }
+
+  .step-body {
+    padding: 1.5rem;
+  }
+  .step-text {
+    color: var(--text-muted);
+    font-size: 0.93rem;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+  .step-text strong { color: var(--text); font-weight: 700; }
+
+  /* HINT BOX */
+  .hint-box {
+    background: rgba(88,166,255,0.07);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    font-size: 0.87rem;
+    color: var(--accent2);
+    margin-bottom: 1.2rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .hint-box.visible { display: block; }
+  .hint-box .hint-label {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  /* QUESTION */
+  .question-block {
+    margin-bottom: 1.4rem;
+  }
+  .question-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  /* MULTIPLE CHOICE */
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .choice-btn {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .choice-btn:hover:not(:disabled) {
+    border-color: rgba(232,168,56,0.5);
+    background: rgba(232,168,56,0.06);
+  }
+  .choice-btn.selected-correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+    color: #14532d;
+  }
+  .choice-btn.selected-wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+    color: #7f1d1d;
+  }
+  .choice-btn.reveal-correct {
+    background: #dcfce7;
+    border-color: #16a34a;
+  }
+  .choice-letter {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'Source Code Pro', monospace;
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
+
+  /* NUMERIC INPUT */
+  .input-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .math-input {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1rem;
+    width: 180px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .math-input:focus { border-color: rgba(232,168,56,0.5); }
+  .math-input.correct-input { border-color: var(--correct-border); background: var(--correct); }
+  .math-input.wrong-input { border-color: var(--wrong-border); background: var(--wrong); }
+
+  /* FEEDBACK */
+  .feedback {
+    margin-top: 0.8rem;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    display: none;
+  }
+  .feedback.visible { display: block; }
+  .feedback.ok {
+    background: var(--correct);
+    border: 1px solid var(--correct-border);
+    color: #14532d;
+    font-weight: 700;
+  }
+  .feedback.ko {
+    background: var(--wrong);
+    border: 1px solid var(--wrong-border);
+    color: #7f1d1d;
+    font-weight: 700;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d1117;
+  }
+  .btn-primary:hover { background: #f0ba50; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent2);
+    border: 1px solid rgba(88,166,255,0.3);
+  }
+  .btn-ghost:hover { background: rgba(88,166,255,0.08); }
+
+  .btn-row {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  /* STEP COMPLETE BANNER */
+  .step-complete {
+    background: rgba(63,185,80,0.07);
+    border: 1px solid rgba(63,185,80,0.3);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    color: var(--accent3);
+    font-size: 0.88rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    display: none;
+  }
+  .step-complete.visible { display: flex; }
+
+  /* FINAL RESULT */
+  .result-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 2rem;
+    display: none;
+  }
+  .result-panel.visible { display: block; }
+  .result-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .result-label {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+  .result-msg {
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+  }
+  .btn-reset {
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 6px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { background: #f0ba50; transform: translateY(-1px); }
+
+  /* SEPARATOR */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* MATH DISPLAY */
+  .math-display {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.92rem;
+    background: rgba(232,168,56,0.07);
+    border-left: 3px solid var(--accent);
+    padding: 0.7rem 1rem;
+    border-radius: 0 4px 4px 0;
+    color: var(--accent);
+    margin: 0.6rem 0;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 1.5rem 1rem 1rem; }
+    header::after { display: none; }
+    main { padding: 1.5rem 1rem 3rem; }
+    .step-body { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Esercizio Interattivo · Analisi Matematica</div>
+  <h1>Famiglia di <em>funzioni</em> parametriche</h1>
+  <p>Studia la famiglia f<sub>k</sub>(x) = k·x · e<sup>−x²</sup>, dove k ∈ ℝ è un parametro reale. Risolvi ogni punto nell'ordine proposto.</p>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel">0 / 4 punti</span>
+  <span class="score-display" id="scoreDisplay">★ 0 pt</span>
+</div>
+
+<main>
+
+  <!-- FUNCTION DEFINITION -->
+  <div class="function-card">
+    <h2>Funzione studiata</h2>
+    <span class="formula">f<sub>k</sub>(x) = k · x · e<sup>−x²</sup></span>
+    <span class="formula-sub">k ∈ ℝ parametro reale &nbsp;|&nbsp; dominio: ℝ</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PUNTO 1 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="step active" id="step1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-title">Massimo, minimo relativo e asintoto</div>
+      <div class="step-status" id="status1">IN CORSO</div>
+    </div>
+    <div class="step-body">
+      <p class="step-text">
+        Per qualsiasi k ≠ 0, dimostra che il grafico di f<sub>k</sub> presenta un <strong>massimo relativo</strong>, un <strong>minimo relativo</strong> e un <strong>solo asintoto</strong>.
+      </p>
+
+      <div class="hint-box" id="hint1">
+        <span class="hint-label">💡 Suggerimento</span>
+        Calcola la derivata prima: f'<sub>k</sub>(x) = k · e<sup>−x²</sup> · (1 − 2x²). Poni f'<sub>k</sub>(x) = 0 e studia il segno. Per gli asintoti ricorda che lim<sub>x→±∞</sub> x·e<sup>−x²</sup> = 0.
+      </div>
+
+      <!-- Q1a -->
+      <div class="question-block">
+        <div class="question-label">Domanda 1a – Derivata prima</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Qual è la forma corretta di f'<sub>k</sub>(x)?</p>
+        <div class="choices" id="q1a">
+          <button class="choice-btn" onclick="checkChoice('q1a',0,false,'q1a-fb')"><span class="choice-letter">A</span> k · e<sup>−x²</sup> · (1 − x²)</button>
+          <button class="choice-btn" onclick="checkChoice('q1a',1,true,'q1a-fb')"><span class="choice-letter">B</span> k · e<sup>−x²</sup> · (1 − 2x²)</button>
+          <button class="choice-btn" onclick="checkChoice('q1a',2,false,'q1a-fb')"><span class="choice-letter">C</span> k · e<sup>−x²</sup> · (−2x)</button>
+          <button class="choice-btn" onclick="checkChoice('q1a',3,false,'q1a-fb')"><span class="choice-letter">D</span> k · x² · e<sup>−x²</sup></button>
+        </div>
+        <div class="feedback" id="q1a-fb"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Q1b -->
+      <div class="question-block">
+        <div class="question-label">Domanda 1b – Punti critici (k &gt; 0)</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Per k &gt; 0, il massimo relativo si trova in x = ?</p>
+        <div class="choices" id="q1b">
+          <button class="choice-btn" onclick="checkChoice('q1b',0,false,'q1b-fb')"><span class="choice-letter">A</span> x = 0</button>
+          <button class="choice-btn" onclick="checkChoice('q1b',1,false,'q1b-fb')"><span class="choice-letter">B</span> x = −1/√2</button>
+          <button class="choice-btn" onclick="checkChoice('q1b',2,true,'q1b-fb')"><span class="choice-letter">C</span> x = 1/√2</button>
+          <button class="choice-btn" onclick="checkChoice('q1b',3,false,'q1b-fb')"><span class="choice-letter">D</span> x = 1</button>
+        </div>
+        <div class="feedback" id="q1b-fb"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Q1c -->
+      <div class="question-block">
+        <div class="question-label">Domanda 1c – Asintoto</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Quale asintoto orizzontale presenta il grafico?</p>
+        <div class="choices" id="q1c">
+          <button class="choice-btn" onclick="checkChoice('q1c',0,false,'q1c-fb')"><span class="choice-letter">A</span> y = k</button>
+          <button class="choice-btn" onclick="checkChoice('q1c',1,true,'q1c-fb')"><span class="choice-letter">B</span> y = 0  (unico asintoto, sia per x→+∞ che x→−∞)</button>
+          <button class="choice-btn" onclick="checkChoice('q1c',2,false,'q1c-fb')"><span class="choice-letter">C</span> y = 1 e y = −1</button>
+          <button class="choice-btn" onclick="checkChoice('q1c',3,false,'q1c-fb')"><span class="choice-letter">D</span> Non esiste alcun asintoto</button>
+        </div>
+        <div class="feedback" id="q1c-fb"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="toggleHint('hint1')">💡 Suggerimento</button>
+      </div>
+
+      <div class="step-complete" id="complete1">✓ Punto 1 completato! Ottimo lavoro.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PUNTO 2 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="step locked" id="step2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-title">Retta tangente e intersezioni con gli assi</div>
+      <div class="step-status" id="status2">BLOCCATO</div>
+    </div>
+    <div class="step-body">
+      <p class="step-text">
+        Sia A il punto di intersezione del grafico con l'<strong>asse y</strong> (x = 0), e sia B l'intersezione con l'<strong>asse x</strong> oltre l'origine (x ≠ 0 con f<sub>k</sub>(x) = 0). La retta tangente in A passa anche per B?
+      </p>
+
+      <div class="hint-box" id="hint2">
+        <span class="hint-label">💡 Suggerimento</span>
+        A = (0, 0) perché f<sub>k</sub>(0) = 0. La tangente in A ha pendenza f'<sub>k</sub>(0) = k, quindi y = kx. Le radici di f<sub>k</sub>(x) = 0 sono x = 0 (l'origine stessa). Nota: la funzione si annulla solo in x = 0!
+      </div>
+
+      <!-- Q2a -->
+      <div class="question-block">
+        <div class="question-label">Domanda 2a – Intersezione con asse y</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Qual è il punto A (intersezione con l'asse y, cioè x = 0)?</p>
+        <div class="choices" id="q2a">
+          <button class="choice-btn" onclick="checkChoice('q2a',0,true,'q2a-fb')"><span class="choice-letter">A</span> A = (0, 0)</button>
+          <button class="choice-btn" onclick="checkChoice('q2a',1,false,'q2a-fb')"><span class="choice-letter">B</span> A = (0, k)</button>
+          <button class="choice-btn" onclick="checkChoice('q2a',2,false,'q2a-fb')"><span class="choice-letter">C</span> A = (0, 1)</button>
+          <button class="choice-btn" onclick="checkChoice('q2a',3,false,'q2a-fb')"><span class="choice-letter">D</span> Dipende da k</button>
+        </div>
+        <div class="feedback" id="q2a-fb"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Q2b -->
+      <div class="question-block">
+        <div class="question-label">Domanda 2b – Equazione della tangente in A</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Qual è l'equazione della retta tangente al grafico in A = (0, 0)?</p>
+        <div class="choices" id="q2b">
+          <button class="choice-btn" onclick="checkChoice('q2b',0,false,'q2b-fb')"><span class="choice-letter">A</span> y = 0</button>
+          <button class="choice-btn" onclick="checkChoice('q2b',1,true,'q2b-fb')"><span class="choice-letter">B</span> y = k·x</button>
+          <button class="choice-btn" onclick="checkChoice('q2b',2,false,'q2b-fb')"><span class="choice-letter">C</span> y = −k·x</button>
+          <button class="choice-btn" onclick="checkChoice('q2b',3,false,'q2b-fb')"><span class="choice-letter">D</span> y = k·x² </button>
+        </div>
+        <div class="feedback" id="q2b-fb"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Q2c -->
+      <div class="question-block">
+        <div class="question-label">Domanda 2c – Le radici di f<sub>k</sub></div>
+        <p class="step-text" style="margin-bottom:0.8rem">Quali sono le radici di f<sub>k</sub>(x) = k·x·e<sup>−x²</sup> = 0 (con k ≠ 0)?</p>
+        <div class="choices" id="q2c">
+          <button class="choice-btn" onclick="checkChoice('q2c',0,false,'q2c-fb')"><span class="choice-letter">A</span> x = ±1/√2</button>
+          <button class="choice-btn" onclick="checkChoice('q2c',1,false,'q2c-fb')"><span class="choice-letter">B</span> x = 0 e x = 1</button>
+          <button class="choice-btn" onclick="checkChoice('q2c',2,true,'q2c-fb')"><span class="choice-letter">C</span> Solo x = 0 (l'asse x è tangente nel punto B = A = origine)</button>
+          <button class="choice-btn" onclick="checkChoice('q2c',3,false,'q2c-fb')"><span class="choice-letter">D</span> Nessuna radice reale</button>
+        </div>
+        <div class="feedback" id="q2c-fb"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="toggleHint('hint2')">💡 Suggerimento</button>
+      </div>
+
+      <div class="step-complete" id="complete2">✓ Punto 2 completato! La tangente in A passa per l'unica intersezione con l'asse x.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PUNTO 3 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="step locked" id="step3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-title">Valore di k per cui il massimo vale √2 · e<sup>−1/2</sup></div>
+      <div class="step-status" id="status3">BLOCCATO</div>
+    </div>
+    <div class="step-body">
+      <p class="step-text">
+        Determina il valore di <strong>k</strong> per cui il valore massimo di f<sub>k</sub> è uguale a <strong>√2 · e<sup>−1/2</sup></strong>.
+      </p>
+      <div class="math-display">f<sub>k</sub>(1/√2) = k · (1/√2) · e<sup>−1/2</sup> = √2 · e<sup>−1/2</sup></div>
+
+      <div class="hint-box" id="hint3">
+        <span class="hint-label">💡 Suggerimento</span>
+        Il massimo per k &gt; 0 si trova in x = 1/√2. Calcola f<sub>k</sub>(1/√2) e impostalo uguale al valore dato. Semplifica e<sup>−1/2</sup>.
+      </div>
+
+      <!-- Q3a -->
+      <div class="question-block">
+        <div class="question-label">Domanda 3a – Equazione per k</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Dalla condizione f<sub>k</sub>(1/√2) = √2 · e<sup>−1/2</sup>, quale equazione ottieni per k?</p>
+        <div class="choices" id="q3a">
+          <button class="choice-btn" onclick="checkChoice('q3a',0,false,'q3a-fb')"><span class="choice-letter">A</span> k/2 = √2</button>
+          <button class="choice-btn" onclick="checkChoice('q3a',1,true,'q3a-fb')"><span class="choice-letter">B</span> k · (1/√2) = √2  →  k = 2</button>
+          <button class="choice-btn" onclick="checkChoice('q3a',2,false,'q3a-fb')"><span class="choice-letter">C</span> k · √2 = 1  →  k = 1/√2</button>
+          <button class="choice-btn" onclick="checkChoice('q3a',3,false,'q3a-fb')"><span class="choice-letter">D</span> k = e<sup>1/2</sup></button>
+        </div>
+        <div class="feedback" id="q3a-fb"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Q3b – NUMERIC INPUT -->
+      <div class="question-block">
+        <div class="question-label">Domanda 3b – Inserisci il valore di k</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Qual è il valore numerico di k?</p>
+        <div class="input-row">
+          <input class="math-input" type="number" id="inputK" placeholder="es. 2" step="any">
+          <button class="btn btn-primary" onclick="checkNumeric('inputK', 2, 'q3b-fb', 'step3', 'q3b')">Verifica</button>
+        </div>
+        <div class="feedback" id="q3b-fb"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="toggleHint('hint3')">💡 Suggerimento</button>
+      </div>
+
+      <div class="step-complete" id="complete3">✓ Punto 3 completato! k = 2.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PUNTO 4 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="step locked" id="step4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-title">Studio di f<sub>2</sub>(x) = 2x · e<sup>−x²</sup></div>
+      <div class="step-status" id="status4">BLOCCATO</div>
+    </div>
+    <div class="step-body">
+      <p class="step-text">
+        Sia ora <strong>f(x) = 2x · e<sup>−x²</sup></strong> (k = 2). Studia il comportamento tramite la derivata prima e rispondi alle domande sul grafico.
+      </p>
+
+      <div class="hint-box" id="hint4">
+        <span class="hint-label">💡 Suggerimento</span>
+        f'(x) = 2e<sup>−x²</sup>(1 − 2x²). Cambi di segno in x = ±1/√2. La funzione è crescente su (−1/√2, 1/√2) e decrescente sugli altri intervalli. È una funzione dispari.
+      </div>
+
+      <!-- Q4a -->
+      <div class="question-block">
+        <div class="question-label">Domanda 4a – Monotonia</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Su quale intervallo f(x) = 2x·e<sup>−x²</sup> è <strong>crescente</strong>?</p>
+        <div class="choices" id="q4a">
+          <button class="choice-btn" onclick="checkChoice('q4a',0,false,'q4a-fb')"><span class="choice-letter">A</span> (−∞, 0)</button>
+          <button class="choice-btn" onclick="checkChoice('q4a',1,false,'q4a-fb')"><span class="choice-letter">B</span> (0, +∞)</button>
+          <button class="choice-btn" onclick="checkChoice('q4a',2,true,'q4a-fb')"><span class="choice-letter">C</span> (−1/√2, 1/√2)</button>
+          <button class="choice-btn" onclick="checkChoice('q4a',3,false,'q4a-fb')"><span class="choice-letter">D</span> (−∞, +∞)</button>
+        </div>
+        <div class="feedback" id="q4a-fb"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Q4b -->
+      <div class="question-block">
+        <div class="question-label">Domanda 4b – Simmetria</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Che tipo di simmetria ha il grafico di f(x) = 2x·e<sup>−x²</sup>?</p>
+        <div class="choices" id="q4b">
+          <button class="choice-btn" onclick="checkChoice('q4b',0,false,'q4b-fb')"><span class="choice-letter">A</span> È una funzione pari – simmetrica rispetto all'asse y</button>
+          <button class="choice-btn" onclick="checkChoice('q4b',1,true,'q4b-fb')"><span class="choice-letter">B</span> È una funzione dispari – simmetrica rispetto all'origine</button>
+          <button class="choice-btn" onclick="checkChoice('q4b',2,false,'q4b-fb')"><span class="choice-letter">C</span> Non ha alcuna simmetria</button>
+          <button class="choice-btn" onclick="checkChoice('q4b',3,false,'q4b-fb')"><span class="choice-letter">D</span> Ha un asse di simmetria in x = 1/√2</button>
+        </div>
+        <div class="feedback" id="q4b-fb"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Q4c -->
+      <div class="question-block">
+        <div class="question-label">Domanda 4c – Valore del massimo assoluto</div>
+        <p class="step-text" style="margin-bottom:0.8rem">Qual è il valore massimo assoluto di f(x) = 2x·e<sup>−x²</sup>?</p>
+        <div class="choices" id="q4c">
+          <button class="choice-btn" onclick="checkChoice('q4c',0,false,'q4c-fb')"><span class="choice-letter">A</span> 2/e</button>
+          <button class="choice-btn" onclick="checkChoice('q4c',1,true,'q4c-fb')"><span class="choice-letter">B</span> √2 · e<sup>−1/2</sup>  ≈ 0.858</button>
+          <button class="choice-btn" onclick="checkChoice('q4c',2,false,'q4c-fb')"><span class="choice-letter">C</span> 1</button>
+          <button class="choice-btn" onclick="checkChoice('q4c',3,false,'q4c-fb')"><span class="choice-letter">D</span> 2</button>
+        </div>
+        <div class="feedback" id="q4c-fb"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="toggleHint('hint4')">💡 Suggerimento</button>
+      </div>
+
+      <div class="step-complete" id="complete4">✓ Punto 4 completato! Bravo, esercizio terminato!</div>
+    </div>
+  </div>
+
+  <!-- GRAFICO FINALE -->
+  <div class="step locked" id="stepGraph">
+    <div class="step-header">
+      <div class="step-num">📈</div>
+      <div class="step-title">Grafico di f(x) = 2x · e<sup>−x²</sup></div>
+      <div class="step-status" id="statusGraph">BLOCCATO</div>
+    </div>
+    <div class="step-body">
+      <p class="step-text">Ecco il grafico completo di <strong>f(x) = 2x · e<sup>−x²</sup></strong> con i punti notevoli evidenziati.</p>
+      <canvas id="graphCanvas" width="800" height="420" style="width:100%;border-radius:8px;border:1px solid var(--border);background:#fff;display:block;"></canvas>
+      <div style="display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1rem;font-size:0.82rem;color:var(--text-muted);">
+        <span style="display:flex;align-items:center;gap:0.4rem;"><span style="width:14px;height:4px;background:#2563eb;border-radius:2px;display:inline-block;"></span> f(x) = 2x·e<sup>−x²</sup></span>
+        <span style="display:flex;align-items:center;gap:0.4rem;"><span style="width:10px;height:10px;background:#16a34a;border-radius:50%;display:inline-block;"></span> Massimo (1/√2 , √2·e<sup>−½</sup>) ≈ (0.71, 0.86)</span>
+        <span style="display:flex;align-items:center;gap:0.4rem;"><span style="width:10px;height:10px;background:#dc2626;border-radius:50%;display:inline-block;"></span> Minimo (−1/√2 , −√2·e<sup>−½</sup>) ≈ (−0.71, −0.86)</span>
+        <span style="display:flex;align-items:center;gap:0.4rem;"><span style="width:14px;height:2px;background:#c47f0a;border-radius:2px;display:inline-block;border-top:2px dashed #c47f0a;"></span> Asintoto y = 0</span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="result-panel" id="resultPanel">
+    <div class="result-score" id="finalScore">0/4</div>
+    <div class="result-label">punti corretti</div>
+    <div class="result-msg" id="finalMsg"></div>
+    <button class="btn-reset" onclick="resetAll()">↺ Ricomincia da capo</button>
+  </div>
+
+</main>
+
+<script>
+  // ── STATE ─────────────────────────────────
+  const stepDone = [false, false, false, false]; // steps 1-4
+  const stepQ = [
+    { total:3, done:0, ids:['q1a','q1b','q1c'] },
+    { total:3, done:0, ids:['q2a','q2b','q2c'] },
+    { total:2, done:0, ids:['q3a','q3b'] },
+    { total:3, done:0, ids:['q4a','q4b','q4c'] }
+  ];
+  let totalPoints = 0;
+
+  // ── HELPERS ───────────────────────────────
+  function toggleHint(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('visible');
+  }
+
+  function disableChoices(groupId) {
+    document.querySelectorAll(`#${groupId} .choice-btn`).forEach(b => b.disabled = true);
+  }
+
+  function checkChoice(groupId, idx, isCorrect, fbId) {
+    const buttons = document.querySelectorAll(`#${groupId} .choice-btn`);
+    const fb = document.getElementById(fbId);
+
+    // Disabilita temporaneamente tutti i pulsanti
+    buttons.forEach(b => b.disabled = true);
+    buttons[idx].classList.add(isCorrect ? 'selected-correct' : 'selected-wrong');
+
+    if (!isCorrect) {
+      fb.textContent = '✗ Risposta errata. Rileggi e riprova!';
+      fb.className = 'feedback visible ko';
+
+      // Dopo 1.5 secondi: riabilita i pulsanti per riprovare
+      setTimeout(() => {
+        buttons.forEach(b => {
+          b.disabled = false;
+          b.classList.remove('selected-wrong', 'selected-correct', 'reveal-correct');
+        });
+        fb.textContent = '↩ Riprova — scegli un\'altra risposta.';
+        fb.className = 'feedback visible ko';
+      }, 1500);
+
+    } else {
+      fb.textContent = '✓ Corretto! Ottima risposta.';
+      fb.className = 'feedback visible ok';
+      // Lascia i pulsanti disabilitati: domanda risolta
+      markQuestionDone(groupId);
+    }
+  }
+
+  function checkNumeric(inputId, correctVal, fbId, stepId, qId) {
+    const input = document.getElementById(inputId);
+    const fb = document.getElementById(fbId);
+    const val = parseFloat(input.value);
+    const verifyBtn = input.nextElementSibling;
+
+    // Disabilita temporaneamente
+    input.disabled = true;
+    if (verifyBtn) verifyBtn.disabled = true;
+
+    if (Math.abs(val - correctVal) < 0.001) {
+      input.classList.add('correct-input');
+      fb.textContent = `✓ Esatto! k = ${correctVal}.`;
+      fb.className = 'feedback visible ok';
+      markQuestionDone(qId);
+    } else {
+      input.classList.add('wrong-input');
+      fb.textContent = `✗ Non è corretto. Ricontrolla i calcoli e riprova!`;
+      fb.className = 'feedback visible ko';
+
+      // Dopo 1.5 secondi: riabilita per riprovare
+      setTimeout(() => {
+        input.disabled = false;
+        input.classList.remove('wrong-input');
+        input.value = '';
+        if (verifyBtn) verifyBtn.disabled = false;
+        fb.textContent = '↩ Riprova — inserisci un nuovo valore.';
+      }, 1500);
+    }
+  }
+
+  // Map question IDs to step index (0-based)
+  const qToStep = {
+    q1a:0, q1b:0, q1c:0,
+    q2a:1, q2b:1, q2c:1,
+    q3a:2, q3b:2,
+    q4a:3, q4b:3, q4c:3
+  };
+
+  function markQuestionDone(qId) {
+    const sIdx = qToStep[qId];
+    if (sIdx === undefined) return;
+    const s = stepQ[sIdx];
+    if (!s.ids.includes(qId)) return;
+    // remove from ids to prevent double-counting
+    const pos = s.ids.indexOf(qId);
+    if (pos !== -1) {
+      s.ids.splice(pos,1);
+      s.done++;
+    }
+    if (s.done >= s.total) {
+      completeStep(sIdx+1);
+    }
+  }
+
+  function completeStep(stepNum) {
+    if (stepDone[stepNum-1]) return;
+    stepDone[stepNum-1] = true;
+    totalPoints++;
+
+    const stepEl = document.getElementById('step'+stepNum);
+    stepEl.classList.remove('active');
+    stepEl.classList.add('completed');
+    document.getElementById('status'+stepNum).textContent = 'COMPLETATO';
+    document.getElementById('complete'+stepNum).classList.add('visible');
+
+    updateProgress();
+
+    // unlock next
+    if (stepNum < 4) {
+      const next = document.getElementById('step'+(stepNum+1));
+      next.classList.remove('locked');
+      next.classList.add('active');
+      document.getElementById('status'+(stepNum+1)).textContent = 'IN CORSO';
+      next.scrollIntoView({ behavior:'smooth', block:'start' });
+    } else {
+      // unlock graph
+      const graphEl = document.getElementById('stepGraph');
+      graphEl.classList.remove('locked');
+      graphEl.classList.add('active');
+      document.getElementById('statusGraph').textContent = 'GRAFICO';
+      setTimeout(() => {
+        drawGraph();
+        graphEl.scrollIntoView({ behavior:'smooth', block:'start' });
+      }, 400);
+      setTimeout(showResult, 1200);
+    }
+  }
+
+  function updateProgress() {
+    const pct = (totalPoints / 4) * 100;
+    document.getElementById('progressFill').style.width = pct+'%';
+    document.getElementById('progressLabel').textContent = `${totalPoints} / 4 punti`;
+    document.getElementById('scoreDisplay').textContent = `★ ${totalPoints} pt`;
+  }
+
+  function showResult() {
+    const panel = document.getElementById('resultPanel');
+    panel.classList.add('visible');
+    document.getElementById('finalScore').textContent = `${totalPoints}/4`;
+    const msgs = {
+      1: 'Continua a esercitarti, ci sei quasi!',
+      2: 'Buon lavoro, ma c\'è ancora margine di miglioramento.',
+      3: 'Ottimo! Quasi perfetto.',
+      4: 'Eccellente! Padronanza completa dell\'argomento.'
+    };
+    document.getElementById('finalMsg').textContent = msgs[totalPoints] || '';
+    panel.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function drawGraph() {
+    const canvas = document.getElementById('graphCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const padL = 60, padR = 30, padT = 30, padB = 50;
+    const gW = W - padL - padR, gH = H - padT - padB;
+
+    // coordinate transform
+    const xMin = -3, xMax = 3, yMin = -1.3, yMax = 1.3;
+    const tx = x => padL + (x - xMin) / (xMax - xMin) * gW;
+    const ty = y => padT + (yMax - y) / (yMax - yMin) * gH;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // background
+    ctx.fillStyle = '#f8faff';
+    ctx.fillRect(0, 0, W, H);
+
+    // grid
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    for (let x = -3; x <= 3; x++) {
+      ctx.beginPath(); ctx.moveTo(tx(x), padT); ctx.lineTo(tx(x), padT+gH); ctx.stroke();
+    }
+    for (let y = -1; y <= 1; y += 0.5) {
+      ctx.beginPath(); ctx.moveTo(padL, ty(y)); ctx.lineTo(padL+gW, ty(y)); ctx.stroke();
+    }
+
+    // asintoto y=0 (tratteggiato ambra)
+    ctx.strokeStyle = '#c47f0a';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath(); ctx.moveTo(padL, ty(0)); ctx.lineTo(padL+gW, ty(0)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // assi
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.5;
+    // asse x
+    ctx.beginPath(); ctx.moveTo(padL, ty(0)); ctx.lineTo(padL+gW, ty(0)); ctx.stroke();
+    // asse y
+    ctx.beginPath(); ctx.moveTo(tx(0), padT); ctx.lineTo(tx(0), padT+gH); ctx.stroke();
+
+    // etichette assi
+    ctx.fillStyle = '#5a6a80';
+    ctx.font = '12px Source Code Pro, monospace';
+    ctx.textAlign = 'center';
+    for (let x = -3; x <= 3; x++) {
+      if (x === 0) continue;
+      ctx.fillText(x, tx(x), padT + gH + 20);
+    }
+    ctx.textAlign = 'right';
+    for (let y = -1; y <= 1; y += 0.5) {
+      if (Math.abs(y) < 0.01) continue;
+      ctx.fillText(y.toFixed(1), padL - 8, ty(y) + 4);
+    }
+    ctx.fillText('0', padL - 8, ty(0) + 4);
+    ctx.fillStyle = '#1e2a3a';
+    ctx.font = 'bold 13px Lato, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', padL + gW + 8, ty(0) + 4);
+    ctx.fillText('y', tx(0) + 6, padT - 8);
+
+    // curva f(x) = 2x·e^(-x²)
+    const f = x => 2 * x * Math.exp(-x * x);
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    let first = true;
+    for (let px = 0; px <= gW; px++) {
+      const x = xMin + (px / gW) * (xMax - xMin);
+      const y = f(x);
+      if (y < yMin - 0.5 || y > yMax + 0.5) { first = true; continue; }
+      if (first) { ctx.moveTo(padL + px, ty(y)); first = false; }
+      else ctx.lineTo(padL + px, ty(y));
+    }
+    ctx.stroke();
+
+    // punto massimo
+    const xMax2 = 1 / Math.sqrt(2);
+    const yMax2 = f(xMax2);
+    ctx.fillStyle = '#16a34a';
+    ctx.beginPath(); ctx.arc(tx(xMax2), ty(yMax2), 6, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = '#14532d';
+    ctx.font = '11px Lato, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('MAX (0.71, 0.86)', tx(xMax2) + 9, ty(yMax2) - 6);
+
+    // punto minimo
+    const xMin2 = -1 / Math.sqrt(2);
+    const yMin2 = f(xMin2);
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath(); ctx.arc(tx(xMin2), ty(yMin2), 6, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = '#7f1d1d';
+    ctx.font = '11px Lato, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('MIN (−0.71, −0.86)', tx(xMin2) - 9, ty(yMin2) + 14);
+
+    // origine
+    ctx.fillStyle = '#2563eb';
+    ctx.beginPath(); ctx.arc(tx(0), ty(0), 4, 0, 2*Math.PI); ctx.fill();
+
+    // label funzione
+    ctx.fillStyle = '#2563eb';
+    ctx.font = 'bold 13px Lato, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('f(x) = 2x·e⁻ˣ²', tx(1.3), ty(0.55));
+  }
+
+
+    location.reload();
+  }
+</script>
+</body>
+</html>
