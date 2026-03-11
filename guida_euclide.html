@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guida Interattiva — Teoremi di Euclide</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2c3e6b; --ink-light: #3d5292;
+    --cream: #f8f4ed; --warm: #f0e8d8;
+    --gold: #c9820a; --gold-light: #f0b429;
+    --forest: #1a5c38; --forest-light: #2a8a54;
+    --green: #1a7a4a; --red: #c0392b;
+    --shadow: rgba(26,26,46,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--cream); color: var(--ink); font-family: 'Nunito', sans-serif; min-height: 100vh; padding: 0 0 80px; }
+
+  .hero { background: linear-gradient(135deg, #1a3d2e 0%, #0d2218 100%); padding: 36px 24px 28px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; border-radius: 50%; border: 40px solid rgba(240,180,41,0.15); }
+  .hero::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 160px; height: 160px; border-radius: 50%; border: 30px solid rgba(42,138,84,0.2); }
+  .hero-tag { display: inline-block; background: var(--forest); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 2px; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; }
+  .hero h1 { font-family: 'Lora', serif; font-size: clamp(22px,4vw,32px); color: #fff; font-weight: 600; line-height: 1.3; position: relative; z-index: 1; }
+  .hero p { color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 8px; position: relative; z-index: 1; }
+
+  .problema-box { background: var(--warm); border-left: 5px solid var(--forest); margin: 28px auto; max-width: 720px; border-radius: 0 12px 12px 0; padding: 20px 24px; font-family: 'Lora', serif; font-size: 16px; line-height: 1.7; box-shadow: 4px 4px 18px var(--shadow); }
+  .problema-box strong { color: var(--forest); }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+  .progress-label { font-size: 12px; color: var(--forest); font-weight: 600; text-align: right; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
+  .progress-bar-wrap { background: #e0d8cc; border-radius: 8px; height: 8px; margin: 0 0 28px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--forest), var(--gold-light)); border-radius: 8px; transition: width 0.6s cubic-bezier(.4,0,.2,1); }
+
+  .step-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; transition: background 0.3s; }
+  .dot.done { background: var(--forest); }
+  .dot.active { background: var(--gold); transform: scale(1.3); }
+
+  .step-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px var(--shadow); margin-bottom: 20px; overflow: hidden; display: none; }
+  .step-card.active { display: block; animation: slideIn 0.4s ease; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);} }
+
+  .step-header { padding: 16px 22px 14px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #f0ebe0; }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--forest), var(--forest-light)); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-title { font-family: 'Lora', serif; font-size: 17px; font-weight: 600; color: var(--ink); }
+  .step-subtitle { font-size: 12px; color: #888; margin-top: 2px; }
+  .step-body { padding: 20px 22px; }
+
+  .spiegazione { font-size: 15px; line-height: 1.7; color: #333; margin-bottom: 18px; }
+  .spiegazione em { color: var(--forest); font-style: normal; font-weight: 700; }
+  .spiegazione em.gold { color: var(--gold); }
+
+  .formula-block { background: linear-gradient(135deg, var(--ink-light), var(--ink)); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 15px; border-radius: 10px; padding: 14px 20px; margin: 14px 0; text-align: center; letter-spacing: 0.5px; }
+  .formula-block .comment { color: rgba(255,255,255,0.6); font-size: 12px; display: block; margin-top: 4px; }
+
+  /* Two formula blocks side by side */
+  .formula-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .formula-card { border-radius: 10px; padding: 14px 16px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+  .formula-card.euclide1 { background: linear-gradient(135deg, #1a3d2e, #0d2218); color: #fff; border: 2px solid var(--forest-light); }
+  .formula-card.euclide2 { background: linear-gradient(135deg, #6b4a0d, #3d2a05); color: #fff; border: 2px solid var(--gold); }
+  .formula-card .fc-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px; display: block; }
+  .formula-card .fc-formula { font-size: 15px; font-weight: 600; color: #fff; }
+  .formula-card .fc-sub { font-size: 11px; opacity: 0.6; margin-top: 6px; display: block; }
+
+  .figure-wrap { background: var(--warm); border-radius: 12px; padding: 18px; margin: 16px 0; text-align: center; }
+
+  .question-block { background: linear-gradient(135deg, #eaf4ee, #ddf0e4); border: 2px solid #8ecfaa; border-radius: 12px; padding: 18px 20px; margin: 16px 0; }
+  .q-label { font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--forest); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
+  .question-block p { font-size: 15px; color: var(--ink); font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn { background: #fff; border: 2px solid #ddd; border-radius: 10px; padding: 12px 16px; font-family: 'Nunito', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.2s; text-align: left; color: var(--ink); display: flex; align-items: center; gap: 10px; }
+  .option-btn:hover { border-color: var(--forest-light); background: #f0faf4; transform: translateX(3px); }
+  .option-btn.correct { border-color: var(--green); background: #e8f8ee; color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: #fdecea; color: var(--red); }
+  .opt-icon { width: 22px; height: 22px; border-radius: 50%; background: #eee; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+  .option-btn.correct .opt-icon { background: var(--green); color:#fff; }
+  .option-btn.wrong .opt-icon { background: var(--red); color:#fff; }
+
+  .input-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+  .input-label { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; color: var(--ink); min-width: 30px; }
+  .num-input { border: 2px solid #ccc; border-radius: 8px; padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 16px; width: 120px; color: var(--ink); transition: border-color 0.2s; outline: none; }
+  .num-input:focus { border-color: var(--forest); }
+  .num-input.correct { border-color: var(--green); background: #e8f8ee; }
+  .num-input.wrong { border-color: var(--red); background: #fdecea; }
+  .input-unit { font-family: 'JetBrains Mono', monospace; color: #777; font-size: 14px; }
+  .check-btn { background: var(--forest); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+  .check-btn:hover { background: var(--forest-light); }
+
+  .multi-inputs { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; }
+
+  .feedback { margin-top: 14px; padding: 14px 16px; border-radius: 10px; font-size: 14px; line-height: 1.6; display: none; }
+  .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .feedback.ok { background: #e8f8ee; border: 1.5px solid var(--green); color: #145c35; }
+  .feedback.no { background: #fdecea; border: 1.5px solid var(--red); color: #8b1e1e; }
+
+  .hint-toggle { background: none; border: 1.5px dashed var(--gold); color: var(--gold); border-radius: 8px; padding: 7px 14px; font-family: 'Nunito', sans-serif; font-size: 13px; cursor: pointer; margin-top: 10px; transition: all 0.2s; }
+  .hint-toggle:hover { background: #fff8e6; }
+  .hint-box { display: none; background: #fff8e6; border: 1.5px solid var(--gold); border-radius: 10px; padding: 12px 16px; margin-top: 10px; font-size: 14px; color: #7a4e05; line-height: 1.6; }
+  .hint-box.show { display: block; animation: fadeIn 0.3s ease; }
+
+  .nav-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; padding-top: 16px; border-top: 1px solid #f0ebe0; }
+  .btn-next { background: linear-gradient(135deg, var(--ink-light), var(--ink)); color: #fff; border: none; border-radius: 10px; padding: 12px 24px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+  .btn-next:hover { opacity: 0.88; transform: translateX(3px); }
+  .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* Teorema badge */
+  .teorema-badge { display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; padding: 6px 14px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+  .badge-euclide1 { background: #e0f4e8; color: var(--forest); border: 1.5px solid var(--forest-light); }
+  .badge-euclide2 { background: #fff3d6; color: var(--gold); border: 1.5px solid var(--gold); }
+
+  .final-card { background: linear-gradient(135deg, #1a3d2e, #0d2218); border-radius: 16px; padding: 32px 28px; text-align: center; color: #fff; display: none; animation: slideIn 0.5s ease; }
+  .final-card.show { display: block; }
+  .final-card .trophy { font-size: 52px; margin-bottom: 14px; }
+  .final-card h2 { font-family: 'Lora', serif; font-size: 24px; margin-bottom: 10px; color: var(--gold-light); }
+  .final-card p { font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.75); margin-bottom: 10px; }
+  .result-big { display: inline-block; background: var(--forest); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; padding: 14px 24px; border-radius: 12px; margin: 16px 0; line-height: 1.8; }
+  .restart-btn { background: #fff; color: var(--ink); border: none; border-radius: 10px; padding: 12px 24px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; cursor: pointer; margin-top: 16px; transition: background 0.2s; }
+  .restart-btn:hover { background: var(--gold-light); color: #fff; }
+
+  /* TUTOR */
+  .tutor-section { max-width: 720px; margin: 28px auto 0; padding: 0 16px 60px; }
+  .tutor-header { display: flex; align-items: center; gap: 14px; background: linear-gradient(135deg, #1a3d2e, #0d2218); color: #fff; border-radius: 16px 16px 0 0; padding: 18px 22px; }
+  .tutor-avatar { font-size: 32px; width: 52px; height: 52px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .tutor-title { font-family: 'Lora', serif; font-size: 18px; font-weight: 600; }
+  .tutor-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 3px; line-height: 1.4; }
+  .tutor-chat { background: #fff; border-left: 1px solid #e0dbd0; border-right: 1px solid #e0dbd0; padding: 18px 16px; min-height: 140px; max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+  .chat-msg { display: flex; }
+  .tutor-msg { justify-content: flex-start; }
+  .user-msg { justify-content: flex-end; }
+  .msg-bubble { max-width: 85%; padding: 11px 15px; border-radius: 16px; font-size: 14px; line-height: 1.6; }
+  .tutor-msg .msg-bubble { background: #eaf4ee; border: 1px solid #b8dfc8; color: #0d2218; border-bottom-left-radius: 4px; }
+  .user-msg .msg-bubble { background: linear-gradient(135deg, #1a3d2e, #0d2218); color: #fff; border-bottom-right-radius: 4px; }
+  .msg-bubble.loading { background: #eaf4ee; border: 1px solid #b8dfc8; color: #888; font-style: italic; }
+  .tutor-input-row { display: flex; gap: 8px; background: var(--warm); border: 1px solid #e0dbd0; border-top: none; padding: 12px 14px; }
+  .tutor-input { flex: 1; border: 1.5px solid #ccc; border-radius: 10px; padding: 10px 14px; font-family: 'Nunito', sans-serif; font-size: 14px; outline: none; color: var(--ink); }
+  .tutor-input:focus { border-color: var(--forest); }
+  .tutor-send { background: var(--forest); color: #fff; border: none; border-radius: 10px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+  .tutor-send:hover { background: var(--forest-light); transform: scale(1.05); }
+  .tutor-chips { background: var(--warm); border: 1px solid #e0dbd0; border-top: 1px dashed #d0c9b8; border-radius: 0 0 16px 16px; padding: 10px 14px 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: #fff; border: 1.5px solid var(--forest); color: var(--ink); border-radius: 20px; padding: 6px 13px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .chip:hover { background: var(--forest); color: #fff; }
+
+  @media(max-width:520px){ .formula-duo{grid-template-columns:1fr;} .num-input{width:100%;} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">△ Geometria — Liceo Scientifico</div>
+  <h1>I Teoremi di Euclide<br>sul Triangolo Rettangolo</h1>
+  <p>Guida interattiva — passo dopo passo</p>
+</div>
+
+<div class="container">
+  <div class="problema-box">
+    <strong>Problema.</strong><br>
+    In un triangolo rettangolo ABC (retto in C) i cateti misurano <strong>a = BC = 3 cm</strong> e <strong>b = AC = 4 cm</strong>.<br>
+    Trova: l'<strong>ipotenusa</strong> c, le <strong>proiezioni</strong> dei cateti sull'ipotenusa (p e q) e l'<strong>altezza</strong> h relativa all'ipotenusa.
+    <br><br>
+    <span style="font-size:13px;color:#888;font-family:'JetBrains Mono',monospace;">[c = 5 · p = 9/5 · q = 16/5 · h = 12/5]</span>
+  </div>
+
+  <div class="step-dots" id="stepDots"></div>
+  <div class="progress-label" id="progressLabel">Passo 1 di 6</div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:16.6%"></div></div>
+
+  <!-- STEP 1 — La figura -->
+  <div class="step-card active" id="step-1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div><div class="step-title">Capire la figura</div><div class="step-subtitle">Identificare tutti gli elementi</div></div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Nel triangolo rettangolo ABC retto in C, chiamiamo <em>H</em> il piede dell'altezza condotta da C sull'ipotenusa AB.<br><br>
+        Gli elementi chiave sono:<br>
+        • <em>a = BC = 3 cm</em> · <em>b = AC = 4 cm</em> · <em>c = AB</em> = ipotenusa<br>
+        • <em>p = AH</em> = proiezione di b (cateto AC) sull'ipotenusa<br>
+        • <em>q = HB</em> = proiezione di a (cateto BC) sull'ipotenusa<br>
+        • <em>h = CH</em> = altezza relativa all'ipotenusa
+      </div>
+
+      <div class="figure-wrap">
+        <!--
+          Triangolo rettangolo 3-4-5 con altezza sull'ipotenusa.
+          a=BC=3, b=AC=4, c=AB=5.
+          p=AH=b²/c=16/5=3.2, q=HB=a²/c=9/5=1.8, h=ab/c=12/5=2.4
+          Posizionamento: A in alto a sinistra, B in basso a destra, C in basso a sinistra (angolo retto).
+          Scala ×32: A=(0,128), C=(128,128), B=(128,32). Rett. in C.
+          H = piede altezza da C su AB.
+          Retta AB: da (0,128) a (128,32). dir=(128,-96), len=160. norm=(96,128)/160=(0.6,0.8)
+          foot: H = A + (AC·AB/|AB|²)*AB_vec
+          AC·AB = (128,0)·(128,-96) = 16384. |AB|²=25600. t=16384/25600=0.64
+          H = (0+0.64*128, 128+0.64*(-96)) = (81.92, 66.56) ≈ (82,67)
+          Scale ×1 fits in viewBox 180×160 with offset (20,10):
+          A=(20,138), C=(148,138), B=(148,42), H=(102,77)
+        -->
+        <svg viewBox="0 0 200 170" width="200" height="170" xmlns="http://www.w3.org/2000/svg">
+          <!-- Main triangle -->
+          <polygon points="20,148 148,148 148,52" fill="rgba(26,92,56,0.07)" stroke="#1a5c38" stroke-width="2.2"/>
+          <!-- Right angle at C -->
+          <rect x="136" y="136" width="12" height="12" fill="none" stroke="#1a5c38" stroke-width="1.5"/>
+          <!-- Altitude CH -->
+          <line x1="148" y1="148" x2="102" y2="77" stroke="#c9820a" stroke-width="2" stroke-dasharray="5,3"/>
+          <!-- Right angle at H (small square rotated) -->
+          <!-- H=(102,77), direction AB=(128,-96)/160=(0.8,-0.6), perp=(0.6,0.8) -->
+          <!-- square corner: H + 8*(0.8,-0.6) = (108.4, 72.2), H + 8*(0.6,0.8) = (106.8,83.4) -->
+          <polyline points="108,72 114,67 110,61" fill="none" stroke="#c9820a" stroke-width="1.3"/>
+          <!-- Vertex labels -->
+          <text x="10" y="162" font-family="JetBrains Mono" font-size="13" fill="#1a5c38" font-weight="bold">A</text>
+          <text x="152" y="162" font-family="JetBrains Mono" font-size="13" fill="#1a5c38" font-weight="bold">C</text>
+          <text x="152" y="48" font-family="JetBrains Mono" font-size="13" fill="#1a5c38" font-weight="bold">B</text>
+          <text x="95" y="72" font-family="JetBrains Mono" font-size="11" fill="#c9820a" font-weight="bold">H</text>
+          <!-- Side labels -->
+          <text x="80" y="162" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#1a5c38" font-weight="bold">b = 4</text>
+          <text x="158" y="105" font-family="JetBrains Mono" font-size="12" fill="#1a5c38" font-weight="bold">a = 3</text>
+          <text x="72" y="95" font-family="JetBrains Mono" font-size="11" fill="#2c3e6b" transform="rotate(-37,72,95)">c = ?</text>
+          <!-- h label -->
+          <text x="116" y="118" font-family="JetBrains Mono" font-size="11" fill="#c9820a">h</text>
+          <!-- p and q labels on hypotenuse -->
+          <text x="54" y="122" font-family="JetBrains Mono" font-size="10" fill="#c9820a" transform="rotate(-37,54,122)">p = AH</text>
+          <text x="118" y="66" font-family="JetBrains Mono" font-size="10" fill="#c9820a" transform="rotate(-37,118,66)">q = HB</text>
+        </svg>
+      </div>
+
+      <div class="question-block">
+        <div class="q-label">💡 Rifletti</div>
+        <p>Quanti triangoli rettangoli vedi nella figura, contando anche quello grande?</p>
+        <div class="options" id="q1-opts">
+          <button class="option-btn" onclick="checkMC(1,this,false)"><div class="opt-icon">A</div> 1 solo (quello originale)</button>
+          <button class="option-btn" onclick="checkMC(1,this,false)"><div class="opt-icon">B</div> 2 (il grande e uno piccolo)</button>
+          <button class="option-btn" onclick="checkMC(1,this,true)"><div class="opt-icon">C</div> 3 — il grande ABС e i due piccoli AHC e HBC, tutti simili tra loro!</button>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+      <div class="nav-row"><button class="btn-next" id="next-1" disabled onclick="goToStep(2)">Avanti →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 — Pitagora per l'ipotenusa -->
+  <div class="step-card" id="step-2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div><div class="step-title">Prima cosa: l'ipotenusa</div><div class="step-subtitle">Teorema di Pitagora</div></div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Prima di applicare Euclide, calcoliamo l'<em>ipotenusa c</em> con il teorema di Pitagora:
+      </div>
+      <div class="formula-block">c² = a² + b² = 9 + 16 = 25  →  c = 5 cm<span class="comment">ipotenusa del triangolo 3-4-5</span></div>
+      <div class="spiegazione">
+        Notiamo subito che <em>3-4-5</em> è il triplo pitagorico fondamentale. Ora siamo pronti per applicare i teoremi di Euclide.
+      </div>
+      <div class="question-block">
+        <div class="q-label">✏️ Verifica</div>
+        <p>Quale relazione lega p, q e c (le due proiezioni e l'ipotenusa)?</p>
+        <div class="options" id="q2-opts">
+          <button class="option-btn" onclick="checkMC(2,this,false)"><div class="opt-icon">A</div> p · q = c</button>
+          <button class="option-btn" onclick="checkMC(2,this,true)"><div class="opt-icon">B</div> p + q = c = 5 cm (le proiezioni coprono tutta l'ipotenusa)</button>
+          <button class="option-btn" onclick="checkMC(2,this,false)"><div class="opt-icon">C</div> p = q (le proiezioni sono uguali)</button>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+      <div class="nav-row"><button class="btn-next" id="next-2" disabled onclick="goToStep(3)">Avanti →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 — Primo teorema di Euclide -->
+  <div class="step-card" id="step-3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div><div class="step-title">Primo Teorema di Euclide</div><div class="step-subtitle">Cateto² = ipotenusa × proiezione del cateto</div></div>
+    </div>
+    <div class="step-body">
+      <div class="teorema-badge badge-euclide1">📐 1° Teorema di Euclide</div>
+      <div class="spiegazione">
+        Il <em>primo teorema di Euclide</em> afferma che ogni cateto è medio proporzionale tra l'ipotenusa e la proiezione di quel cateto sull'ipotenusa:
+      </div>
+      <div class="formula-duo">
+        <div class="formula-card euclide1">
+          <span class="fc-title">per il cateto b = AC</span>
+          <span class="fc-formula">b² = c · p</span>
+          <span class="fc-sub">p = proiezione di b</span>
+        </div>
+        <div class="formula-card euclide1">
+          <span class="fc-title">per il cateto a = BC</span>
+          <span class="fc-formula">a² = c · q</span>
+          <span class="fc-sub">q = proiezione di a</span>
+        </div>
+      </div>
+      <div class="spiegazione">
+        Sostituiamo i valori noti (<em>a = 3</em>, <em>b = 4</em>, <em>c = 5</em>):
+      </div>
+      <div class="formula-block">
+        p = b²/c = 16/5 = 3,2 cm<br>
+        q = a²/c = 9/5 = 1,8 cm
+        <span class="comment">verifica: p + q = 3,2 + 1,8 = 5 = c ✓</span>
+      </div>
+
+      <div class="question-block">
+        <div class="q-label">🧮 Calcola</div>
+        <p>Usa il 1° teorema di Euclide: quanto vale <strong>p = AH</strong> (proiezione di AC)?</p>
+        <div class="input-row">
+          <span class="input-label">p =</span>
+          <input type="number" step="0.1" class="num-input" id="p-input" placeholder="?">
+          <span class="input-unit">cm</span>
+          <button class="check-btn" onclick="checkP()">Verifica</button>
+        </div>
+        <button class="hint-toggle" onclick="toggleHint('hint3')">💡 Suggerimento</button>
+        <div class="hint-box" id="hint3">p = b²/c = 4²/5 = 16/5 = 3,2 cm</div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+      <div class="nav-row"><button class="btn-next" id="next-3" disabled onclick="goToStep(4)">Avanti →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 4 — q con il primo teorema o per differenza -->
+  <div class="step-card" id="step-4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div><div class="step-title">La seconda proiezione</div><div class="step-subtitle">Trovare q = HB</div></div>
+    </div>
+    <div class="step-body">
+      <div class="teorema-badge badge-euclide1">📐 1° Teorema di Euclide</div>
+      <div class="spiegazione">
+        Possiamo trovare <em>q</em> in due modi:
+      </div>
+      <div class="formula-block">
+        Modo 1: q = a²/c = 9/5 = 1,8 cm<br>
+        Modo 2: q = c − p = 5 − 3,2 = 1,8 cm
+        <span class="comment">entrambi danno lo stesso risultato ✓</span>
+      </div>
+      <div class="question-block">
+        <div class="q-label">💡 Rifletti</div>
+        <p>Il cateto <strong>più lungo (b=4)</strong> ha la proiezione <strong>più lunga o più corta</strong> sull'ipotenusa?</p>
+        <div class="options" id="q4-opts">
+          <button class="option-btn" onclick="checkMC(4,this,true)"><div class="opt-icon">A</div> Più lunga: b=4 è più lungo di a=3, quindi p=3,2 > q=1,8 ✓</button>
+          <button class="option-btn" onclick="checkMC(4,this,false)"><div class="opt-icon">B</div> Più corta</button>
+          <button class="option-btn" onclick="checkMC(4,this,false)"><div class="opt-icon">C</div> Uguale — le proiezioni non dipendono dalla lunghezza del cateto</button>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+      <div class="nav-row"><button class="btn-next" id="next-4" disabled onclick="goToStep(5)">Avanti →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 5 — Secondo teorema di Euclide -->
+  <div class="step-card" id="step-5">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div><div class="step-title">Secondo Teorema di Euclide</div><div class="step-subtitle">Altezza² = prodotto delle proiezioni</div></div>
+    </div>
+    <div class="step-body">
+      <div class="teorema-badge badge-euclide2">✨ 2° Teorema di Euclide</div>
+      <div class="spiegazione">
+        Il <em>secondo teorema di Euclide</em> afferma che l'altezza relativa all'ipotenusa è il medio proporzionale tra le due proiezioni:
+      </div>
+      <div class="formula-duo">
+        <div class="formula-card euclide2">
+          <span class="fc-title">2° Teorema di Euclide</span>
+          <span class="fc-formula">h² = p · q</span>
+          <span class="fc-sub">altezza = medio proporzionale tra p e q</span>
+        </div>
+        <div class="formula-card euclide2">
+          <span class="fc-title">Formula equivalente</span>
+          <span class="fc-formula">h = a·b / c</span>
+          <span class="fc-sub">prodotto dei cateti / ipotenusa</span>
+        </div>
+      </div>
+      <div class="spiegazione">
+        Possiamo usare entrambe le formule per verificare il risultato.
+      </div>
+      <div class="question-block">
+        <div class="q-label">🧮 Calcola h</div>
+        <p>Usa il 2° teorema di Euclide: <strong>h² = p · q</strong>. Quanto vale h?</p>
+        <div class="input-row">
+          <span class="input-label">h =</span>
+          <input type="number" step="0.1" class="num-input" id="h-input" placeholder="?">
+          <span class="input-unit">cm</span>
+          <button class="check-btn" onclick="checkH()">Verifica</button>
+        </div>
+        <button class="hint-toggle" onclick="toggleHint('hint5')">💡 Suggerimento</button>
+        <div class="hint-box" id="hint5">
+          h² = p · q = 3,2 × 1,8 = 5,76<br>
+          h = √5,76 = 2,4 cm<br><br>
+          Verifica con l'altra formula:<br>
+          h = a·b/c = 3×4/5 = 12/5 = 2,4 cm ✓
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+      <div class="nav-row"><button class="btn-next" id="next-5" disabled onclick="goToStep(6)">Avanti →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 6 — Riepilogo -->
+  <div class="step-card" id="step-6">
+    <div class="step-header">
+      <div class="step-num">6</div>
+      <div><div class="step-title">Schema risolutivo completo</div><div class="step-subtitle">Tutti i teoremi applicati in sintesi</div></div>
+    </div>
+    <div class="step-body">
+      <div class="figure-wrap">
+        <!-- Figura finale con tutte le misure -->
+        <svg viewBox="0 0 260 180" width="260" height="180" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="20,158 148,158 148,62" fill="rgba(26,92,56,0.07)" stroke="#1a5c38" stroke-width="2.2"/>
+          <rect x="136" y="146" width="12" height="12" fill="none" stroke="#1a5c38" stroke-width="1.5"/>
+          <!-- H foot: A=(20,158), B=(148,62), C=(148,158)
+               p=AH=3.2/5*128=81.92px along AB, q=HB=1.8/5*128=46.08px
+               AB direction: (128,-96)/160=(0.8,-0.6)
+               H = A + p_px*(0.8,-0.6) = (20+0.8*81.92, 158-0.6*81.92) = (85.5, 108.8) ≈ (86,109) -->
+          <line x1="148" y1="158" x2="86" y2="109" stroke="#c9820a" stroke-width="2" stroke-dasharray="4,3"/>
+          <!-- H dot -->
+          <circle cx="86" cy="109" r="3" fill="#c9820a"/>
+          <!-- Labels -->
+          <text x="8" y="172" font-family="JetBrains Mono" font-size="12" fill="#1a5c38" font-weight="bold">A</text>
+          <text x="152" y="172" font-family="JetBrains Mono" font-size="12" fill="#1a5c38" font-weight="bold">C</text>
+          <text x="152" y="58" font-family="JetBrains Mono" font-size="12" fill="#1a5c38" font-weight="bold">B</text>
+          <text x="79" y="104" font-family="JetBrains Mono" font-size="11" fill="#c9820a" font-weight="bold">H</text>
+          <!-- Side values -->
+          <text x="80" y="172" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1a5c38" font-weight="bold">b = 4 cm</text>
+          <text x="162" y="115" font-family="JetBrains Mono" font-size="11" fill="#1a5c38" font-weight="bold">a = 3 cm</text>
+          <text x="66" y="130" font-family="JetBrains Mono" font-size="10" fill="#2c3e6b" transform="rotate(-37,66,130)">c = 5 cm</text>
+          <!-- h value -->
+          <text x="126" y="142" font-family="JetBrains Mono" font-size="10" fill="#c9820a">h=2,4</text>
+          <!-- p and q on hypotenuse -->
+          <text x="46" y="132" font-family="JetBrains Mono" font-size="9" fill="#c9820a" transform="rotate(-37,46,132)">p=3,2</text>
+          <text x="110" y="88" font-family="JetBrains Mono" font-size="9" fill="#c9820a" transform="rotate(-37,110,88)">q=1,8</text>
+        </svg>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;margin:16px 0;">
+        <div style="background:#eaf4ee;border-left:4px solid var(--forest);border-radius:0 8px 8px 0;padding:10px 14px;font-size:14px;line-height:1.6;">
+          <strong style="color:var(--forest);">① Pitagora</strong><br>
+          c = √(a²+b²) = √(9+16) = <strong>5 cm</strong>
+        </div>
+        <div style="background:#eaf4ee;border-left:4px solid var(--forest);border-radius:0 8px 8px 0;padding:10px 14px;font-size:14px;line-height:1.6;">
+          <strong style="color:var(--forest);">② 1° Teorema di Euclide</strong><br>
+          p = b²/c = 16/5 = <strong>3,2 cm</strong> &nbsp;·&nbsp; q = a²/c = 9/5 = <strong>1,8 cm</strong><br>
+          <span style="font-size:12px;color:#555;">verifica: p+q = 5 = c ✓</span>
+        </div>
+        <div style="background:#fff8e6;border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:14px;line-height:1.6;">
+          <strong style="color:var(--gold);">③ 2° Teorema di Euclide</strong><br>
+          h = √(p·q) = √(3,2×1,8) = √5,76 = <strong>2,4 cm</strong><br>
+          <span style="font-size:12px;color:#555;">verifica: h = a·b/c = 12/5 = 2,4 ✓</span>
+        </div>
+      </div>
+      <div class="nav-row"><button class="btn-next" onclick="showFinal()">Completa la guida 🎉</button></div>
+    </div>
+  </div>
+
+  <div class="final-card" id="final-card">
+    <div class="trophy">🏆</div>
+    <h2>Ottimo lavoro!</h2>
+    <p>Hai applicato tutti e due i teoremi di Euclide:</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0;">
+      <span style="background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;padding:8px 14px;font-size:13px;">📏 Pitagora: c = 5</span>
+      <span style="background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;padding:8px 14px;font-size:13px;">📐 1° Euclide: p e q</span>
+      <span style="background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;padding:8px 14px;font-size:13px;">✨ 2° Euclide: h</span>
+    </div>
+    <div class="result-big">
+      c = 5 cm<br>
+      p = 3,2 cm · q = 1,8 cm<br>
+      h = 2,4 cm
+    </div>
+    <p style="font-size:13px;color:rgba(255,255,255,0.5);">Triplo pitagorico 3-4-5 · p+q=5 ✓ · h=ab/c ✓</p>
+    <button class="restart-btn" onclick="restart()">🔄 Ricomincia</button>
+  </div>
+</div>
+
+<!-- TUTOR -->
+<div class="tutor-section">
+  <div class="tutor-header">
+    <div class="tutor-avatar">🧑‍🏫</div>
+    <div>
+      <div class="tutor-title">Tutor virtuale</div>
+      <div class="tutor-sub">Fai domande su: teoremi di Euclide, proiezioni, altezza, triangoli simili, Pitagora</div>
+    </div>
+  </div>
+  <div class="tutor-chat" id="tutor-chat">
+    <div class="chat-msg tutor-msg"><div class="msg-bubble">Ciao! Sono qui per aiutarti sui teoremi di Euclide. Puoi chiedermi:<br>• La differenza tra 1° e 2° teorema di Euclide<br>• Cos'è la proiezione di un cateto sull'ipotenusa<br>• Come si dimostra h² = p·q<br>• Perché i tre triangoli sono simili tra loro 😊</div></div>
+  </div>
+  <div class="tutor-input-row">
+    <input type="text" id="tutor-input" class="tutor-input" placeholder="Scrivi la tua domanda…" onkeydown="if(event.key==='Enter')sendTutorMsg()">
+    <button class="tutor-send" onclick="sendTutorMsg()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+  <div class="tutor-chips">
+    <button class="chip" onclick="askChip('Qual è la differenza tra il primo e il secondo teorema di Euclide?')">1° vs 2° teorema?</button>
+    <button class="chip" onclick="askChip('Perché i tre triangoli nella figura sono simili tra loro?')">Triangoli simili</button>
+    <button class="chip" onclick="askChip('Come si dimostra il secondo teorema di Euclide h²=p·q?')">Dimostrazione h²=p·q</button>
+    <button class="chip" onclick="askChip('Come si usa il primo teorema di Euclide per trovare la proiezione di un cateto?')">Come trovare p e q?</button>
+  </div>
+</div>
+
+<script>
+  const TOTAL_STEPS = 6;
+  let currentStep = 1;
+  const dotsContainer = document.getElementById('stepDots');
+  for(let i=1;i<=TOTAL_STEPS;i++){const d=document.createElement('div');d.className='dot'+(i===1?' active':'');d.id='dot-'+i;dotsContainer.appendChild(d);}
+
+  function updateProgress(s){
+    document.getElementById('progressLabel').textContent=`Passo ${s} di ${TOTAL_STEPS}`;
+    document.getElementById('progressFill').style.width=(s/TOTAL_STEPS*100)+'%';
+    for(let i=1;i<=TOTAL_STEPS;i++){const d=document.getElementById('dot-'+i);d.className='dot';if(i<s)d.classList.add('done');if(i===s)d.classList.add('active');}
+  }
+  function goToStep(n){document.getElementById('step-'+currentStep).classList.remove('active');currentStep=n;document.getElementById('step-'+n).classList.add('active');updateProgress(n);window.scrollTo({top:0,behavior:'smooth'});}
+
+  function checkMC(stepNum,btn,isCorrect){
+    const opts=document.querySelectorAll('#q'+stepNum+'-opts .option-btn');
+    const fb=document.getElementById('fb-'+stepNum);
+    if(isCorrect){
+      opts.forEach(b=>{b.onclick=null;b.style.opacity='0.6';});
+      btn.classList.add('correct');btn.querySelector('.opt-icon').textContent='✓';btn.style.opacity='1';
+      fb.className='feedback show ok';fb.innerHTML=getFeedbackOk(stepNum);
+      const nb=document.getElementById('next-'+stepNum);if(nb)nb.disabled=false;
+    } else {
+      btn.classList.add('wrong');btn.querySelector('.opt-icon').textContent='✗';btn.onclick=null;
+      fb.className='feedback show no';fb.innerHTML=getFeedbackNo(stepNum);
+    }
+  }
+
+  function getFeedbackOk(s){
+    return {
+      1:'✅ Esatto! L\'altezza divide il triangolo originale in due triangoli più piccoli, tutti e tre simili tra loro. Questa somiglianza è la chiave dei teoremi di Euclide!',
+      2:'✅ Giusto! H divide l\'ipotenusa in due parti: AH = p e HB = q, e p + q = c = 5 cm.',
+      4:'✅ Esatto! Più il cateto è lungo, più grande è la sua proiezione sull\'ipotenusa. b=4 > a=3, quindi p=3,2 > q=1,8.',
+    }[s]||'';
+  }
+  function getFeedbackNo(s){
+    return {
+      1:'❌ Guarda meglio: l\'altezza CH divide il triangolo grande in due triangoli più piccoli AHC e HBC. In totale sono 3 triangoli rettangoli.',
+      2:'❌ Ricorda: H è un punto sull\'ipotenusa AB. I segmenti AH e HB si sommano per dare tutta l\'ipotenusa.',
+      4:'❌ Rifletti: dalla formula p = b²/c, un cateto più lungo ha il quadrato più grande, quindi la proiezione sarà più lunga.',
+    }[s]||'❌ Riprova!';
+  }
+
+  function checkP(){
+    const val=parseFloat(document.getElementById('p-input').value);
+    const inp=document.getElementById('p-input');
+    const fb=document.getElementById('fb-3');
+    if(Math.abs(val-3.2)<0.05){
+      inp.classList.add('correct');fb.className='feedback show ok';
+      fb.innerHTML='✅ Perfetto! p = b²/c = 16/5 = 3,2 cm. Hai applicato correttamente il 1° teorema di Euclide!';
+      document.getElementById('next-3').disabled=false;
+    } else if(!isNaN(val)&&val!==''){
+      inp.classList.add('wrong');fb.className='feedback show no';
+      fb.innerHTML='❌ Non è corretto. Usa la formula: p = b²/c = 4²/5 = 16/5.';
+      setTimeout(()=>{inp.classList.remove('wrong');inp.value='';},1500);
+    }
+  }
+
+  function checkH(){
+    const val=parseFloat(document.getElementById('h-input').value);
+    const inp=document.getElementById('h-input');
+    const fb=document.getElementById('fb-5');
+    if(Math.abs(val-2.4)<0.05){
+      inp.classList.add('correct');fb.className='feedback show ok';
+      fb.innerHTML='✅ Perfetto! h = √(p·q) = √(3,2×1,8) = √5,76 = 2,4 cm. Hai applicato il 2° teorema di Euclide!';
+      document.getElementById('next-5').disabled=false;
+    } else if(!isNaN(val)&&val!==''){
+      inp.classList.add('wrong');fb.className='feedback show no';
+      fb.innerHTML='❌ Non è corretto. h² = p·q = 3,2 × 1,8 = 5,76. Quindi h = √5,76 = 2,4.';
+      setTimeout(()=>{inp.classList.remove('wrong');inp.value='';},1500);
+    }
+  }
+
+  function toggleHint(id){document.getElementById(id).classList.toggle('show');}
+  function showFinal(){document.getElementById('step-6').classList.remove('active');document.getElementById('final-card').classList.add('show');for(let i=1;i<=TOTAL_STEPS;i++)document.getElementById('dot-'+i).className='dot done';window.scrollTo({top:0,behavior:'smooth'});}
+  function restart(){location.reload();}
+
+  // ===== TUTOR =====
+  const SYSTEM_PROMPT=`Sei un tutor di matematica per studenti di liceo scientifico (circa 15-16 anni).
+Rispondi SOLO su argomenti relativi ai teoremi di Euclide nel triangolo rettangolo:
+- Triangolo rettangolo: cateti, ipotenusa, angolo retto
+- Altezza relativa all'ipotenusa e suo piede H
+- Proiezione di un cateto sull'ipotenusa (p = AH, q = HB)
+- Primo teorema di Euclide: b² = c·p e a² = c·q (cateto² = ipotenusa × proiezione)
+- Secondo teorema di Euclide: h² = p·q (altezza² = prodotto delle proiezioni)
+- Formula equivalente: h = a·b/c
+- Similitudine dei tre triangoli rettangoli (ABC, AHC, HBC)
+- Dimostrazione dei teoremi di Euclide tramite similitudine
+- Teorema di Pitagora come caso particolare o complemento
+- Tripli pitagorici (3-4-5 e multipli)
+Se la domanda è fuori tema, dillo gentilmente e rimanda agli argomenti del problema.
+Tono incoraggiante e semplice, risposte brevi (max 6 righe). Rispondi in italiano. Solo testo semplice, senza markdown.`;
+
+  const chatHistory=[];
+  async function sendTutorMsg(){const input=document.getElementById('tutor-input');const msg=input.value.trim();if(!msg)return;input.value='';appendMsg(msg,'user');await callTutor(msg);}
+  async function askChip(q){appendMsg(q,'user');await callTutor(q);}
+  function appendMsg(text,role){const chat=document.getElementById('tutor-chat');const div=document.createElement('div');div.className='chat-msg '+(role==='user'?'user-msg':'tutor-msg');const b=document.createElement('div');b.className='msg-bubble';b.textContent=text;div.appendChild(b);chat.appendChild(div);chat.scrollTop=chat.scrollHeight;if(role==='user')chatHistory.push({role:'user',content:text});}
+  function appendLoading(){const chat=document.getElementById('tutor-chat');const div=document.createElement('div');div.className='chat-msg tutor-msg';div.id='loading-bubble';const b=document.createElement('div');b.className='msg-bubble loading';b.textContent='Sto pensando…';div.appendChild(b);chat.appendChild(div);chat.scrollTop=chat.scrollHeight;}
+  function removeLoading(){const el=document.getElementById('loading-bubble');if(el)el.remove();}
+  async function callTutor(userMsg){
+    appendLoading();
+    try{
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHistory})});
+      const data=await r.json();
+      const reply=data.content?.map(b=>b.text||'').join('')||'Errore nella risposta.';
+      removeLoading();appendMsg(reply,'tutor');chatHistory.push({role:'assistant',content:reply});
+    }catch(e){removeLoading();appendMsg('Errore di connessione. Riprova.','tutor');}
+  }
+</script>
+</body>
+</html>
