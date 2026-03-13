@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guida Interattiva — Trapezio Isoscele</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2c3e6b;
+    --ink-light: #3d5292;
+    --cream: #f8f4ed;
+    --warm: #f0e8d8;
+    --gold: #c9820a;
+    --gold-light: #f0b429;
+    --teal: #0d7377;
+    --teal-light: #14a6ab;
+    --red: #c0392b;
+    --green: #1a7a4a;
+    --blue: #1a4fa8;
+    --shadow: rgba(26,26,46,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* Header */
+  .hero {
+    background: var(--ink);
+    padding: 36px 24px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,130,10,0.22) 0%, transparent 70%);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(13,115,119,0.25) 0%, transparent 70%);
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(22px, 4vw, 32px);
+    color: #fff;
+    font-weight: 600;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+  }
+  .hero p {
+    color: rgba(255,255,255,0.65);
+    font-size: 14px;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Problema */
+  .problema-box {
+    background: var(--warm);
+    border-left: 5px solid var(--gold);
+    margin: 28px auto;
+    max-width: 720px;
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    line-height: 1.7;
+    box-shadow: 4px 4px 18px var(--shadow);
+  }
+  .problema-box strong { color: var(--gold); }
+
+  /* Main container */
+  .container { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+
+  /* Progress */
+  .progress-bar-wrap {
+    background: #e0d8cc;
+    border-radius: 8px;
+    height: 8px;
+    margin: 0 0 28px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--gold-light));
+    border-radius: 8px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--teal);
+    font-weight: 600;
+    text-align: right;
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Step cards */
+  .step-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+    display: none;
+  }
+  .step-card.active { display: block; animation: slideIn 0.4s ease; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-header {
+    padding: 16px 22px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid #f0ebe0;
+  }
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-title {
+    font-family: 'Lora', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .step-subtitle {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  .step-body { padding: 20px 22px; }
+
+  /* Spiegazione */
+  .spiegazione {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 18px;
+  }
+  .spiegazione em { color: var(--teal); font-style: normal; font-weight: 700; }
+  .spiegazione .formula {
+    display: inline-block;
+    background: #f0f7f7;
+    border: 1.5px solid var(--teal-light);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--teal);
+    margin: 0 2px;
+  }
+
+  /* SVG figure */
+  .figure-wrap {
+    background: var(--warm);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  .figure-wrap svg { max-width: 100%; height: auto; }
+
+  /* Domanda interattiva */
+  .question-block {
+    background: linear-gradient(135deg, #f0f7f7 0%, #e8f4f4 100%);
+    border: 2px solid var(--teal-light);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  .question-block .q-label {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--teal);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .question-block p {
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  /* Opzioni risposta */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .option-btn:hover { border-color: var(--teal-light); background: #f0fafa; transform: translateX(3px); }
+  .option-btn.correct { border-color: var(--green); background: #e8f8ee; color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: #fdecea; color: var(--red); }
+  .option-btn .opt-icon { width: 22px; height: 22px; border-radius: 50%; background: #eee; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+  .option-btn.correct .opt-icon { background: var(--green); color:#fff; }
+  .option-btn.wrong .opt-icon { background: var(--red); color:#fff; }
+
+  /* Input numerico */
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .num-input {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    width: 120px;
+    color: var(--ink);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .num-input:focus { border-color: var(--teal-light); }
+  .num-input.correct { border-color: var(--green); background: #e8f8ee; }
+  .num-input.wrong { border-color: var(--red); background: #fdecea; }
+  .input-unit {
+    font-family: 'JetBrains Mono', monospace;
+    color: #777;
+    font-size: 14px;
+  }
+  .check-btn {
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .check-btn:hover { background: var(--teal-light); transform: scale(1.03); }
+
+  /* Feedback */
+  .feedback {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .feedback.ok { background: #e8f8ee; border: 1.5px solid var(--green); color: #145c35; }
+  .feedback.no { background: #fdecea; border: 1.5px solid var(--red); color: #8b1e1e; }
+  .feedback .emoji { font-size: 20px; margin-right: 6px; }
+
+  /* Hint */
+  .hint-toggle {
+    background: none;
+    border: 1.5px dashed var(--gold);
+    color: var(--gold);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s;
+  }
+  .hint-toggle:hover { background: #fff8e6; }
+  .hint-box {
+    display: none;
+    background: #fff8e6;
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #7a4e05;
+    line-height: 1.6;
+    animation: fadeIn 0.3s ease;
+  }
+  .hint-box.show { display: block; }
+
+  /* Formula highlight */
+  .formula-block {
+    background: linear-gradient(135deg, var(--ink-light) 0%, var(--ink) 100%);
+    color: #ffffff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin: 14px 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .formula-block .comment {
+    color: rgba(255,255,255,0.65);
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* Nav buttons */
+  .nav-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid #f0ebe0;
+  }
+  .btn-next {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-next:hover { background: var(--ink-light); transform: translateX(3px); }
+  .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* Completed step dots */
+  .step-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ddd;
+    transition: background 0.3s;
+  }
+  .dot.done { background: var(--teal); }
+  .dot.active { background: var(--gold); transform: scale(1.3); }
+
+  /* Final card */
+  .final-card {
+    background: var(--ink);
+    border-radius: 16px;
+    padding: 32px 28px;
+    text-align: center;
+    color: #fff;
+    display: none;
+    animation: slideIn 0.5s ease;
+  }
+  .final-card.show { display: block; }
+  .final-card .trophy { font-size: 52px; margin-bottom: 14px; }
+  .final-card h2 { font-family: 'Lora', serif; font-size: 24px; margin-bottom: 10px; color: var(--gold-light); }
+  .final-card p { font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.75); margin-bottom: 18px; }
+  .result-big {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 12px;
+    margin: 16px 0;
+  }
+  .restart-btn {
+    background: #fff;
+    color: var(--ink);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background 0.2s;
+  }
+  .restart-btn:hover { background: var(--gold-light); color: #fff; }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .input-row { flex-direction: column; align-items: flex-start; }
+    .num-input { width: 100%; }
+  }
+
+  /* Figure selection */
+  .fig-choice {
+    border: 2.5px solid #ddd;
+    border-radius: 14px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    background: #fff;
+    min-width: 130px;
+  }
+  .fig-choice:hover { border-color: var(--teal-light); box-shadow: 0 4px 14px var(--shadow); transform: translateY(-2px); }
+  .fig-choice.fig-correct { border-color: var(--green); background: #e8f8ee; box-shadow: 0 0 0 3px rgba(26,122,74,0.2); }
+  .fig-choice.fig-wrong { border-color: var(--red); background: #fdecea; opacity: 0.6; }
+  .fig-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: #888; margin-bottom: 6px; }
+  .fig-caption { font-size: 12px; color: #555; margin-top: 8px; line-height: 1.4; }
+  /* ===== TUTOR AI ===== */
+  .tutor-section {
+    max-width: 720px;
+    margin: 28px auto 0;
+    padding: 0 16px 60px;
+  }
+  .tutor-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, var(--ink-light), var(--ink));
+    color: #fff;
+    border-radius: 16px 16px 0 0;
+    padding: 18px 22px;
+  }
+  .tutor-avatar {
+    font-size: 32px;
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tutor-title {
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .tutor-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+  .tutor-chat {
+    background: #fff;
+    border-left: 1px solid #e0dbd0;
+    border-right: 1px solid #e0dbd0;
+    padding: 18px 16px;
+    min-height: 160px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .chat-msg { display: flex; }
+  .tutor-msg { justify-content: flex-start; }
+  .user-msg  { justify-content: flex-end; }
+  .msg-bubble {
+    max-width: 85%;
+    padding: 11px 15px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .tutor-msg .msg-bubble {
+    background: #f0f4ff;
+    border: 1px solid #d0d9f5;
+    color: #1a2550;
+    border-bottom-left-radius: 4px;
+  }
+  .user-msg .msg-bubble {
+    background: linear-gradient(135deg, var(--ink-light), var(--ink));
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .msg-bubble.loading {
+    background: #f0f4ff;
+    border: 1px solid #d0d9f5;
+    color: #888;
+    font-style: italic;
+  }
+  .tutor-input-row {
+    display: flex;
+    gap: 8px;
+    background: var(--warm);
+    border: 1px solid #e0dbd0;
+    border-top: none;
+    padding: 12px 14px;
+  }
+  .tutor-input {
+    flex: 1;
+    border: 1.5px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    outline: none;
+    color: var(--ink);
+    transition: border-color 0.2s;
+  }
+  .tutor-input:focus { border-color: var(--ink-light); }
+  .tutor-send {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    flex-shrink: 0;
+  }
+  .tutor-send:hover { background: var(--ink-light); transform: scale(1.05); }
+  .tutor-chips {
+    background: var(--warm);
+    border: 1px solid #e0dbd0;
+    border-top: 1px dashed #d0c9b8;
+    border-radius: 0 0 16px 16px;
+    padding: 10px 14px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    background: #fff;
+    border: 1.5px solid var(--ink-light);
+    color: var(--ink);
+    border-radius: 20px;
+    padding: 6px 13px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chip:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">🔺 Geometria — Classe 2ª Superiore</div>
+  <h1>Trapezio Isoscele<br>Circoscritto a una Circonferenza</h1>
+  <p>Guida interattiva — passo dopo passo</p>
+</div>
+
+<div class="container">
+
+  <div class="problema-box">
+    <strong>Problema 374.</strong><br>
+    Un trapezio isoscele è circoscritto a una circonferenza. Il suo <strong>lato obliquo</strong> è lungo <strong>10 cm</strong> e il <strong>raggio</strong> è uguale alla <strong>base minore</strong>. Calcola l'area del trapezio.
+    <br><br>
+    <span style="font-size:13px; color:#888; font-family:'JetBrains Mono',monospace;">[Risposta attesa: 80 cm²]</span>
+  </div>
+
+  <!-- Step dots -->
+  <div class="step-dots" id="stepDots"></div>
+
+  <!-- Progress -->
+  <div class="progress-label" id="progressLabel">Passo 1 di 7</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill" style="width:14.3%"></div>
+  </div>
+
+  <!-- ============ STEP 1 — SCEGLI LA FIGURA ============ -->
+  <div class="step-card active" id="step-1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Riconosci la figura corretta</div>
+        <div class="step-subtitle">Cosa significa "circoscritto a una circonferenza"?</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Il problema dice che il trapezio è <em>circoscritto</em> a una circonferenza.<br>
+        Questo significa che la circonferenza è <strong>inscritta nel trapezio</strong>: deve essere tangente (toccare) <strong>tutti e quattro i lati</strong>.<br><br>
+        Osserva le tre figure e scegli quella che rappresenta correttamente la situazione.
+      </div>
+
+      <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin:18px 0;">
+
+        <!-- Figura A — SBAGLIATA: cerchio tocca solo le basi -->
+        <div class="fig-choice" id="fig-A" onclick="checkFigure('A')">
+          <div class="fig-label">Figura A</div>
+          <svg viewBox="0 0 160 120" width="150" height="112" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="52,18 108,18 128,102 32,102" fill="#f5f5f5" stroke="#888" stroke-width="2"/>
+            <circle cx="80" cy="60" r="20" fill="none" stroke="#c9820a" stroke-width="1.8" stroke-dasharray="4,2"/>
+            <circle cx="80" cy="40" r="3.5" fill="#c9820a"/>
+            <circle cx="80" cy="80" r="3.5" fill="#c9820a"/>
+          </svg>
+          <div class="fig-caption">Cerchio tangente<br>solo alle due basi</div>
+        </div>
+
+        <!-- Figura B — CORRETTA -->
+        <!-- Geometria esatta verificata:
+             Trapezio proporzionale al problema (b=4,B=16,h=8 → scala×10):
+             b_px=40, B_px=160, h_px=80, r_px=40
+             centro (cx=110, cy=65), top y=25, bot y=105
+             base minore: x 90-130, y=25
+             base maggiore: x 30-190, y=105
+             lato sin (90,25)→(30,105): len=100, retta 4x+3y=450
+             dist(110,65)=|440+195-450|/5=|185|/5=37 ... ricalcolo:
+             4*110+3*65=440+195=635 ≠ 450. Rifaccio:
+             Retta per (90,25) e (30,105):
+               dy=80, dx=-60 → normale=(80,60), len=100
+               eq: 80(x-90)+60(y-25)=0 → 80x+60y=7200+1500=8700 → 4x+3y=435
+             dist(110,65)=|4*110+3*65-435|/5=|440+195-435|/5=200/5=40 ✓ PERFETTO
+             Tangent foot sx: P-(d*n̂) where n̂=(4/5,3/5), d=40 (but sign: center is inside)
+               foot = (110-4/5*40, 65-3/5*40) = (110-32, 65-24) = (78, 41)
+             Tangent foot dx (simmetrico rispetto x=110): (142, 41)
+        -->
+        <div class="fig-choice" id="fig-B" onclick="checkFigure('B')">
+          <div class="fig-label">Figura B</div>
+          <svg viewBox="0 0 220 130" width="150" height="112" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="90,25 130,25 190,105 30,105" fill="#eef7f7" stroke="#0d7377" stroke-width="2"/>
+            <circle cx="110" cy="65" r="40" fill="rgba(13,115,119,0.08)" stroke="#c9820a" stroke-width="2"/>
+            <circle cx="110" cy="65" r="2.5" fill="#c9820a"/>
+            <circle cx="110" cy="25" r="4" fill="#c9820a"/>
+            <circle cx="110" cy="105" r="4" fill="#c9820a"/>
+            <circle cx="78" cy="41" r="4" fill="#c9820a"/>
+            <circle cx="142" cy="41" r="4" fill="#c9820a"/>
+            <line x1="110" y1="65" x2="110" y2="25" stroke="#c9820a" stroke-width="1.5" stroke-dasharray="3,2"/>
+            <text x="116" y="48" font-family="JetBrains Mono" font-size="10" fill="#c9820a">r</text>
+          </svg>
+          <div class="fig-caption">Cerchio tangente<br>a tutti e 4 i lati</div>
+        </div>
+
+        <!-- Figura C — SBAGLIATA: cerchio esterno -->
+        <div class="fig-choice" id="fig-C" onclick="checkFigure('C')">
+          <div class="fig-label">Figura C</div>
+          <svg viewBox="0 0 160 120" width="150" height="112" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="52,18 108,18 128,102 32,102" fill="#f5f5f5" stroke="#888" stroke-width="2"/>
+            <circle cx="80" cy="60" r="55" fill="none" stroke="#c9820a" stroke-width="1.8" stroke-dasharray="4,2"/>
+          </svg>
+          <div class="fig-caption">Cerchio esterno<br>al trapezio</div>
+        </div>
+      </div>
+
+      <div class="feedback" id="fb-fig"></div>
+
+      <div class="nav-row">
+        <button class="btn-next" id="next-1" disabled onclick="goToStep(2)">Avanti →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STEP 2 — LEGGERE LA FIGURA ============ -->
+  <div class="step-card" id="step-2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Leggere la figura</div>
+        <div class="step-subtitle">Proprietà del trapezio circoscritto</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Bene! Ora osserva la figura con le etichette. Le variabili chiave sono:<br>
+        • <em>b</em> = base minore &nbsp;•&nbsp; <em>B</em> = base maggiore<br>
+        • <em>l = 10 cm</em> = lato obliquo &nbsp;•&nbsp; <em>r</em> = raggio &nbsp;•&nbsp; <em>h</em> = altezza
+      </div>
+
+      <div class="figure-wrap">
+        <!-- Stessa geometria verificata: cx=110,cy=65,r=40, trapezio 90,25→130,25→190,105→30,105 -->
+        <svg viewBox="0 0 260 145" width="260" height="145" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="90,25 130,25 190,105 30,105" fill="#eef7f7" stroke="#0d7377" stroke-width="2.2"/>
+          <circle cx="110" cy="65" r="40" fill="rgba(13,115,119,0.07)" stroke="#c9820a" stroke-width="2"/>
+          <circle cx="110" cy="65" r="2.5" fill="#c9820a"/>
+          <!-- 4 tangent points -->
+          <circle cx="110" cy="25" r="4" fill="#c9820a"/>
+          <circle cx="110" cy="105" r="4" fill="#c9820a"/>
+          <circle cx="78" cy="41" r="4" fill="#c9820a"/>
+          <circle cx="142" cy="41" r="4" fill="#c9820a"/>
+          <!-- radius -->
+          <line x1="110" y1="65" x2="110" y2="25" stroke="#c9820a" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <text x="117" y="47" font-family="JetBrains Mono" font-size="11" fill="#c9820a">r</text>
+          <!-- labels -->
+          <text x="110" y="17" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#0d7377" font-weight="bold">b</text>
+          <text x="110" y="120" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#0d7377" font-weight="bold">B</text>
+          <text x="54" y="67" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1a1a2e" transform="rotate(-53,54,67)">l=10</text>
+          <text x="168" y="67" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1a1a2e" transform="rotate(53,168,67)">l=10</text>
+          <!-- h brace -->
+          <line x1="205" y1="25" x2="205" y2="105" stroke="#888" stroke-width="1" stroke-dasharray="3,2"/>
+          <line x1="200" y1="25" x2="210" y2="25" stroke="#888" stroke-width="1"/>
+          <line x1="200" y1="105" x2="210" y2="105" stroke="#888" stroke-width="1"/>
+          <text x="218" y="70" font-family="JetBrains Mono" font-size="11" fill="#555">h</text>
+        </svg>
+      </div>
+
+      <div class="question-block">
+        <div class="q-label">💡 Rifletti</div>
+        <p>Per un quadrilatero circoscritto a una circonferenza, esiste una proprietà fondamentale sui lati. Quale?</p>
+        <div class="options" id="q1-opts">
+          <button class="option-btn" onclick="checkMC(1, this, false)">
+            <div class="opt-icon">A</div>
+            Le diagonali sono uguali
+          </button>
+          <button class="option-btn" onclick="checkMC(1, this, true)">
+            <div class="opt-icon">B</div>
+            La somma delle basi è uguale alla somma dei lati obliqui: <strong>b + B = l + l = 2l</strong>
+          </button>
+          <button class="option-btn" onclick="checkMC(1, this, false)">
+            <div class="opt-icon">C</div>
+            L'area è uguale alla lunghezza del perimetro
+          </button>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" id="next-2" disabled onclick="goToStep(3)">Avanti →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STEP 3 ============ -->
+  <div class="step-card" id="step-3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">La condizione sul raggio</div>
+        <div class="step-subtitle">Imposta l'equazione con r = b</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Il problema ci dice che <em>r = b</em> (il raggio è uguale alla base minore).<br><br>
+        Sappiamo anche che la <strong>circunferenza inscritta tocca la base minore nel suo punto medio</strong>. Questo significa che il raggio è uguale alla <em>metà dell'altezza</em>... no, aspetta!<br><br>
+        Il raggio della circonferenza inscritta in un trapezio è uguale a:
+      </div>
+      <div class="formula-block">
+        r = h / 2
+        <span class="comment">dove h è l'altezza del trapezio</span>
+      </div>
+      <div class="spiegazione">
+        Quindi, poiché <em>r = b</em>, abbiamo:
+      </div>
+      <div class="formula-block">
+        b = h / 2  →  h = 2b
+        <span class="comment">l'altezza è il doppio della base minore</span>
+      </div>
+
+      <div class="question-block">
+        <div class="q-label">✏️ Verifica</div>
+        <p>Se il diametro della circonferenza inscritta è uguale all'altezza, e r = b, quanto vale h in funzione di b?</p>
+        <div class="options" id="q2-opts">
+          <button class="option-btn" onclick="checkMC(2, this, false)">
+            <div class="opt-icon">A</div> h = b
+          </button>
+          <button class="option-btn" onclick="checkMC(2, this, true)">
+            <div class="opt-icon">B</div> h = 2b
+          </button>
+          <button class="option-btn" onclick="checkMC(2, this, false)">
+            <div class="opt-icon">C</div> h = b/2
+          </button>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" id="next-3" disabled onclick="goToStep(4)">Avanti →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STEP 4 ============ -->
+  <div class="step-card" id="step-4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Usare il Teorema di Pitagora</div>
+        <div class="step-subtitle">Trovare b dal triangolo rettangolo</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Ogni lato obliquo del trapezio è l'ipotenusa di un triangolo rettangolo con:<br>
+        • cateto verticale = <em>h = 2b</em><br>
+        • cateto orizzontale = <em>(B − b) / 2</em><br><br>
+        Dalla proprietà del circoscritto: <em>b + B = 2l = 20</em>, quindi <em>B = 20 − b</em>.<br>
+        Allora il cateto orizzontale diventa:
+      </div>
+      <div class="formula-block">
+        (B − b) / 2 = (20 − b − b) / 2 = (20 − 2b) / 2 = 10 − b
+      </div>
+      <div class="spiegazione">
+        Applichiamo Pitagora: <em>l² = h² + cateto²</em>
+      </div>
+      <div class="formula-block">
+        10² = (2b)² + (10 − b)²
+        <span class="comment">l = 10, h = 2b, cateto orizzontale = 10 − b</span>
+      </div>
+
+      <div class="figure-wrap">
+        <svg viewBox="0 0 300 180" width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Trapezoid outline -->
+          <polygon points="70,30 210,30 270,150 10,150" fill="#f9f5f0" stroke="#ccc" stroke-width="1.5"/>
+          <!-- Right triangle highlight -->
+          <polygon points="10,150 70,30 10,30" fill="#e8f4f4" stroke="#0d7377" stroke-width="2"/>
+          <!-- Right angle mark -->
+          <rect x="10" y="30" width="12" height="12" fill="none" stroke="#0d7377" stroke-width="1.5"/>
+          <!-- Labels on triangle -->
+          <text x="38" y="95" font-family="JetBrains Mono" font-size="13" fill="#1a1a2e" font-weight="bold">l=10</text>
+          <text x="-14" y="88" font-family="JetBrains Mono" font-size="12" fill="#0d7377">h=2b</text>
+          <text x="20" y="148" font-family="JetBrains Mono" font-size="11" fill="#c9820a">10−b</text>
+          <!-- Arrows for catetos -->
+          <line x1="10" y1="32" x2="10" y2="148" stroke="#0d7377" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr)"/>
+          <line x1="12" y1="150" x2="68" y2="150" stroke="#c9820a" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#0d7377"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="question-block">
+        <div class="q-label">🧮 Svolgi il calcolo</div>
+        <p>Sviluppa l'equazione <strong>100 = 4b² + (10−b)²</strong> e semplifica. Quale equazione ottieni?</p>
+        <div class="options" id="q3-opts">
+          <button class="option-btn" onclick="checkMC(3, this, false)">
+            <div class="opt-icon">A</div> 5b² − 20b = 0
+          </button>
+          <button class="option-btn" onclick="checkMC(3, this, true)">
+            <div class="opt-icon">B</div> 5b² − 20b + 0 = 0, ovvero b(5b − 20) = 0
+          </button>
+          <button class="option-btn" onclick="checkMC(3, this, false)">
+            <div class="opt-icon">C</div> b² − 4b + 4 = 0
+          </button>
+        </div>
+
+        <button class="hint-toggle" onclick="toggleHint('hint3')">💡 Mostra suggerimento</button>
+        <div class="hint-box" id="hint3">
+          Sviluppa: 100 = 4b² + 100 − 20b + b²<br>
+          → 100 = 5b² − 20b + 100<br>
+          → 0 = 5b² − 20b<br>
+          → 0 = 5b(b − 4)<br>
+          Quindi b = 0 (scarto) oppure b = 4 ✓
+        </div>
+        <div class="feedback" id="fb-3"></div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" id="next-4" disabled onclick="goToStep(5)">Avanti →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STEP 5 ============ -->
+  <div class="step-card" id="step-5">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div>
+        <div class="step-title">Trovare b, h, B</div>
+        <div class="step-subtitle">Risolvi l'equazione e ricava tutte le misure</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Dall'equazione <em>5b(b − 4) = 0</em> otteniamo <em>b = 4 cm</em> (scartando b = 0).<br><br>
+        Ora calcoliamo le altre misure:
+      </div>
+      <div class="formula-block">
+        b = 4 cm<br>
+        h = 2b = 2 × 4 = 8 cm<br>
+        B = 20 − b = 20 − 4 = 16 cm
+        <span class="comment">tutte le misure del trapezio</span>
+      </div>
+
+      <div class="question-block">
+        <div class="q-label">✏️ Verifica con Pitagora</div>
+        <p>Controlla: con b = 4, h = 8, cateto = 10 − 4 = 6, il lato obliquo vale davvero 10?</p>
+        <div class="options" id="q4-opts">
+          <button class="option-btn" onclick="checkMC(4, this, true)">
+            <div class="opt-icon">A</div> Sì! √(8² + 6²) = √(64+36) = √100 = 10 ✓
+          </button>
+          <button class="option-btn" onclick="checkMC(4, this, false)">
+            <div class="opt-icon">B</div> No, non torna
+          </button>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" id="next-5" disabled onclick="goToStep(6)">Avanti →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STEP 6 ============ -->
+  <div class="step-card" id="step-6">
+    <div class="step-header">
+      <div class="step-num">6</div>
+      <div>
+        <div class="step-title">Calcola l'area</div>
+        <div class="step-subtitle">Formula dell'area del trapezio</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Ora hai tutte le misure. La formula dell'area del trapezio è:
+      </div>
+      <div class="formula-block">
+        A = ½ × (b + B) × h
+        <span class="comment">media delle basi × altezza</span>
+      </div>
+      <div class="spiegazione">
+        Sostituisci i valori trovati: <em>b = 4</em>, <em>B = 16</em>, <em>h = 8</em>.
+      </div>
+
+      <div class="question-block">
+        <div class="q-label">🧮 Calcola</div>
+        <p>Quanto vale l'area del trapezio?</p>
+        <div class="input-row">
+          <input type="number" class="num-input" id="area-input" placeholder="?" min="0" max="999">
+          <span class="input-unit">cm²</span>
+          <button class="check-btn" onclick="checkArea()">Verifica</button>
+        </div>
+        <button class="hint-toggle" onclick="toggleHint('hint5')">💡 Mostra calcolo</button>
+        <div class="hint-box" id="hint5">
+          A = ½ × (4 + 16) × 8<br>
+          A = ½ × 20 × 8<br>
+          A = ½ × 160<br>
+          A = <strong>80 cm²</strong> ✓
+        </div>
+        <div class="feedback" id="fb-5"></div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" id="next-6" disabled onclick="goToStep(7)">Avanti →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STEP 7 — RIEPILOGO ============ -->
+  <div class="step-card" id="step-7">
+    <div class="step-header">
+      <div class="step-num">7</div>
+      <div>
+        <div class="step-title">Schema risolutivo completo</div>
+        <div class="step-subtitle">Tutto il ragionamento in un colpo d'occhio</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="spiegazione">
+        Ecco il percorso completo, dalla proprietà geometrica al risultato finale:
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; margin:16px 0;">
+        <div style="background:#f0f7f7; border-left:4px solid var(--teal); border-radius:0 8px 8px 0; padding:10px 14px; font-size:14px; line-height:1.6;">
+          <strong style="color:var(--teal);">① Proprietà circoscritto</strong><br>
+          b + B = 2l → b + B = 20
+        </div>
+        <div style="background:#f0f7f7; border-left:4px solid var(--teal); border-radius:0 8px 8px 0; padding:10px 14px; font-size:14px; line-height:1.6;">
+          <strong style="color:var(--teal);">② Condizione r = b</strong><br>
+          r = h/2 → b = h/2 → h = 2b
+        </div>
+        <div style="background:#fff8e6; border-left:4px solid var(--gold); border-radius:0 8px 8px 0; padding:10px 14px; font-size:14px; line-height:1.6;">
+          <strong style="color:var(--gold);">③ Teorema di Pitagora</strong><br>
+          10² = (2b)² + (10−b)² → b = 4 cm
+        </div>
+        <div style="background:#fff8e6; border-left:4px solid var(--gold); border-radius:0 8px 8px 0; padding:10px 14px; font-size:14px; line-height:1.6;">
+          <strong style="color:var(--gold);">④ Misure</strong><br>
+          b = 4 cm, h = 8 cm, B = 16 cm
+        </div>
+        <div style="background:#e8f8ee; border-left:4px solid var(--green); border-radius:0 8px 8px 0; padding:10px 14px; font-size:14px; line-height:1.6;">
+          <strong style="color:var(--green);">⑤ Area</strong><br>
+          A = ½ × (4 + 16) × 8 = <strong>80 cm²</strong>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" onclick="showFinal()">Completa la guida 🎉</button>
+      </div>
+    </div>
+  </div>
+  <div class="final-card" id="final-card">
+    <div class="trophy">🏆</div>
+    <h2>Ottimo lavoro!</h2>
+    <p>Hai risolto un problema di geometria avanzata usando tre strumenti fondamentali:</p>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:14px 0;">
+      <span style="background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); border-radius:8px; padding:8px 14px; font-size:13px;">📐 Proprietà del circoscritto</span>
+      <span style="background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); border-radius:8px; padding:8px 14px; font-size:13px;">📏 Teorema di Pitagora</span>
+      <span style="background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); border-radius:8px; padding:8px 14px; font-size:13px;">🔢 Equazione di secondo grado</span>
+    </div>
+    <p>L'area del trapezio è:</p>
+    <div class="result-big">A = 80 cm²</div>
+    <p style="font-size:13px; color:rgba(255,255,255,0.5);">b = 4 cm · B = 16 cm · h = 8 cm · l = 10 cm</p>
+    <button class="restart-btn" onclick="restart()">🔄 Ricomincia dall'inizio</button>
+  </div>
+
+  <!-- ============ TUTOR AI ============ -->
+<div class="tutor-section">
+  <div class="tutor-header">
+    <div class="tutor-avatar">🧑‍🏫</div>
+    <div>
+      <div class="tutor-title">Tutor virtuale</div>
+      <div class="tutor-sub">Clicca una domanda o scrivi la tua — si apre Claude.ai già impostato sul problema</div>
+    </div>
+  </div>
+  <div class="tutor-body">
+    <div class="tutor-info">
+      <span class="tutor-info-icon">💬</span>
+      <span>Scrivi la tua domanda e clicca <strong>Chiedi a Claude</strong> — si aprirà una nuova scheda con il contesto del problema già pronto.</span>
+    </div>
+    <div class="tutor-input-row">
+      <input type="text" id="tutor-input" class="tutor-input" placeholder="Es: Non capisco perché r = base minore…">
+      <button class="tutor-send" onclick="openClaude()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Chiedi a Claude
+      </button>
+    </div>
+  </div>
+  <div class="tutor-chips">
+    <a class="chip" href="https://claude.ai/new?q=Cosa%20significa%20che%20un%20trapezio%20%C3%A8%20circoscritto%20a%20una%20circonferenza%3F%20Quanti%20punti%20di%20tangenza%20ci%20sono%3F" target="_blank">Cosa significa circoscritto?</a>
+    <a class="chip" href="https://claude.ai/new?q=Nel%20trapezio%20isoscele%20circoscritto%2C%20perch%C3%A9%20il%20raggio%20della%20circonferenza%20inscritta%20%C3%A8%20uguale%20alla%20base%20minore%3F" target="_blank">Perché r = base minore?</a>
+    <a class="chip" href="https://claude.ai/new?q=Come%20si%20imposta%20l%27equazione%20di%20secondo%20grado%20per%20trovare%20la%20base%20minore%20del%20trapezio%20isoscele%20circoscritto%20con%20lato%20obliquo%2010%3F" target="_blank">Come impostare l'equazione?</a>
+    <a class="chip" href="https://claude.ai/new?q=Come%20si%20calcola%20l%27area%20del%20trapezio%20isoscele%20conoscendo%20le%20due%20basi%20e%20l%27altezza%3F" target="_blank">Come calcolare l'area?</a>
+  </div>
+</div>
+<script>
+  const TUTOR_CONTEXT = 'Sto risolvendo questo problema di geometria: trapezio isoscele circoscritto a una circonferenza, lato obliquo 10 cm, raggio uguale alla base minore, area 80 cm². La mia domanda è: ';
+  function openClaude(q) {
+    const msg = q || document.getElementById('tutor-input').value.trim();
+    if (!msg) return;
+    window.open('https://claude.ai/new?q=' + encodeURIComponent(TUTOR_CONTEXT + msg), '_blank');
+  }
+  document.getElementById('tutor-input').addEventListener('keydown', e => { if(e.key==='Enter') openClaude(); });
+</script>
+</body>
+</html>
