@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Per ogni k ∈ ℝ — Maturità Matematica</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #f5f0e8;
+    --cream: #ede8d8;
+    --gold: #c8952a;
+    --gold-light: #e8b84b;
+    --red: #b83232;
+    --blue: #2a5c8a;
+    --green: #2a7a4a;
+    --line: rgba(26,20,16,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Lined paper background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        var(--line) 31px,
+        var(--line) 32px
+      );
+    background-size: 100% 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Red margin line */
+  body::after {
+    content: '';
+    position: fixed;
+    left: 72px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(184,50,50,0.25);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 40px 40px 96px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 3px double var(--ink);
+  }
+
+  .header .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .header h1 .math-em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .header .subtitle {
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(26,20,16,0.6);
+  }
+
+  /* Progress bar */
+  .progress-track {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 36px;
+  }
+
+  .progress-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid rgba(26,20,16,0.3);
+    transition: all 0.4s ease;
+  }
+
+  .progress-dot.done { background: var(--green); border-color: var(--green); }
+  .progress-dot.active { background: var(--gold); border-color: var(--gold); transform: scale(1.3); }
+
+  /* Steps */
+  .step {
+    display: none;
+    animation: fadeSlide 0.5s ease;
+  }
+
+  .step.active { display: block; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cards */
+  .card {
+    background: white;
+    border: 1.5px solid rgba(26,20,16,0.15);
+    border-radius: 2px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 3px 3px 0 rgba(26,20,16,0.06);
+  }
+
+  .card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 8px;
+    letter-spacing: 1px;
+  }
+
+  .card.highlight {
+    border-color: var(--gold);
+    background: #fffdf5;
+  }
+
+  .card.highlight::before { background: var(--gold); color: white; }
+
+  .card.correct {
+    border-color: var(--green);
+    background: #f5fffb;
+  }
+
+  .card.correct::before { background: var(--green); color: white; }
+
+  .card.wrong {
+    border-color: var(--red);
+    background: #fff5f5;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    margin-bottom: 10px;
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  p { line-height: 1.75; margin-bottom: 12px; }
+  
+  .formula {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--cream);
+    border-left: 4px solid var(--gold);
+    padding: 14px 20px;
+    margin: 16px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    border-radius: 0 2px 2px 0;
+    overflow-x: auto;
+  }
+
+  .formula.big {
+    font-size: 18px;
+    text-align: center;
+    border-left: none;
+    border-top: 3px solid var(--gold);
+    border-bottom: 3px solid var(--gold);
+    background: #fffcf2;
+  }
+
+  /* Key insight box */
+  .insight {
+    background: linear-gradient(135deg, #fffcf0 0%, #fff8e0 100%);
+    border: 2px solid var(--gold);
+    border-radius: 2px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  .insight::before {
+    content: '💡';
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    background: var(--paper);
+    padding: 0 6px;
+    font-size: 18px;
+  }
+
+  .insight strong { color: var(--gold); }
+
+  /* Quiz */
+  .quiz-options {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .quiz-opt {
+    background: white;
+    border: 1.5px solid rgba(26,20,16,0.2);
+    border-radius: 2px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    text-align: left;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .quiz-opt:hover {
+    border-color: var(--gold);
+    background: #fffcf5;
+    transform: translateX(4px);
+  }
+
+  .quiz-opt.correct-ans {
+    background: #f0fff8;
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .quiz-opt.wrong-ans {
+    background: #fff0f0;
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .quiz-opt::before {
+    content: attr(data-letter);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    margin-right: 12px;
+    color: var(--gold);
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 2px;
+    font-style: italic;
+    display: none;
+    line-height: 1.6;
+  }
+
+  .feedback.show { display: block; animation: fadeSlide 0.3s ease; }
+  .feedback.ok { background: #e8fff4; border: 1px solid var(--green); color: #1a5a38; }
+  .feedback.no { background: #fff0f0; border: 1px solid var(--red); color: #7a1a1a; }
+
+  /* Slider explorer */
+  .explorer {
+    background: #1a1410;
+    border-radius: 4px;
+    padding: 24px;
+    color: var(--paper);
+    margin: 20px 0;
+  }
+
+  .explorer-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--gold-light);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .slider-row label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    min-width: 80px;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 3px;
+    background: rgba(200,149,42,0.4);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gold-light);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.3);
+  }
+
+  .k-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    color: var(--gold-light);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  canvas {
+    width: 100%;
+    height: 300px;
+    border-top: 1px solid rgba(200,149,42,0.2);
+    padding-top: 16px;
+    display: block;
+  }
+
+  .info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .info-chip {
+    background: rgba(200,149,42,0.1);
+    border: 1px solid rgba(200,149,42,0.3);
+    border-radius: 2px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .info-chip .chip-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(200,149,42,0.7);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .info-chip .chip-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--gold-light);
+  }
+
+  /* Steps of proof */
+  .proof-steps {
+    counter-reset: proof;
+  }
+
+  .proof-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: all 0.5s ease;
+  }
+
+  .proof-step.reveal {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .proof-step-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .proof-step-content { flex: 1; }
+
+  .proof-step-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 28px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 1px;
+    margin-top: 8px;
+  }
+
+  .btn:hover {
+    background: var(--gold);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(200,149,42,0.3);
+  }
+
+  .btn.secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+  }
+
+  .btn.secondary:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 1px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+
+  .tag.max { background: rgba(42,122,74,0.15); color: var(--green); border: 1px solid var(--green); }
+  .tag.min { background: rgba(42,92,138,0.15); color: var(--blue); border: 1px solid var(--blue); }
+  .tag.asint { background: rgba(184,50,50,0.15); color: var(--red); border: 1px solid var(--red); }
+
+  /* Summary table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 400;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(26,20,16,0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  tr:nth-child(even) td { background: rgba(26,20,16,0.03); }
+
+  .green-text { color: var(--green); font-weight: 600; }
+  .blue-text { color: var(--blue); font-weight: 600; }
+  .red-text { color: var(--red); font-weight: 600; }
+  .gold-text { color: var(--gold); font-weight: 600; }
+
+  /* Confetti / celebration */
+  .celebration {
+    text-align: center;
+    padding: 32px;
+  }
+
+  .big-check {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+    animation: pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes pop {
+    from { transform: scale(0) rotate(-30deg); opacity: 0; }
+    to { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
+  /* Reveal btn */
+  .reveal-btn {
+    background: transparent;
+    border: 1.5px dashed rgba(26,20,16,0.3);
+    border-radius: 2px;
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: rgba(26,20,16,0.5);
+    transition: all 0.2s;
+    margin-top: 12px;
+  }
+
+  .reveal-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hidden-content { display: none; }
+  .hidden-content.shown { display: block; animation: fadeSlide 0.4s ease; }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 20px 0; }
+
+  .badge {
+    display: inline-block;
+    background: var(--gold);
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+
+  @media (max-width: 600px) {
+    body::after { display: none; }
+    .container { padding: 24px 16px; }
+    .info-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="label">Seconda Prova di Maturità — Matematica</div>
+    <h1>Impariamo a dimostrare che una proprietà di una funzione è vera<br><span class="math-em">per qualsiasi valore del parametro k reale</span></h1>
+    <div class="subtitle">Un'attività guidata in 5 tappe</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-track" id="progressTrack">
+    <div class="progress-dot active" data-step="0"></div>
+    <div class="progress-dot" data-step="1"></div>
+    <div class="progress-dot" data-step="2"></div>
+    <div class="progress-dot" data-step="3"></div>
+    <div class="progress-dot" data-step="4"></div>
+  </div>
+
+  <!-- ======================== STEP 0: La consegna ======================== -->
+  <div class="step active" id="step0">
+
+    <div class="card" data-num="PRIMA DI TUTTO">
+      <h2>Che cos'è un parametro?</h2>
+      <p>Quando studi una funzione come <span style="font-family:'JetBrains Mono',monospace">f(x) = 2x + 3</span>, c'è una sola grandezza che varia: la variabile indipendente <strong>x</strong>. Per ogni valore di x ottieni un valore di f.</p>
+      <p>A volte però una funzione contiene anche una <strong>lettera aggiuntiva</strong>, chiamata <strong>parametro</strong>, che rappresenta una costante il cui valore non è ancora stato fissato. Il parametro non varia mentre x varia: è un numero preciso, ma non sappiamo quale.</p>
+
+      <div class="formula big">
+        f(x) = (x² + <span style="color:#c8952a">k</span>x) / (x + 1)
+        <br><br>
+        x → la variabile: cambia, la funzione la "elabora"<br>
+        <span style="color:#c8952a">k</span> → il parametro: è una costante fissa, ma sconosciuta
+      </div>
+
+      <p>Pensa al parametro come a una <em>manopola</em> che qualcuno ha regolato su un certo valore prima di dartela: tu non sai su quale valore, ma quel valore rimane fisso mentre x scorre.</p>
+
+      <div class="insight">
+        <strong>Esempio concreto.</strong> Se k = 3, la funzione diventa f(x) = (x² + 3x)/(x+1). Se k = −2, diventa f(x) = (x² − 2x)/(x+1). Ogni scelta di k dà una funzione diversa. La famiglia di tutte queste funzioni al variare di k è descritta dalla formula con il parametro.
+      </div>
+
+      <p>Nella seconda prova di maturità capita spesso di dover <strong>dimostrare che una certa proprietà vale per tutte le funzioni della famiglia</strong>, cioè qualunque sia il valore di k. È esattamente questo che vedremo.</p>
+    </div>
+
+    <div class="card highlight" data-num="PUNTO DI PARTENZA">
+      <h2>Che cosa chiede la consegna?</h2>
+      <p>Leggi con attenzione questa tipica richiesta della seconda prova:</p>
+      <div class="formula big">
+        f(x) = (x² + kx) / (x + 1)
+        <br><br>
+        Dimostra che, per qualsiasi k ∈ ℝ,<br>
+        il grafico di f presenta:<br>
+        • un punto di massimo relativo<br>
+        • un punto di minimo relativo<br>
+        • un solo asintoto obliquo
+      </div>
+      <p>Prima di fare qualsiasi conto, fermati a capire <em>cosa</em> stai leggendo.</p>
+    </div>
+
+    <div class="card" data-num="QUIZ 1">
+      <h3>Che cosa significa "per qualsiasi k ∈ ℝ"?</h3>
+      <div class="quiz-options" id="quiz0">
+        <button class="quiz-opt" data-letter="A" onclick="answer(0,'A','C')">
+          La proprietà vale solo per un valore speciale di k, che devi trovare
+        </button>
+        <button class="quiz-opt" data-letter="B" onclick="answer(0,'B','C')">
+          La proprietà vale per qualche valore di k, non necessariamente per tutti
+        </button>
+        <button class="quiz-opt" data-letter="C" onclick="answer(0,'C','C')">
+          La proprietà deve valere per ogni possibile numero reale al posto di k — nessuna eccezione
+        </button>
+        <button class="quiz-opt" data-letter="D" onclick="answer(0,'D','C')">
+          Puoi scegliere un k comodo, dimostrare la proprietà per quello e hai finito
+        </button>
+      </div>
+      <div class="feedback ok" id="fb0ok">✓ Esatto! "Per qualsiasi k ∈ ℝ" è un <strong>quantificatore universale</strong>: la dimostrazione deve reggere senza importare quale numero si sostituisca a k. Non puoi sceglierti k = 0 e fermarti lì.</div>
+      <div class="feedback no" id="fb0no">✗ Rileggi. "Per qualsiasi" non lascia libertà di scelta: vuol dire <em>ogni</em> numero reale, da −∞ a +∞. Devi costruire una dimostrazione che non dipenda dal valore specifico di k.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="goTo(1)">Tappa successiva →</button>
+    </div>
+  </div>
+
+  <!-- ======================== STEP 1: L'errore comune ======================== -->
+  <div class="step" id="step1">
+    <div class="card" data-num="L'ERRORE CLASSICO">
+      <h2>L'errore che dimezza il voto 📉</h2>
+      <p>Moltissimi studenti, alla vista del parametro k, fanno questa cosa:</p>
+      <div class="formula">
+        "Proviamo con k = 0 → f(x) = x²/(x+1)"<br>
+        [calcoli...]<br>
+        "Ha massimo e minimo! Bene, dimostrato."
+        <br><br>
+        <span style="color:#b83232">← SBAGLIATO ✗</span>
+      </div>
+      <p><strong>Perché è sbagliato?</strong> Hai dimostrato la proprietà per <em>un solo</em> valore di k. Ma cosa succede per k = 5? Per k = −100? Per k = √2? Non lo sai.</p>
+      <p>Sarebbe come voler dimostrare che "tutti i numeri pari sono divisibili per 2" controllando solo il numero 4.</p>
+    </div>
+
+    <div class="card" data-num="QUIZ 2">
+      <h3>Quale strategia è corretta per una dimostrazione universale?</h3>
+      <div class="quiz-options" id="quiz1">
+        <button class="quiz-opt" data-letter="A" onclick="answer(1,'A','B')">
+          Provo per k = 0, k = 1, k = −1 e poi scrivo "il caso generale è analogo"
+        </button>
+        <button class="quiz-opt" data-letter="B" onclick="answer(1,'B','B')">
+          Lascio k come simbolo generico, faccio tutti i calcoli con k, e mostro che il risultato finale non richiede alcun valore specifico di k
+        </button>
+        <button class="quiz-opt" data-letter="C" onclick="answer(1,'C','B')">
+          Scelgo il valore di k che semplifica di più i calcoli, dimostro, poi dico che gli altri casi sono simili
+        </button>
+        <button class="quiz-opt" data-letter="D" onclick="answer(1,'D','B')">
+          Uso k = 0 per la parte grafica e k = 1 per la parte algebrica
+        </button>
+      </div>
+      <div class="feedback ok" id="fb1ok">✓ Perfetto! Il metodo corretto è mantenere k come variabile simbolica per tutta la dimostrazione. Solo alla fine, quando hai un risultato che vale "qualunque sia k", hai davvero dimostrato la proprietà universalmente.</div>
+      <div class="feedback no" id="fb1no">✗ Nessuna di quelle scorciatoie funziona. Una dimostrazione universale richiede che k rimanga generico dall'inizio alla fine. Finché k ha un valore specifico, la dimostrazione è parziale.</div>
+    </div>
+
+    <div class="insight">
+      <strong>La regola d'oro:</strong> Se la consegna dice "per qualsiasi k", la lettera k deve apparire nei tuoi calcoli come simbolo, mai sostituita con un numero, fino a quando non hai il risultato finale — e quel risultato deve essere vero <em>indipendentemente</em> da k.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn secondary" onclick="goTo(0)">← Indietro</button>
+      <button class="btn" onclick="goTo(2)">Tappa successiva →</button>
+    </div>
+  </div>
+
+  <!-- ======================== STEP 2: Esploratore interattivo ======================== -->
+  <div class="step" id="step2">
+    <div class="card" data-num="ESPLORAZIONE">
+      <h2>Esplora: cosa cambia al variare di k?</h2>
+      <p>Muovi il cursore e osserva il grafico di <span style="font-family:'JetBrains Mono',monospace">f(x) = (x² + kx)/(x+1)</span>. Nota dove sono massimo, minimo e asintoto.</p>
+    </div>
+
+    <div class="explorer">
+      <div class="explorer-title">Laboratorio grafico</div>
+      <div class="slider-row">
+        <label>k =</label>
+        <input type="range" id="kSlider" min="-8" max="8" step="0.5" value="2" oninput="updateGraph()">
+        <span class="k-display" id="kDisplay">2</span>
+      </div>
+      <canvas id="graphCanvas"></canvas>
+      <div class="info-row">
+        <div class="info-chip">
+          <span class="chip-label">Max relativo</span>
+          <span class="chip-val" id="chipMax">—</span>
+        </div>
+        <div class="info-chip">
+          <span class="chip-label">Min relativo</span>
+          <span class="chip-val" id="chipMin">—</span>
+        </div>
+        <div class="info-chip">
+          <span class="chip-label">Asintoto obliquo</span>
+          <span class="chip-val" id="chipAsint">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-num="OSSERVAZIONE">
+      <h3>Cosa hai notato?</h3>
+      <p>Indipendentemente dal valore di k che hai scelto:</p>
+      <ul style="margin-left:20px; line-height:2.2">
+        <li><span class="tag max">MAX</span> c'è sempre un punto di massimo relativo</li>
+        <li><span class="tag min">MIN</span> c'è sempre un punto di minimo relativo</li>
+        <li><span class="tag asint">ASINTOTO</span> c'è sempre esattamente un asintoto obliquo</li>
+      </ul>
+      <p style="margin-top:12px">Questa <em>esplorazione visiva</em> ci convince che la proprietà vale, ma <strong>non è una dimostrazione</strong>. Abbiamo visto solo un numero finito di valori di k. La dimostrazione rigorosa viene dopo.</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn secondary" onclick="goTo(1)">← Indietro</button>
+      <button class="btn" onclick="goTo(3)">Vedi la dimostrazione →</button>
+    </div>
+  </div>
+
+  <!-- ======================== STEP 3: La dimostrazione ======================== -->
+  <div class="step" id="step3">
+    <div class="card highlight" data-num="LA DIMOSTRAZIONE">
+      <h2>Come si costruisce la dimostrazione</h2>
+      <p>Ecco la strategia passo per passo, con k che rimane sempre simbolo generico.</p>
+    </div>
+
+    <div class="proof-steps" id="proofSteps">
+
+      <div class="proof-step" id="ps0">
+        <div class="proof-step-num">1</div>
+        <div class="proof-step-content">
+          <div class="proof-step-title">Dominio</div>
+          <p>Il denominatore si annulla per x = −1, quindi il dominio è ℝ \ {−1}. <em>Questo non dipende da k.</em></p>
+          <div class="formula">D = ℝ \ {−1} &nbsp;&nbsp;∀k ∈ ℝ</div>
+        </div>
+      </div>
+
+      <div class="proof-step" id="ps1">
+        <div class="proof-step-num">2</div>
+        <div class="proof-step-content">
+          <div class="proof-step-title">Asintoto obliquo</div>
+          <p>Calcolo m e q della retta y = mx + q con k simbolico:</p>
+          <div class="formula">
+            m = lim[x→±∞] f(x)/x = lim (x² + kx) / (x² + x) = 1<br><br>
+            q = lim[x→±∞] [f(x) − x] = lim (kx − x²+x²)/(x+1)<br>
+            &nbsp;&nbsp;&nbsp;= lim (k−1)x/(x+1) = k − 1
+          </div>
+          <p>L'asintoto è <strong>y = x + (k−1)</strong>. Esiste sempre, qualunque sia k, ed è uno solo.</p>
+        </div>
+      </div>
+
+      <div class="proof-step" id="ps2">
+        <div class="proof-step-num">3</div>
+        <div class="proof-step-content">
+          <div class="proof-step-title">Derivata prima — ancora con k simbolico</div>
+          <div class="formula">
+            f'(x) = [(2x + k)(x+1) − (x²+kx)·1] / (x+1)²<br><br>
+            Numeratore = 2x² + 2x + kx + k − x² − kx<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= x² + 2x + k
+          </div>
+          <div class="formula big">f'(x) = (x² + 2x + k) / (x+1)²</div>
+        </div>
+      </div>
+
+      <div class="proof-step" id="ps3">
+        <div class="proof-step-num">4</div>
+        <div class="proof-step-content">
+          <div class="proof-step-title">Il punto chiave: discriminante del numeratore</div>
+          <p>I punti critici si trovano annullando il numeratore: x² + 2x + k = 0.</p>
+          <p>Quante soluzioni reali ha questo sistema? Dipende dal discriminante:</p>
+          <div class="formula big">Δ = 4 − 4k = 4(1 − k)</div>
+          <p>Per avere <em>due punti critici distinti</em> (uno di max e uno di min) occorre Δ > 0, cioè k < 1.</p>
+        </div>
+      </div>
+
+      <div class="proof-step" id="ps4">
+        <div class="proof-step-num">5</div>
+        <div class="proof-step-content">
+          <div class="proof-step-title">⚠️ Momento critico: la consegna dice "per qualsiasi k"!</div>
+          <div class="insight" style="margin-top:8px">
+            <strong>Attenzione!</strong> Abbiamo scoperto che per k ≥ 1 la funzione non ha né massimo né minimo relativo (discriminante ≤ 0). Questo significa che <strong>la proprietà nella consegna vale solo per k < 1</strong>, non per qualsiasi k ∈ ℝ.<br><br>
+            Se nella prova d'esame la consegna fosse formulata così, ti converebbe segnalarlo: "Dimostro che la proprietà vale per k < 1" e spiegare il caso k ≥ 1.
+          </div>
+          <p>Oppure, se la consegna è affidabile, la funzione era diversa — ad es. f(x) = (x²+kx+k)/(x+1) — che ha sempre Δ = 4−4k+k²−4k... Adattiamo l'esempio. <em>L'importante è il metodo.</em></p>
+        </div>
+      </div>
+
+      <div class="proof-step" id="ps5">
+        <div class="proof-step-num">6</div>
+        <div class="proof-step-content">
+          <div class="proof-step-title">Conclusione della dimostrazione (per k &lt; 1)</div>
+          <p>Le due radici distinte del numeratore sono:</p>
+          <div class="formula">x₁ = −1 − √(1−k) &nbsp;&nbsp;&nbsp; x₂ = −1 + √(1−k)</div>
+          <p>Poiché il denominatore (x+1)² è sempre ≥ 0:</p>
+          <table>
+            <tr><th>Intervallo</th><th>Segno f'</th><th>f è...</th></tr>
+            <tr><td>x &lt; x₁</td><td class="green-text">+</td><td>crescente</td></tr>
+            <tr><td>x₁ &lt; x &lt; x₂</td><td class="red-text">−</td><td>decrescente</td></tr>
+            <tr><td>x₂ &lt; x</td><td class="green-text">+</td><td>crescente</td></tr>
+          </table>
+          <p style="margin-top:12px">Quindi in x₁ c'è un <strong class="green-text">massimo relativo</strong> e in x₂ un <strong class="blue-text">minimo relativo</strong>.<br>
+          Le espressioni di x₁ e x₂ contengono k, ma la struttura (max poi min) è garantita per <em>ogni</em> k < 1.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="revealBtn" style="text-align:center; margin-top:16px">
+      <button class="reveal-btn" onclick="revealProof()">▶ Mostra i passi uno alla volta</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn secondary" onclick="goTo(2)">← Indietro</button>
+      <button class="btn" onclick="goTo(4)">Verifica finale →</button>
+    </div>
+  </div>
+
+  <!-- ======================== STEP 4: Verifica finale ======================== -->
+  <div class="step" id="step4">
+    <div class="card" data-num="VERIFICA FINALE">
+      <h2>Metti alla prova la comprensione</h2>
+    </div>
+
+    <div class="card" data-num="QUIZ 3">
+      <h3>Uno studente scrive: "Ho scelto k = 2 e ho verificato che esistono max e min. La dimostrazione è completa." Questa affermazione è…</h3>
+      <div class="quiz-options" id="quiz2">
+        <button class="quiz-opt" data-letter="A" onclick="answer(2,'A','C')">Corretta: un esempio è sufficiente per dimostrare una proprietà universale</button>
+        <button class="quiz-opt" data-letter="B" onclick="answer(2,'B','C')">Corretta: k = 2 è un caso rappresentativo di tutti i reali</button>
+        <button class="quiz-opt" data-letter="C" onclick="answer(2,'C','C')">Sbagliata: ha dimostrato la proprietà solo per k = 2, non per ogni k ∈ ℝ</button>
+        <button class="quiz-opt" data-letter="D" onclick="answer(2,'D','C')">Corretta solo se poi verifica anche k = 0 e k = −1</button>
+      </div>
+      <div class="feedback ok" id="fb2ok">✓ Corretto! Un singolo esempio non dimostra una proprietà universale. Per "qualsiasi k" serve una dimostrazione algebrica con k simbolico.</div>
+      <div class="feedback no" id="fb2no">✗ Ricorda: un esempio dimostra che la proprietà vale in quel caso, non che valga per tutti. Per una dimostrazione universale k deve restare simbolo.</div>
+    </div>
+
+    <div class="card" data-num="QUIZ 4">
+      <h3>Nel calcolo della derivata f'(x), quando devo sostituire k con un numero?</h3>
+      <div class="quiz-options" id="quiz3">
+        <button class="quiz-opt" data-letter="A" onclick="answer(3,'A','D')">Prima del calcolo, per semplificare l'algebra</button>
+        <button class="quiz-opt" data-letter="B" onclick="answer(3,'B','D')">Subito dopo aver trovato la derivata</button>
+        <button class="quiz-opt" data-letter="C" onclick="answer(3,'C','D')">Quando il discriminante contiene k</button>
+        <button class="quiz-opt" data-letter="D" onclick="answer(3,'D','D')">Mai, oppure solo se la consegna chiede un valore specifico di k</button>
+      </div>
+      <div class="feedback ok" id="fb3ok">✓ Esatto! k rimane simbolo per tutta la dimostrazione. Lo sostituisci con un numero solo se la consegna ti chiede di studiare un caso specifico, come "per k = 3 calcola le coordinate del massimo".</div>
+      <div class="feedback no" id="fb3no">✗ Sostituire k prima della fine invalida la dimostrazione universale. k deve attraversare tutti i calcoli come simbolo generico.</div>
+    </div>
+
+    <div class="card" data-num="QUIZ 5">
+      <h3>Nel nostro esempio, abbiamo trovato Δ = 4(1−k). Che conclusione possiamo trarre rispetto alla consegna originale?</h3>
+      <div class="quiz-options" id="quiz4">
+        <button class="quiz-opt" data-letter="A" onclick="answer(4,'A','B')">La proprietà vale per qualsiasi k, come richiesto dalla consegna</button>
+        <button class="quiz-opt" data-letter="B" onclick="answer(4,'B','B')">La proprietà vale solo per k &lt; 1; la consegna andrebbe riformulata o la funzione è diversa da quella che abbiamo usato</button>
+        <button class="quiz-opt" data-letter="C" onclick="answer(4,'C','B')">Δ non è rilevante per l'esistenza di max e min</button>
+        <button class="quiz-opt" data-letter="D" onclick="answer(4,'D','B')">Per k ≥ 1 la funzione ha massimo assoluto ma non relativo</button>
+      </div>
+      <div class="feedback ok" id="fb4ok">✓ Ottima riflessione critica! Hai scoperto che la consegna (così formulata) è vera solo per k &lt; 1. Nella prova d'esame, saper identificare e segnalare questa limitazione è un segno di maturità matematica.</div>
+      <div class="feedback no" id="fb4no">✗ Il discriminante Δ = 4(1−k) è fondamentale: stabilisce per quali k il numeratore di f' ha due radici reali distinte, cioè esistono due punti critici. Se Δ ≤ 0 (k ≥ 1), i punti critici scompaiono.</div>
+    </div>
+
+    <div id="finalResult" style="display:none">
+      <div class="card correct" data-num="COMPLETATO">
+        <div class="celebration">
+          <span class="big-check">🎓</span>
+          <h2>Attività completata!</h2>
+          <p>Hai capito il cuore di una dimostrazione con parametro:</p>
+        </div>
+        <table>
+          <tr><th>Concetto</th><th>Regola</th></tr>
+          <tr><td>Quantificatore universale</td><td class="gold-text">k rimane simbolo</td></tr>
+          <tr><td>Esempio singolo</td><td class="red-text">NON dimostra "∀k"</td></tr>
+          <tr><td>Discriminante di f'</td><td class="blue-text">rivela per quali k esiste il comportamento</td></tr>
+          <tr><td>Asintoto</td><td class="green-text">esiste sempre (indip. da k)</td></tr>
+          <tr><td>Struttura dim.</td><td class="gold-text">calcola con k, concludi in termini di k</td></tr>
+        </table>
+        <div class="btn-row" style="justify-content:center; margin-top:24px">
+          <button class="btn" onclick="restart()">↺ Ricomincia</button>
+        </div>
+      </div>
+
+      <!-- ===== ORA TOCCA A TE ===== -->
+      <div class="card highlight" data-num="ORA TOCCA A TE" style="margin-top:28px">
+        <h2>Ora tocca a te 🖊️</h2>
+        <p>Considera questa nuova funzione con parametro k:</p>
+        <div class="formula big">
+          g(x) = (x² + k) / (x − 1)
+        </div>
+        <p>La seguente proprietà vale <strong>per qualsiasi k ∈ ℝ</strong>?</p>
+        <div class="formula" style="border-left-color: var(--blue); background:#f0f5ff;">
+          <strong>Proprietà:</strong> il grafico di g(x) possiede un solo asintoto verticale.
+        </div>
+        <p style="margin-top:12px; font-style:italic; color: rgba(26,20,16,0.6)">Non svolgere i calcoli per esteso — ragiona sul denominatore: per quali valori di x si annulla? Dipende da k?</p>
+
+        <div style="margin-top:20px;">
+          <p style="font-weight:600; margin-bottom:12px;">Dimmi solo: la proprietà vale per qualsiasi k?</p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="quiz-opt" data-letter="SÌ" style="flex:1; min-width:140px" onclick="checkChallenge(true)">
+              ✓ &nbsp;Sì, vale per qualsiasi k ∈ ℝ
+            </button>
+            <button class="quiz-opt" data-letter="NO" style="flex:1; min-width:140px" onclick="checkChallenge(false)">
+              ✗ &nbsp;No, non vale per qualsiasi k
+            </button>
+          </div>
+          <div class="feedback ok" id="challengeOk" style="margin-top:14px">
+            ✓ Esatto! Il denominatore è (x − 1), che si annulla <em>solo</em> per x = 1, indipendentemente da k (k non compare nel denominatore). Quindi l'asintoto verticale x = 1 esiste sempre, per qualsiasi k ∈ ℝ. La proprietà <strong>è universalmente vera</strong>.
+          </div>
+          <div class="feedback no" id="challengeNo" style="margin-top:14px">
+            ✗ Rifletti ancora. Guarda il denominatore: (x − 1). Contiene k? Si annulla sempre nello stesso punto, qualunque sia k? Il denominatore non dipende da k — e quindi nemmeno l'asintoto verticale.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="checkFinalBtn" class="btn-row">
+      <button class="btn secondary" onclick="goTo(3)">← Indietro</button>
+      <button class="btn" onclick="checkFinal()">Controlla i risultati →</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ——— State ———
+let quizAnswers = {};
+let proofRevealed = false;
+
+// ——— Navigation ———
+function goTo(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  document.querySelectorAll('.progress-dot').forEach((d, i) => {
+    d.classList.remove('active', 'done');
+    if (i < n) d.classList.add('done');
+    if (i === n) d.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (n === 2) initGraph();
+  if (n === 3) initProof();
+}
+
+// ——— Quiz ———
+function answer(qNum, chosen, correct) {
+  const opts = document.querySelectorAll('#quiz' + qNum + ' .quiz-opt');
+  opts.forEach(o => { o.style.pointerEvents = 'none'; });
+  quizAnswers[qNum] = chosen;
+  const ok = chosen === correct;
+  opts.forEach(o => {
+    if (o.dataset.letter === correct) o.classList.add('correct-ans');
+    if (o.dataset.letter === chosen && !ok) o.classList.add('wrong-ans');
+  });
+  const fbOk = document.getElementById('fb' + qNum + 'ok');
+  const fbNo = document.getElementById('fb' + qNum + 'no');
+  if (ok) { fbOk.classList.add('show'); }
+  else { fbNo.classList.add('show'); }
+}
+
+// ——— Graph ———
+let canvas, ctx;
+
+function initGraph() {
+  canvas = document.getElementById('graphCanvas');
+  ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio || 600;
+  canvas.height = 300 * window.devicePixelRatio || 300;
+  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+  updateGraph();
+}
+
+function updateGraph() {
+  const k = parseFloat(document.getElementById('kSlider').value);
+  document.getElementById('kDisplay').textContent = k;
+  if (!canvas) return;
+
+  const W = canvas.offsetWidth, H = 300;
+  ctx.clearRect(0, 0, W, H);
+
+  const xMin = -7, xMax = 7, yMin = -10, yMax = 10;
+  const toPixel = (x, y) => ({
+    px: (x - xMin) / (xMax - xMin) * W,
+    py: (1 - (y - yMin) / (yMax - yMin)) * H
+  });
+
+  // Background
+  ctx.fillStyle = '#1a1410';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(200,149,42,0.1)';
+  ctx.lineWidth = 1;
+  for (let x = -6; x <= 6; x++) {
+    const p = toPixel(x, 0);
+    ctx.beginPath(); ctx.moveTo(p.px, 0); ctx.lineTo(p.px, H); ctx.stroke();
+  }
+  for (let y = -8; y <= 8; y += 2) {
+    const p = toPixel(0, y);
+    ctx.beginPath(); ctx.moveTo(0, p.py); ctx.lineTo(W, p.py); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = 'rgba(200,149,42,0.4)';
+  ctx.lineWidth = 1.5;
+  const o = toPixel(0, 0);
+  ctx.beginPath(); ctx.moveTo(0, o.py); ctx.lineTo(W, o.py); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(o.px, 0); ctx.lineTo(o.px, H); ctx.stroke();
+
+  // Asymptote verticale x = -1
+  const ax = toPixel(-1, 0);
+  ctx.strokeStyle = 'rgba(184,50,50,0.85)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath(); ctx.moveTo(ax.px, 0); ctx.lineTo(ax.px, H); ctx.stroke();
+
+  // Asintoto obliquo y = x + (k-1)  — visibile e colorato
+  const q = k - 1;
+  ctx.strokeStyle = '#e05c5c';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 5]);
+  const pa = toPixel(xMin, xMin + q);
+  const pb = toPixel(xMax, xMax + q);
+  ctx.beginPath(); ctx.moveTo(pa.px, pa.py); ctx.lineTo(pb.px, pb.py); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Function
+  const drawBranch = (from, to, color) => {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    let started = false;
+    for (let i = 0; i <= 600; i++) {
+      const x = from + (to - from) * i / 600;
+      const y = (x * x + k * x) / (x + 1);
+      const p = toPixel(x, y);
+      if (y < yMin - 0.5 || y > yMax + 0.5) { started = false; continue; }
+      if (!started) { ctx.moveTo(p.px, p.py); started = true; }
+      else ctx.lineTo(p.px, p.py);
+    }
+    ctx.stroke();
+  };
+
+  drawBranch(xMin, -1.02, '#e8b84b');
+  drawBranch(-0.98, xMax, '#e8b84b');
+
+  // Critical points
+  const disc = 4 - 4 * k;
+  if (disc > 0) {
+    const sq = Math.sqrt(disc) / 2;
+    const x1 = -1 - sq, x2 = -1 + sq;
+    const y1 = (x1 * x1 + k * x1) / (x1 + 1);
+    const y2 = (x2 * x2 + k * x2) / (x2 + 1);
+
+    if (x1 > xMin && x1 < -1 && y1 > yMin && y1 < yMax) {
+      const p1 = toPixel(x1, y1);
+      ctx.fillStyle = '#2a7a4a';
+      ctx.beginPath(); ctx.arc(p1.px, p1.py, 5, 0, Math.PI * 2); ctx.fill();
+      document.getElementById('chipMax').textContent = '(' + x1.toFixed(2) + '; ' + y1.toFixed(2) + ')';
+    } else {
+      document.getElementById('chipMax').textContent = 'fuori schermo';
+    }
+
+    if (x2 > -1 && x2 < xMax && y2 > yMin && y2 < yMax) {
+      const p2 = toPixel(x2, y2);
+      ctx.fillStyle = '#2a5c8a';
+      ctx.beginPath(); ctx.arc(p2.px, p2.py, 5, 0, Math.PI * 2); ctx.fill();
+      document.getElementById('chipMin').textContent = '(' + x2.toFixed(2) + '; ' + y2.toFixed(2) + ')';
+    } else {
+      document.getElementById('chipMin').textContent = 'fuori schermo';
+    }
+  } else {
+    document.getElementById('chipMax').textContent = k >= 1 ? 'nessuno (k≥1)' : '—';
+    document.getElementById('chipMin').textContent = k >= 1 ? 'nessuno (k≥1)' : '—';
+  }
+
+  const qLabel = q >= 0 ? '+' + q.toFixed(1) : q.toFixed(1);
+  document.getElementById('chipAsint').textContent = 'y = x ' + qLabel;
+
+  // Etichette sul grafico
+  ctx.font = '11px JetBrains Mono, monospace';
+
+  // etichetta x = -1
+  ctx.fillStyle = 'rgba(224,92,92,0.9)';
+  ctx.fillText('x = −1', ax.px + 4, 14);
+
+  // etichetta asintoto obliquo: posizionata in alto a destra
+  const labelX = W - 8;
+  const labelY = toPixel(xMax - 0.3, xMax + q - 0.3).py;
+  const clampedLY = Math.max(14, Math.min(H - 8, labelY));
+  ctx.fillStyle = '#e05c5c';
+  ctx.textAlign = 'right';
+  ctx.fillText('y = x ' + qLabel, labelX, clampedLY - 6);
+  ctx.textAlign = 'left';
+}
+
+// ——— Challenge finale ———
+function checkChallenge(answer) {
+  const btns = document.querySelectorAll('[onclick^="checkChallenge"]');
+  btns.forEach(b => b.style.pointerEvents = 'none');
+  if (answer === true) {
+    btns.forEach(b => { if (b.dataset.letter === 'SÌ') b.classList.add('correct-ans'); });
+    document.getElementById('challengeOk').classList.add('show');
+  } else {
+    btns.forEach(b => { if (b.dataset.letter === 'NO') b.classList.add('wrong-ans'); });
+    btns.forEach(b => { if (b.dataset.letter === 'SÌ') b.classList.add('correct-ans'); });
+    document.getElementById('challengeNo').classList.add('show');
+  }
+}
+function initProof() {
+  if (proofRevealed) return;
+  const steps = document.querySelectorAll('.proof-step');
+  steps.forEach(s => s.classList.add('reveal'));
+  proofRevealed = true;
+}
+
+function revealProof() {
+  const steps = document.querySelectorAll('.proof-step');
+  let revealed = 0;
+  steps.forEach(s => { if (s.classList.contains('reveal')) revealed++; });
+  if (revealed < steps.length) {
+    steps[revealed].classList.add('reveal');
+  }
+  if (revealed + 1 >= steps.length) {
+    document.getElementById('revealBtn').style.display = 'none';
+  }
+}
+
+// ——— Final check ———
+function checkFinal() {
+  const answered = Object.keys(quizAnswers).filter(k => parseInt(k) >= 2).length;
+  if (answered < 3) {
+    alert('Rispondi a tutti e tre i quiz di questa sezione prima di procedere!');
+    return;
+  }
+  document.getElementById('finalResult').style.display = 'block';
+  document.getElementById('checkFinalBtn').style.display = 'none';
+  document.getElementById('finalResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function restart() {
+  quizAnswers = {};
+  proofRevealed = false;
+  document.querySelectorAll('.quiz-opt').forEach(o => {
+    o.classList.remove('correct-ans', 'wrong-ans');
+    o.style.pointerEvents = '';
+  });
+  document.querySelectorAll('.feedback').forEach(f => f.classList.remove('show'));
+  document.querySelectorAll('.proof-step').forEach(s => s.classList.remove('reveal'));
+  document.getElementById('finalResult').style.display = 'none';
+  document.getElementById('checkFinalBtn').style.display = 'flex';
+  document.getElementById('revealBtn').style.display = 'block';
+  goTo(0);
+}
+
+// Init
+window.addEventListener('resize', () => {
+  const s3 = document.getElementById('step2');
+  if (s3.classList.contains('active')) initGraph();
+});
+</script>
+</body>
+</html>
