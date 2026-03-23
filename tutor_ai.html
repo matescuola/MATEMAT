@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Didattica & IA — Guida Interattiva per Docenti</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f0e8;
+    --cream: #ede7d9;
+    --accent: #c8401a;
+    --accent2: #1a6bc8;
+    --muted: #8a8070;
+    --card-bg: #fffdf8;
+    --border: #d9d0c0;
+    --success: #2d7a4f;
+    --step-done: #e8f5ee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 4px solid var(--accent);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  header h1 span { color: var(--accent); }
+  .header-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  .progress-bar-wrap {
+    background: var(--cream);
+    padding: 1rem 3rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+  }
+  .steps-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+  }
+  .step-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 2rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .step-pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .step-pill.done { background: var(--step-done); color: var(--success); border-color: var(--success); }
+  .step-pill .num {
+    width: 1.2rem; height: 1.2rem;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+    background: var(--border); color: var(--muted);
+  }
+  .step-pill.active .num { background: var(--accent); color: white; }
+  .step-pill.done .num { background: var(--success); color: white; }
+  .step-sep { color: var(--border); margin: 0 0.3rem; font-size: 0.8rem; }
+
+  main { max-width: 900px; margin: 2.5rem auto; padding: 0 2rem; }
+
+  .step-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+  .step-card.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-header {
+    display: flex; align-items: flex-start; gap: 1.2rem; margin-bottom: 1.5rem;
+  }
+  .step-icon {
+    width: 3rem; height: 3rem; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; flex-shrink: 0; background: var(--cream);
+  }
+  .step-title-block h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 0.3rem;
+  }
+  .step-title-block p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  label { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  input, select, textarea {
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    background: var(--paper); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 0.6rem 0.9rem; color: var(--ink);
+    transition: border-color 0.2s; outline: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  .prompt-box {
+    background: #1a1a1a; border-radius: 10px;
+    padding: 1.2rem 1.5rem; margin: 1.2rem 0; position: relative;
+  }
+  .prompt-box-label {
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.6rem;
+    font-family: 'DM Mono', monospace;
+  }
+  .prompt-box pre {
+    font-family: 'DM Mono', monospace; font-size: 0.78rem;
+    color: #e0d8cc; white-space: pre-wrap; line-height: 1.6;
+  }
+  .copy-btn {
+    position: absolute; top: 0.8rem; right: 0.8rem;
+    background: #333; color: #aaa; border: none; border-radius: 6px;
+    padding: 0.3rem 0.7rem; font-size: 0.7rem; cursor: pointer;
+    font-family: 'DM Mono', monospace; transition: all 0.2s;
+  }
+  .copy-btn:hover { background: var(--accent); color: white; }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.88rem;
+    padding: 0.7rem 1.6rem; border-radius: 8px; border: none;
+    cursor: pointer; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #a33214; transform: translateY(-1px); }
+  .btn-secondary { background: transparent; color: var(--ink); border: 1.5px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--ink); }
+  .btn-row { display: flex; gap: 0.8rem; align-items: center; margin-top: 1.5rem; flex-wrap: wrap; }
+
+  .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .tool-card { border: 1.5px solid var(--border); border-radius: 10px; padding: 1.1rem; background: var(--card-bg); transition: all 0.2s; }
+  .tool-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .tool-card h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.4rem; }
+  .tool-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+  .tool-tag { display: inline-block; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.15rem 0.5rem; border-radius: 3px; margin-top: 0.5rem; }
+  .tag-free { background: #e8f5ee; color: var(--success); }
+  .tag-paid { background: #fff3e0; color: #b35f00; }
+  .tag-scuola { background: #e8eaf6; color: #3949ab; }
+
+  .note-formatore {
+    background: #fff8f0; border: 1.5px dashed #e0b070;
+    border-radius: 10px; padding: 1rem 1.3rem; margin-bottom: 1.2rem;
+    font-size: 0.82rem; color: #7a5500; line-height: 1.6;
+  }
+  .note-formatore strong { font-weight: 700; }
+
+  .summary-card {
+    background: var(--ink); color: var(--paper);
+    border-radius: 12px; padding: 2rem 2.5rem; margin-bottom: 1.5rem;
+  }
+  .summary-card h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 1.5rem; }
+  .summary-card h2 span { color: var(--accent); }
+  .summary-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .summary-section { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 1rem; }
+  .summary-section h4 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.5rem; font-family: 'DM Mono', monospace; }
+  .summary-section p { font-size: 0.82rem; color: #c8c0b0; white-space: pre-wrap; line-height: 1.6; }
+
+  .checklist { list-style: none; margin-top: 0.8rem; }
+  .checklist li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.85rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); line-height: 1.5; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; margin-top: 0.05rem; }
+
+  footer { text-align: center; padding: 2rem; font-size: 0.75rem; color: var(--muted); border-top: 1px solid var(--border); margin-top: 3rem; }
+
+  .recap-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.87rem;
+    line-height: 1.5;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .check-item input[type="checkbox"] {
+    width: 1rem; height: 1rem;
+    margin-top: 0.15rem;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    cursor: pointer;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    padding: 0;
+  }
+  .check-item:has(input:checked) { color: var(--success); }
+
+  @media (max-width: 640px) {
+    header { padding: 1.2rem 1.5rem; }
+    main { padding: 0 1rem; }
+    .step-card { padding: 1.2rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .summary-sections { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Didattica & <span>IA</span></h1>
+    <div style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem;">Guida interattiva per docenti — Scuola Secondaria II grado</div>
+  </div>
+  <div class="header-meta">Corso di formazione<br>Prima lezione · 2 ore</div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="steps-track">
+    <div class="step-pill active" id="pill-0" onclick="goToStep(0)"><span class="num">1</span> Punto di partenza</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-1" onclick="goToStep(1)"><span class="num">2</span> Scrivere un prompt</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-2" onclick="goToStep(2)"><span class="num">3</span> Profilo classe</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-3" onclick="goToStep(3)"><span class="num">4</span> Obiettivi</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-4" onclick="goToStep(4)"><span class="num">5</span> Struttura</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-5" onclick="goToStep(5)"><span class="num">6</span> Materiali</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-6" onclick="goToStep(6)"><span class="num">7</span> Verifica</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-7" onclick="goToStep(7)"><span class="num">8</span> BES/DSA</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-8" onclick="goToStep(8)"><span class="num">9</span> Griglia di valutazione</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-9" onclick="goToStep(9)"><span class="num">10</span> Strumenti IA</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-10" onclick="goToStep(10)"><span class="num">11</span> Il tuo risultato</div>
+    <span class="step-sep">›</span>
+    <div class="step-pill" id="pill-11" onclick="goToStep(11)"><span class="num">12</span> Autovalutazione</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- STEP 0 -->
+  <div class="step-card visible" id="step-0">
+    <div class="step-header">
+      <div class="step-icon">🎯</div>
+      <div class="step-title-block">
+        <h2>Partiamo dalla tua lezione</h2>
+        <p>Inserisci le informazioni di base. Tutto il resto verrà generato dall'IA a partire da qui.</p>
+      </div>
+    </div>
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Pensa subito a una lezione reale che devi preparare nelle prossime settimane. Più il contesto è concreto, più i risultati saranno utili — non usare esempi inventati.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Materia / Disciplina</label>
+        <input type="text" id="materia" placeholder="es. Storia, Matematica, Italiano…">
+      </div>
+      <div class="form-group">
+        <label>Classe</label>
+        <select id="classe">
+          <option value="">Seleziona…</option>
+          <option>1ª Superiore</option><option>2ª Superiore</option><option>3ª Superiore</option><option>4ª Superiore</option><option>5ª Superiore</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group">
+        <label>Argomento della lezione</label>
+        <input type="text" id="argomento" placeholder="es. La Rivoluzione Francese, le equazioni di secondo grado…">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Durata della lezione</label>
+        <select id="durata">
+          <option>50 minuti</option><option>60 minuti</option><option>90 minuti</option><option>2 ore</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tipo di scuola</label>
+        <select id="tipo-scuola">
+          <option>Liceo scientifico</option><option>Liceo classico</option><option>Liceo linguistico</option><option>Liceo artistico</option><option>Istituto tecnico</option><option>Istituto professionale</option>
+        </select>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="nextStep(0)">Iniziamo →</button>
+    </div>
+  </div>
+
+
+  <!-- STEP 1: SCRIVERE UN PROMPT -->
+  <div class="step-card" id="step-1">
+    <div class="step-header">
+      <div class="step-icon">✍️</div>
+      <div class="step-title-block">
+        <h2>Come si scrive un buon prompt</h2>
+        <p>La qualità della risposta dell'IA dipende quasi interamente da come poni la domanda. Vediamo la differenza in concreto.</p>
+      </div>
+    </div>
+
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Leggi entrambe le risposte qui sotto e chiediti: quale delle due potresti usare davvero in classe domani? La differenza ti dirà tutto su quanto conta la qualità del prompt.</div>
+
+    <div style="background:var(--cream);border-radius:10px;padding:1.3rem 1.5rem;margin-bottom:1.5rem;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:1rem;">Gli ingredienti di un prompt efficace</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+        <div style="background:var(--card-bg);border-radius:8px;padding:0.9rem 1rem;border:1.5px solid var(--border);">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:0.4rem;">① Ruolo</div>
+          <p style="font-size:0.83rem;line-height:1.5;">Dì all'IA chi deve essere. <em>"Sei un esperto di didattica…"</em> cambia completamente il registro e la profondità della risposta.</p>
+        </div>
+        <div style="background:var(--card-bg);border-radius:8px;padding:0.9rem 1rem;border:1.5px solid var(--border);">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:0.4rem;">② Contesto</div>
+          <p style="font-size:0.83rem;line-height:1.5;">Materia, classe, tipo di scuola, livello degli studenti, tempo a disposizione. Più dettagli dai, più la risposta è utile.</p>
+        </div>
+        <div style="background:var(--card-bg);border-radius:8px;padding:0.9rem 1rem;border:1.5px solid var(--border);">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:0.4rem;">③ Compito</div>
+          <p style="font-size:0.83rem;line-height:1.5;">Cosa vuoi esattamente? Non "spiegami X" ma "crea una scheda di lavoro con 5 domande graduate per difficoltà su X".</p>
+        </div>
+        <div style="background:var(--card-bg);border-radius:8px;padding:0.9rem 1rem;border:1.5px solid var(--border);">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:0.4rem;">④ Formato</div>
+          <p style="font-size:0.83rem;line-height:1.5;">Come vuoi la risposta? Lista, tabella, testo continuo, lunghezza massima. L'IA si adatta se glielo chiedi.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:1rem;">Stesso obiettivo, prompt diversi — risultati diversi</h3>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;">Situazione: un docente vuole introdurre un concetto nuovo alla classe.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.5rem;">
+
+      <!-- PROMPT VAGO -->
+      <div style="border:1.5px solid #e0b0a0;border-radius:10px;overflow:hidden;">
+        <div style="background:#fff3f0;padding:0.8rem 1.1rem;display:flex;align-items:center;gap:0.5rem;">
+          <span style="font-size:1rem;">❌</span>
+          <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#c04020;font-family:'DM Mono',monospace;">Prompt vago</span>
+        </div>
+        <div style="padding:1rem 1.1rem;">
+          <div style="background:#1a1a1a;border-radius:8px;padding:0.9rem 1rem;margin-bottom:1rem;">
+            <pre style="font-family:'DM Mono',monospace;font-size:0.75rem;color:#e0d8cc;white-space:pre-wrap;line-height:1.6;">Spiegami come introdurre un argomento nuovo.</pre>
+          </div>
+          <div style="background:#fff8f6;border-radius:8px;padding:0.9rem 1rem;border:1px solid #f0d0c8;">
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#c04020;font-family:'DM Mono',monospace;margin-bottom:0.5rem;">Risposta dell'IA</div>
+            <p style="font-size:0.8rem;line-height:1.6;color:#444;">Per introdurre un argomento nuovo puoi iniziare con una domanda stimolo che attivi la curiosità degli studenti. Presenta il tema in modo graduale, collegandolo a concetti già noti. Usa esempi concreti e verifica la comprensione con domande. Puoi anche usare immagini o video per rendere l'introduzione più coinvolgente.</p>
+            <p style="font-size:0.75rem;color:var(--muted);margin-top:0.6rem;font-style:italic;">Generica, applicabile a qualsiasi situazione — e quindi utile a nessuna in particolare.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROMPT ACCURATO -->
+      <div style="border:1.5px solid #a0d0b0;border-radius:10px;overflow:hidden;">
+        <div style="background:#f0fff4;padding:0.8rem 1.1rem;display:flex;align-items:center;gap:0.5rem;">
+          <span style="font-size:1rem;">✅</span>
+          <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#2d7a4f;font-family:'DM Mono',monospace;">Prompt accurato</span>
+        </div>
+        <div style="padding:1rem 1.1rem;">
+          <div style="background:#1a1a1a;border-radius:8px;padding:0.9rem 1rem;margin-bottom:1rem;">
+            <pre style="font-family:'DM Mono',monospace;font-size:0.75rem;color:#e0d8cc;white-space:pre-wrap;line-height:1.6;">Sei un esperto di didattica per la scuola secondaria di secondo grado.
+
+Devo introdurre il concetto di "equilibrio chimico" a una 4ª di liceo scientifico (22 studenti, livello medio-alto). È un argomento nuovo: conoscono già le reazioni chimiche di base ma non hanno mai affrontato l'equilibrio dinamico.
+
+Suggerisci una sequenza di apertura di 10 minuti che:
+- parta da un fenomeno della vita quotidiana
+- crei una domanda aperta che generi curiosità
+- eviti la lezione frontale pura
+
+Formato: 3 fasi numerate, massimo 5 righe ciascuna.</pre>
+          </div>
+          <div style="background:#f0fff4;border-radius:8px;padding:0.9rem 1rem;border:1px solid #c0e8d0;">
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#2d7a4f;font-family:'DM Mono',monospace;margin-bottom:0.5rem;">Risposta dell'IA</div>
+            <p style="font-size:0.8rem;line-height:1.6;color:#444;"><strong>Fase 1 — Il gancio (2 min):</strong> Mostra una bottiglia di acqua frizzante chiusa e una aperta. Chiedi: "Cosa sta succedendo dentro la bottiglia chiusa? La CO₂ sta davvero ferma?" Lascia che gli studenti rispondano liberamente senza correggere nulla.</p>
+            <p style="font-size:0.8rem;line-height:1.6;color:#444;margin-top:0.5rem;"><strong>Fase 2 — Il conflitto cognitivo (5 min):</strong> Scrivi alla lavagna due affermazioni contrastanti: "La reazione si è fermata" vs "La reazione continua in entrambe le direzioni". Fai votare a mano alzata. Chiedi a un rappresentante per parte di difendere la propria posizione.</p>
+            <p style="font-size:0.8rem;line-height:1.6;color:#444;margin-top:0.5rem;"><strong>Fase 3 — La domanda guida (3 min):</strong> Senza dare la risposta, scrivi la domanda che guiderà tutta l'unità: "Come può un sistema sembrare fermo ma essere in continuo movimento?" Annuncia che risponderanno loro stessi entro la fine del modulo.</p>
+            <p style="font-size:0.75rem;color:var(--muted);margin-top:0.6rem;font-style:italic;">Specifica, immediatamente utilizzabile, calibrata su quella classe.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background:var(--cream);border-radius:10px;padding:1.1rem 1.3rem;">
+      <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:0.6rem;">La regola pratica da ricordare</h4>
+      <p style="font-size:0.85rem;line-height:1.6;">L'IA non conosce la tua classe — <strong>sei tu a doverla descrivere</strong>. Ogni dettaglio che aggiungi (classe, livello, tempo, formato) è un filtro che avvicina la risposta alla tua realtà. Un prompt vago dà una risposta da manuale. Un prompt contestualizzato dà una risposta da collega esperto.</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(1)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(1)">Avanti — profilo classe →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card" id="step-2">
+    <div class="step-header">
+      <div class="step-icon">👥</div>
+      <div class="step-title-block">
+        <h2>Profilo della classe</h2>
+        <p>L'IA ti aiuta a definire il contesto della tua classe.</p>
+      </div>
+    </div>
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Prova a compilare prima solo i campi obbligatori, poi aggiungi le caratteristiche facoltative — vedrai come cambia la qualità del prompt generato. E leggi il box sulla privacy prima di procedere.</div>
+
+    <div style="background:#fff0f0;border:2px solid #e04040;border-radius:10px;padding:1.1rem 1.3rem;margin-bottom:1.2rem;">
+      <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.7rem;">
+        <span style="font-size:1.1rem;">🔒</span>
+        <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#c03030;font-family:'DM Mono',monospace;">Attenzione alla privacy — dato fondamentale per i docenti</span>
+      </div>
+      <p style="font-size:0.85rem;line-height:1.6;color:#5a1a1a;margin-bottom:0.8rem;">Quando descrivi la tua classe a uno strumento IA, stai inviando dati a server esterni. Questo comporta precisi obblighi normativi (GDPR, normativa scolastica) e responsabilità professionali.</p>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.83rem;color:#5a1a1a;">
+          <span style="color:#e04040;font-weight:700;flex-shrink:0;">✗</span>
+          <span><strong>Non scrivere mai:</strong> nomi o cognomi di studenti, codici fiscali, diagnosi cliniche specifiche (es. "Mario Rossi ha disturbo X"), valutazioni nominative, informazioni su situazioni familiari o sociali identificabili.</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.83rem;color:#5a1a1a;">
+          <span style="color:#2d7a4f;font-weight:700;flex-shrink:0;">✓</span>
+          <span><strong>Puoi scrivere:</strong> dati aggregati e anonimi ("3 studenti con DSA", "classe con difficoltà nella scrittura"), caratteristiche generali del gruppo, il tipo di bisogno senza identificare la persona.</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.83rem;color:#5a1a1a;">
+          <span style="color:#1a6bc8;font-weight:700;flex-shrink:0;">ℹ</span>
+          <span><strong>Regola pratica:</strong> prima di inviare un prompt, chiediti — "se questo testo fosse letto da un estraneo, potrebbe identificare uno studente specifico?" Se la risposta è sì, riformula.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>N° studenti</label>
+        <input type="number" id="n-studenti" placeholder="es. 22" min="1" max="35">
+      </div>
+      <div class="form-group">
+        <label>Livello generale</label>
+        <select id="livello">
+          <option>Eterogeneo (misto)</option><option>Prevalentemente alto</option><option>Prevalentemente medio</option><option>Con molte difficoltà</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group">
+        <label>Caratteristiche particolari (facoltativo)</label>
+        <textarea id="caratteristiche" placeholder="es. Classe vivace, buona partecipazione ma difficoltà nell'esposizione scritta…" style="min-height:90px;"></textarea>
+        <div style="font-size:0.78rem;color:#8a8070;margin-top:0.5rem;line-height:1.6;padding:0.6rem 0.8rem;background:#ede7d9;border-radius:7px;border:1px solid #d9d0c0;">💡 Prova a descrivere: <strong>1.</strong> i punti di forza su cui fare leva &nbsp;&middot;&nbsp; <strong>2.</strong> le possibili difficoltà da anticipare &nbsp;&middot;&nbsp; <strong>3.</strong> l'approccio che funziona meglio con questa classe.</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Conoscenze pregresse</label>
+        <select id="prerequisiti">
+          <option>Nessuna — è un argomento nuovo</option><option>Basi generali già trattate</option><option>Argomento già introdotto, serve approfondimento</option><option>Ripasso e consolidamento</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Presenza BES/DSA</label>
+        <select id="bes">
+          <option>Sì, presenti in classe</option><option>No</option><option>Non so / Non ancora certificati</option>
+        </select>
+      </div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-label">✦ Prompt da usare su Claude.ai</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt-profilo')">Copia</button>
+      <pre id="prompt-profilo">Compila i campi sopra per generare il prompt.</pre>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(2)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(2)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card" id="step-3">
+    <div class="step-header">
+      <div class="step-icon">🎓</div>
+      <div class="step-title-block">
+        <h2>Obiettivi di apprendimento</h2>
+        <p>Cosa sapranno fare gli studenti al termine della lezione.</p>
+      </div>
+    </div>
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Dopo aver copiato il prompt, leggi gli obiettivi che l'IA ti restituisce e chiediti: sono misurabili? Rispecchiano davvero quello che vuoi valutare? Modificali liberamente — il prompt è un punto di partenza, non un prodotto finito.</div>
+
+    <div style="background:var(--cream);border-radius:10px;padding:0.9rem 1.2rem;margin-bottom:1.2rem;border:1.5px solid var(--border);">
+      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.6rem;font-family:'DM Mono',monospace;">Dati dalla tua lezione</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;" id="recap-obiettivi">
+        <span class="recap-tag" id="recap-materia-classe">—</span>
+        <span class="recap-tag" id="recap-argomento-obj">—</span>
+        <span class="recap-tag" id="recap-durata-obj">—</span>
+        <span class="recap-tag" id="recap-focus">—</span>
+      </div>
+    </div>
+
+    <!-- BLOOM ACCORDION -->
+    <details style="background:var(--cream);border-radius:10px;margin-bottom:1.2rem;border:1.5px solid var(--border);overflow:hidden;">
+      <summary style="padding:1rem 1.3rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;font-weight:600;font-size:0.88rem;list-style:none;user-select:none;">
+        <span style="font-size:1.1rem;">💡</span>
+        <span>Approfondimento: cos'è la Tassonomia di Bloom?</span>
+        <span style="margin-left:auto;font-size:0.75rem;color:var(--muted);">clicca per espandere</span>
+      </summary>
+      <div style="padding:0 1.3rem 1.2rem;">
+        <p style="font-size:0.83rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">La tassonomia di Bloom (1956, rivista nel 2001) classifica gli obiettivi cognitivi in 6 livelli crescenti di complessità. Usare i verbi giusti rende gli obiettivi misurabili e coerenti con la verifica.</p>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <div style="display:grid;grid-template-columns:2rem 1fr 2fr;gap:0.6rem;align-items:start;background:var(--card-bg);border-radius:8px;padding:0.7rem 0.9rem;border-left:4px solid #e8d0f0;">
+            <span style="font-size:1rem;">🟣</span>
+            <div><strong style="font-size:0.82rem;">Ricordare</strong><br><span style="font-size:0.75rem;color:var(--muted);">Livello 1</span></div>
+            <p style="font-size:0.8rem;color:#444;line-height:1.5;">Elencare, definire, riconoscere, identificare, nominare.<br><em style="color:var(--muted);">Es: "Lo studente saprà elencare le cause della Rivoluzione Francese."</em></p>
+          </div>
+          <div style="display:grid;grid-template-columns:2rem 1fr 2fr;gap:0.6rem;align-items:start;background:var(--card-bg);border-radius:8px;padding:0.7rem 0.9rem;border-left:4px solid #b0d8f0;">
+            <span style="font-size:1rem;">🔵</span>
+            <div><strong style="font-size:0.82rem;">Comprendere</strong><br><span style="font-size:0.75rem;color:var(--muted);">Livello 2</span></div>
+            <p style="font-size:0.8rem;color:#444;line-height:1.5;">Spiegare, parafrasare, riassumere, classificare, confrontare.<br><em style="color:var(--muted);">Es: "Lo studente saprà spiegare il concetto di equilibrio chimico con parole proprie."</em></p>
+          </div>
+          <div style="display:grid;grid-template-columns:2rem 1fr 2fr;gap:0.6rem;align-items:start;background:var(--card-bg);border-radius:8px;padding:0.7rem 0.9rem;border-left:4px solid #a0e8c0;">
+            <span style="font-size:1rem;">🟢</span>
+            <div><strong style="font-size:0.82rem;">Applicare</strong><br><span style="font-size:0.75rem;color:var(--muted);">Livello 3</span></div>
+            <p style="font-size:0.8rem;color:#444;line-height:1.5;">Usare, risolvere, calcolare, dimostrare, eseguire.<br><em style="color:var(--muted);">Es: "Lo studente saprà risolvere equazioni di secondo grado con il metodo della formula."</em></p>
+          </div>
+          <div style="display:grid;grid-template-columns:2rem 1fr 2fr;gap:0.6rem;align-items:start;background:var(--card-bg);border-radius:8px;padding:0.7rem 0.9rem;border-left:4px solid #f0e0a0;">
+            <span style="font-size:1rem;">🟡</span>
+            <div><strong style="font-size:0.82rem;">Analizzare</strong><br><span style="font-size:0.75rem;color:var(--muted);">Livello 4</span></div>
+            <p style="font-size:0.8rem;color:#444;line-height:1.5;">Scomporre, distinguere, confrontare, esaminare, dedurre.<br><em style="color:var(--muted);">Es: "Lo studente saprà distinguere le diverse figure retoriche in un testo poetico."</em></p>
+          </div>
+          <div style="display:grid;grid-template-columns:2rem 1fr 2fr;gap:0.6rem;align-items:start;background:var(--card-bg);border-radius:8px;padding:0.7rem 0.9rem;border-left:4px solid #f0c090;">
+            <span style="font-size:1rem;">🟠</span>
+            <div><strong style="font-size:0.82rem;">Valutare</strong><br><span style="font-size:0.75rem;color:var(--muted);">Livello 5</span></div>
+            <p style="font-size:0.8rem;color:#444;line-height:1.5;">Giudicare, argomentare, difendere, criticare, valutare.<br><em style="color:var(--muted);">Es: "Lo studente saprà argomentare la propria posizione su un tema storico con fonti."</em></p>
+          </div>
+          <div style="display:grid;grid-template-columns:2rem 1fr 2fr;gap:0.6rem;align-items:start;background:var(--card-bg);border-radius:8px;padding:0.7rem 0.9rem;border-left:4px solid #f09090;">
+            <span style="font-size:1rem;">🔴</span>
+            <div><strong style="font-size:0.82rem;">Creare</strong><br><span style="font-size:0.75rem;color:var(--muted);">Livello 6</span></div>
+            <p style="font-size:0.8rem;color:#444;line-height:1.5;">Progettare, costruire, produrre, inventare, formulare.<br><em style="color:var(--muted);">Es: "Lo studente saprà progettare un esperimento per verificare una legge fisica."</em></p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- ESEMPI GUIDA -->
+    <div style="background:var(--cream);border-radius:10px;padding:1.1rem 1.3rem;margin-bottom:1.2rem;">
+      <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.8rem;font-family:'DM Mono',monospace;">Esempi di obiettivi ben formulati</div>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;">
+        <div style="background:var(--card-bg);border-radius:7px;padding:0.7rem 0.9rem;font-size:0.82rem;line-height:1.5;border-left:3px solid var(--accent2);">
+          <strong>Storia:</strong> Lo studente saprà <em>spiegare</em> le principali cause della Prima Guerra Mondiale distinguendo fattori immediati e strutturali, utilizzando almeno 3 concetti chiave trattati in classe.
+        </div>
+        <div style="background:var(--card-bg);border-radius:7px;padding:0.7rem 0.9rem;font-size:0.82rem;line-height:1.5;border-left:3px solid var(--accent2);">
+          <strong>Matematica:</strong> Lo studente saprà <em>risolvere</em> equazioni di secondo grado incomplete applicando correttamente almeno 2 dei 3 metodi illustrati, con un tasso di successo ≥ 70% negli esercizi assegnati.
+        </div>
+        <div style="background:var(--card-bg);border-radius:7px;padding:0.7rem 0.9rem;font-size:0.82rem;line-height:1.5;border-left:3px solid var(--accent2);">
+          <strong>Italiano:</strong> Lo studente saprà <em>produrre</em> un testo argomentativo di almeno 20 righe su un tema dato, con tesi, antitesi e conclusione riconoscibili, rispettando le convenzioni grafiche e sintattiche.
+        </div>
+        <div style="background:var(--card-bg);border-radius:7px;padding:0.7rem 0.9rem;font-size:0.82rem;line-height:1.5;border-left:3px solid var(--accent2);">
+          <strong>Scienze:</strong> Lo studente saprà <em>descrivere</em> il processo della fotosintesi clorofilliana indicando reagenti, prodotti e condizioni necessarie, con l'ausilio di uno schema o disegno.
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Focus principale</label>
+        <select id="focus-obiettivi">
+          <option>Conoscenza e comprensione dei contenuti</option><option>Applicazione e problem solving</option><option>Analisi critica e valutazione</option><option>Competenze comunicative</option><option>Competenze disciplinari specifiche</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>N° obiettivi desiderati</label>
+        <select id="n-obiettivi">
+          <option>3 obiettivi</option><option>4 obiettivi</option><option>5 obiettivi</option>
+        </select>
+      </div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-label">✦ Prompt da usare su Claude.ai</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt-obiettivi')">Copia</button>
+      <pre id="prompt-obiettivi">Compila i campi sopra per generare il prompt.</pre>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(3)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(3)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card" id="step-4">
+    <div class="step-header">
+      <div class="step-icon">📐</div>
+      <div class="step-title-block">
+        <h2>Struttura della lezione</h2>
+        <p>Un piano d'azione dettagliato con fasi, tempi e metodologie.</p>
+      </div>
+    </div>
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> La struttura che otterrai è una proposta, non una prescrizione. Sentiti libero di riorganizzare i tempi, cambiare l'ordine delle fasi o sostituire un'attività con qualcosa che conosci meglio.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Metodologia preferita</label>
+        <select id="metodologia">
+          <option>Lezione frontale + discussione</option><option>Flipped classroom</option><option>Cooperative learning</option><option>Problem-based learning</option><option>Didattica per concetti</option><option>Mista (varia durante la lezione)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Strumenti disponibili</label>
+        <select id="strumenti-classe">
+          <option>LIM / proiettore + lavagna</option><option>Tablet / PC per ogni studente</option><option>Solo PC docente + proiettore</option><option>Aula tradizionale</option>
+        </select>
+      </div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-label">✦ Prompt da usare su Claude.ai</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt-struttura')">Copia</button>
+      <pre id="prompt-struttura">Compila i campi sopra per generare il prompt.</pre>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(4)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(4)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card" id="step-5">
+    <div class="step-header">
+      <div class="step-icon">📁</div>
+      <div class="step-title-block">
+        <h2>Materiali e attività</h2>
+        <p>Schede, esercizi, domande stimolo — tutto generato su misura.</p>
+      </div>
+    </div>
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Scegli il tipo di materiale che ti servirebbe davvero — non quello che sembra più semplice. L'IA è particolarmente utile per produrre in pochi secondi materiali che di solito richiedono molto tempo.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo di materiale</label>
+        <select id="tipo-materiale">
+          <option>Scheda di lavoro per studenti</option><option>Domande stimolo per la discussione</option><option>Testo introduttivo semplificato</option><option>Mappa concettuale (da completare)</option><option>Esercizi graduati (facile → difficile)</option><option>Caso studio / situazione problema</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Livello di difficoltà</label>
+        <select id="difficolta">
+          <option>Accessibile a tutti</option><option>Medio</option><option>Sfidante</option><option>Differenziato (più livelli)</option>
+        </select>
+      </div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-label">✦ Prompt da usare su Claude.ai</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt-materiali')">Copia</button>
+      <pre id="prompt-materiali">Compila i campi sopra per generare il prompt.</pre>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(5)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(5)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-card" id="step-6">
+    <div class="step-header">
+      <div class="step-icon">📊</div>
+      <div class="step-title-block">
+        <h2>Verifica e valutazione</h2>
+        <p>Come capire se gli studenti hanno raggiunto gli obiettivi.</p>
+      </div>
+    </div>
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Distingui bene tra valutazione formativa (in itinere, per aggiustare il tiro) e sommativa (per certificare). L'IA può aiutarti a costruire entrambe — incluse rubriche con criteri dettagliati che di solito richiedono ore.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo di verifica</label>
+        <select id="tipo-verifica">
+          <option>Verifica formativa in itinere (exit ticket)</option>
+          <option>Test scritto a risposta chiusa (V/F, scelta multipla)</option>
+          <option>Test scritto a risposta aperta</option>
+          <option>Interrogazione orale individuale</option>
+          <option>Interrogazione orale breve (2–3 min a studente)</option>
+          <option>Compito autentico / prodotto finale</option>
+          <option>Presentazione orale o multimediale</option>
+          <option>Lavoro di gruppo con rubrica</option>
+          <option>Rubrica di autovalutazione studente</option>
+          <option>Portfolio delle prove</option>
+          <option>Osservazione sistematica in classe</option>
+          <option>Debate / discussione strutturata valutata</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>N° domande / item</label>
+        <select id="n-domande">
+          <option>3–5 domande</option><option>5–8 domande</option><option>10 domande</option><option>Rubrica completa</option>
+        </select>
+      </div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-label">✦ Prompt da usare su Claude.ai</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt-verifica')">Copia</button>
+      <pre id="prompt-verifica">Compila i campi sopra per generare il prompt.</pre>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(6)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(6)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step-card" id="step-7">
+    <div class="step-header">
+      <div class="step-icon">♿</div>
+      <div class="step-title-block">
+        <h2>Inclusione: BES e DSA</h2>
+        <p>Adattamenti per rendere la lezione accessibile a tutti gli studenti.</p>
+      </div>
+    </div>
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Questo è uno degli utilizzi più preziosi dell'IA per i docenti. Prova a generare adattamenti per il tipo di bisogno più presente nella tua classe — avrai una base concreta su cui lavorare invece di partire da zero.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo di bisogno prevalente</label>
+        <select id="tipo-bes">
+          <option>Dislessia / Disturbi della lettura</option><option>Discalculia</option><option>ADHD / Difficoltà attentive</option><option>Difficoltà nell'italiano (L2)</option><option>Lieve disabilità cognitiva</option><option>BES generici non certificati</option><option>Tutti i precedenti (classe eterogenea)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tipo di adattamento</label>
+        <select id="tipo-adattamento">
+          <option>Strategie e strumenti compensativi</option><option>Semplificazione del materiale</option><option>Tempi e modalità alternative</option><option>Piano completo di adattamento</option>
+        </select>
+      </div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-label">✦ Prompt da usare su Claude.ai</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt-bes')">Copia</button>
+      <pre id="prompt-bes">Compila i campi sopra per generare il prompt.</pre>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(7)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(7)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8: GRIGLIA DI VALUTAZIONE -->
+  <div class="step-card" id="step-8">
+    <div class="step-header">
+      <div class="step-icon">📊</div>
+      <div class="step-title-block">
+        <h2>Griglia di valutazione</h2>
+        <p>Scegli il tipo di griglia più adatta alla tua verifica e genera il prompt da usare su Claude.ai.</p>
+      </div>
+    </div>
+
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> La griglia di valutazione non è solo uno strumento di giudizio — è anche un patto di chiarezza con gli studenti. Condividerla prima della verifica migliora la qualità dei risultati.</div>
+
+    <div style="display:flex;flex-direction:column;gap:0.8rem;margin-bottom:1.2rem;">
+      <div style="background:var(--cream);border-radius:10px;padding:1rem 1.2rem;border:1.5px solid var(--border);">
+        <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.8rem;font-family:'DM Mono',monospace;">Tipi di griglia disponibili</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <label style="display:flex;align-items:flex-start;gap:0.7rem;cursor:pointer;padding:0.6rem 0.8rem;border-radius:8px;border:1.5px solid var(--border);background:var(--card-bg);transition:border-color 0.2s;">
+            <input type="radio" name="tipo-griglia" value="rubrica" id="griglia-rubrica" style="margin-top:0.15rem;accent-color:var(--accent);">
+            <div>
+              <strong style="font-size:0.86rem;">Rubrica analitica</strong>
+              <p style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem;line-height:1.4;">Criteri · livelli di padronanza (es. Avanzato / Intermedio / Base / In via di acquisizione) · descrittori per ciascun livello. Ideale per compiti complessi, elaborati, presentazioni.</p>
+            </div>
+          </label>
+          <label style="display:flex;align-items:flex-start;gap:0.7rem;cursor:pointer;padding:0.6rem 0.8rem;border-radius:8px;border:1.5px solid var(--border);background:var(--card-bg);transition:border-color 0.2s;">
+            <input type="radio" name="tipo-griglia" value="punteggio" id="griglia-punteggio" style="margin-top:0.15rem;accent-color:var(--accent);">
+            <div>
+              <strong style="font-size:0.86rem;">Griglia a punteggio</strong>
+              <p style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem;line-height:1.4;">Criteri · peso percentuale · punteggio massimo per criterio · conversione in voto decimale. Ideale per test scritti e interrogazioni strutturate.</p>
+            </div>
+          </label>
+          <label style="display:flex;align-items:flex-start;gap:0.7rem;cursor:pointer;padding:0.6rem 0.8rem;border-radius:8px;border:1.5px solid var(--border);background:var(--card-bg);transition:border-color 0.2s;">
+            <input type="radio" name="tipo-griglia" value="osservazione" id="griglia-osservazione" style="margin-top:0.15rem;accent-color:var(--accent);">
+            <div>
+              <strong style="font-size:0.86rem;">Griglia per osservazione in classe</strong>
+              <p style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem;line-height:1.4;">Indicatori di partecipazione, comportamento, metodo di lavoro e competenze trasversali. Ideale per valutazione formativa quotidiana.</p>
+            </div>
+          </label>
+          <label style="display:flex;align-items:flex-start;gap:0.7rem;cursor:pointer;padding:0.6rem 0.8rem;border-radius:8px;border:1.5px solid var(--border);background:var(--card-bg);transition:border-color 0.2s;">
+            <input type="radio" name="tipo-griglia" value="mista" id="griglia-mista" style="margin-top:0.15rem;accent-color:var(--accent);">
+            <div>
+              <strong style="font-size:0.86rem;">Griglia mista con autovalutazione</strong>
+              <p style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem;line-height:1.4;">Criteri valutativi del docente + colonna di autovalutazione per lo studente. Favorisce la metacognizione e la consapevolezza del proprio apprendimento.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Oggetto della valutazione</label>
+        <select id="oggetto-valutazione">
+          <option>Interrogazione orale</option>
+          <option>Elaborato scritto</option>
+          <option>Presentazione / esposizione orale</option>
+          <option>Lavoro di gruppo</option>
+          <option>Test / verifica scritta</option>
+          <option>Progetto o prodotto finale</option>
+          <option>Partecipazione e metodo di studio</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>N° criteri di valutazione</label>
+        <select id="n-criteri">
+          <option>3 criteri</option>
+          <option>4 criteri</option>
+          <option>5 criteri</option>
+          <option>6 criteri</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">✦ Prompt da usare su Claude.ai</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt-griglia')">Copia</button>
+      <pre id="prompt-griglia">Seleziona il tipo di griglia per generare il prompt.</pre>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(8)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(8)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step-card" id="step-9">
+    <div class="step-header">
+      <div class="step-icon">🛠️</div>
+      <div class="step-title-block">
+        <h2>Strumenti IA per la didattica</h2>
+        <p>Panoramica degli strumenti più utili — gratuiti e a pagamento.</p>
+      </div>
+    </div>
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Non cercare di usarli tutti. Scegli uno strumento che si adatti al tuo modo di lavorare e sperimenta con quello per almeno due settimane prima di valutarne un altro.</div>
+    <div class="tools-grid">
+      <div class="tool-card"><h4>🤖 Claude (Anthropic)</h4><p>Ottimo per testi, schede, spiegazioni, domande. Risposta articolata e affidabile.</p><span class="tool-tag tag-free">Gratuito + Pro</span></div>
+      <div class="tool-card"><h4>💬 ChatGPT (OpenAI)</h4><p>Il più noto. Utile per brainstorming, testi, pianificazione. GPT-4o gratuito.</p><span class="tool-tag tag-free">Gratuito + Plus</span></div>
+      <div class="tool-card"><h4>🔍 Perplexity AI</h4><p>Ricerca sul web con citazione delle fonti. Ottimo per verificare informazioni.</p><span class="tool-tag tag-free">Gratuito</span></div>
+      <div class="tool-card"><h4>🖼️ Canva IA</h4><p>Crea presentazioni, infografiche, schede visive. Già conosciuto da molti docenti.</p><span class="tool-tag tag-free">Gratuito + Pro</span></div>
+      <div class="tool-card"><h4>📚 Eduaide.ai</h4><p>Pensato per i docenti. Genera lezioni, quiz, rubriche, differenziazione.</p><span class="tool-tag tag-paid">Freemium</span></div>
+      <div class="tool-card"><h4>🎬 Synthesia</h4><p>Crea video didattici con avatar virtuale. Utile per flipped classroom.</p><span class="tool-tag tag-paid">A pagamento</span></div>
+      <div class="tool-card"><h4>❓ Quizlet IA</h4><p>Genera flashcard e quiz automaticamente da un testo o argomento.</p><span class="tool-tag tag-free">Gratuito + Plus</span></div>
+      <div class="tool-card"><h4>🇮🇹 Didattica.AI</h4><p>Piattaforma italiana per la scuola. Strumenti per UDA, programmazioni, BES.</p><span class="tool-tag tag-scuola">Scuola IT</span></div>
+      <div class="tool-card"><h4>📝 Gemini (Google)</h4><p>Integrato con Google Docs e Drive. Ottimo con GSuite for Education.</p><span class="tool-tag tag-free">Gratuito</span></div>
+    </div>
+    <div style="margin-top:1.5rem;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:0.8rem;">Consigli pratici per iniziare</h3>
+      <ul class="checklist">
+        <li>Inizia con uno strumento solo — meglio padroneggiarne uno che usarne dieci male</li>
+        <li>Usa sempre l'IA come punto di partenza, non come prodotto finito</li>
+        <li>Il contesto è tutto: più descrivi la situazione, migliore sarà il risultato</li>
+        <li>Verifica sempre i contenuti generati — l'IA può sbagliare o inventare fonti</li>
+        <li>Conserva i prompt che funzionano in un documento personale</li>
+        <li>Condividi prompt e risultati coi colleghi — moltiplica il valore</li>
+      </ul>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(9)">← Indietro</button>
+      <button class="btn btn-primary" onclick="nextStep(9)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 10: IL TUO RISULTATO -->
+  <div class="step-card" id="step-10">
+    <div class="step-header">
+      <div class="step-icon">📋</div>
+      <div class="step-title-block">
+        <h2>Il tuo risultato</h2>
+        <p>Incolla qui la risposta che hai ottenuto dall'IA. Puoi salvarla o stamparla come PDF.</p>
+      </div>
+    </div>
+
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Incolla il risultato che ti ha sorpreso di più, o quello che potresti usare davvero nella prossima lezione. Puoi salvarlo come PDF per averlo sempre a portata di mano.</div>
+
+    <div class="form-row full" style="margin-bottom:1rem;">
+      <div class="form-group">
+        <label>Titolo (facoltativo)</label>
+        <input type="text" id="risultato-titolo" placeholder="es. Struttura lezione — Storia 3ª A">
+      </div>
+    </div>
+
+    <div class="form-row full">
+      <div class="form-group">
+        <label>Incolla qui la risposta dell'IA</label>
+        <textarea id="risultato-testo" placeholder="Copia il testo dalla finestra di Claude.ai e incollalo qui…" style="min-height:280px;font-family:'DM Mono',monospace;font-size:0.82rem;line-height:1.6;"></textarea>
+      </div>
+    </div>
+
+    <div id="risultato-preview" style="display:none;background:var(--card-bg);border:1.5px solid var(--border);border-left:4px solid var(--accent2);border-radius:0 10px 10px 0;padding:1.5rem 1.8rem;margin-top:1rem;">
+      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent2);margin-bottom:0.8rem;font-family:'DM Mono',monospace;">✦ Anteprima risultato</div>
+      <h3 id="preview-titolo" style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:0.8rem;"></h3>
+      <div id="preview-testo" style="font-size:0.87rem;line-height:1.8;white-space:pre-wrap;color:var(--ink);"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(10)">← Indietro</button>
+      <button class="btn btn-ai" onclick="mostraAnteprima()" style="background:var(--ink);color:var(--paper);">👁 Anteprima</button>
+      <button class="btn btn-primary" onclick="stampaRisultato()">🖨️ Salva come PDF</button>
+      <button class="btn btn-primary" onclick="nextStep(10)">Autovalutazione →</button>
+    </div>
+  </div>
+
+  <!-- STEP 10 -->
+  <div class="step-card" id="step-11">
+    <div class="step-header">
+      <div class="step-icon">🪞</div>
+      <div class="step-title-block">
+        <h2>Autovalutazione</h2>
+        <p>Rifletti su quello che hai sperimentato oggi. Non ci sono risposte giuste o sbagliate.</p>
+      </div>
+    </div>
+
+    <div class="note-formatore"><strong>💡 Suggerimento:</strong> Prenditi qualche minuto di silenzio per compilare con cura. Le risposte che dai qui sono solo tue — non ci sono risposte giuste o sbagliate. Alla fine riceverai un feedback personalizzato basato su quello che hai spuntato.</div>
+
+    <div style="display:flex;flex-direction:column;gap:1.4rem;margin-bottom:1.5rem;">
+
+      <div style="background:var(--cream);border-radius:10px;padding:1.3rem 1.5rem;">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:1rem;font-family:'DM Mono',monospace;">① Competenza percepita</div>
+        <div style="display:flex;flex-direction:column;gap:0.7rem;">
+          <label class="check-item"><input type="checkbox" id="cb-prompt"> So cos'è un prompt e come strutturarlo efficacemente</label>
+          <label class="check-item"><input type="checkbox" id="cb-contesto"> Riesco a descrivere il contesto della mia classe all'IA in modo utile</label>
+          <label class="check-item"><input type="checkbox" id="cb-bloom"> So come ottenere obiettivi di apprendimento con la tassonomia di Bloom</label>
+          <label class="check-item"><input type="checkbox" id="cb-materiali"> Riesco a usare l'IA per generare materiali differenziati per livello</label>
+          <label class="check-item"><input type="checkbox" id="cb-bes"> So come chiedere adattamenti per studenti con BES o DSA</label>
+          <label class="check-item"><input type="checkbox" id="cb-strumenti"> Conosco almeno uno strumento IA che potrei usare da subito</label>
+        </div>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:1.3rem 1.5rem;">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:1rem;font-family:'DM Mono',monospace;">② Atteggiamento verso l'IA</div>
+        <div style="display:flex;flex-direction:column;gap:0.7rem;">
+          <label class="check-item"><input type="checkbox" id="cb-utilita"> Vedo l'IA come uno strumento che mi fa risparmiare tempo reale</label>
+          <label class="check-item"><input type="checkbox" id="cb-criticita"> Sono consapevole che l'IA può sbagliare e va sempre verificata</label>
+          <label class="check-item"><input type="checkbox" id="cb-ruolo"> Capisco che il mio ruolo di docente rimane centrale e insostituibile</label>
+          <label class="check-item"><input type="checkbox" id="cb-apertura"> Non mi sento minacciato/a dall'IA, ma curioso/a di esplorarla</label>
+        </div>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:1.3rem 1.5rem;">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:1rem;font-family:'DM Mono',monospace;">③ Intenzioni concrete</div>
+        <div style="display:flex;flex-direction:column;gap:0.7rem;">
+          <label class="check-item"><input type="checkbox" id="cb-lezione"> Ho già in mente una lezione reale su cui provare l'IA questa settimana</label>
+          <label class="check-item"><input type="checkbox" id="cb-collega"> Ho identificato almeno un collega con cui sperimentare insieme</label>
+          <label class="check-item"><input type="checkbox" id="cb-condivisione"> Sono disposto/a a condividere i risultati (buoni e cattivi) con il gruppo</label>
+        </div>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:1.3rem 1.5rem;">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:1rem;font-family:'DM Mono',monospace;">④ Riflessione libera</div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+          <div class="form-group">
+            <label>La cosa che mi ha sorpreso di più oggi</label>
+            <textarea placeholder="Scrivi liberamente…" style="min-height:60px;"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Il dubbio o la preoccupazione che ho ancora</label>
+            <textarea placeholder="Scrivi liberamente…" style="min-height:60px;"></textarea>
+          </div>
+          <div class="form-group">
+            <label>La prima cosa concreta che farò con l'IA entro 7 giorni</label>
+            <textarea placeholder="Scrivi liberamente…" style="min-height:60px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(11)">← Indietro</button>
+      <button class="btn btn-ai" onclick="generaFeedback()" style="background:var(--ink);color:var(--paper);">✦ Genera il mio feedback personalizzato</button>
+      <button class="btn btn-secondary" onclick="restartGuide()">↺ Ricomincia</button>
+    </div>
+
+    <div id="feedback-box" style="display:none;margin-top:1.5rem;background:var(--ink);color:var(--paper);border-radius:12px;padding:2rem 2.2rem;animation:fadeUp 0.4s ease;">
+      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin-bottom:1rem;font-family:'DM Mono',monospace;">✦ Il tuo feedback personalizzato</div>
+      <div id="feedback-content" style="font-size:0.88rem;line-height:1.8;white-space:pre-wrap;"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Guida interattiva · Corso "Didattica & IA" · Scuola Secondaria II grado<br>
+  I contenuti generati dall'IA sono da intendersi come punto di partenza e vanno sempre verificati dal docente
+</footer>
+
+<script>
+let currentStep = 0;
+
+function getBaseInfo() {
+  return {
+    materia: document.getElementById('materia').value || 'la materia',
+    classe: document.getElementById('classe').value || 'classe superiore',
+    argomento: document.getElementById('argomento').value || "l'argomento",
+    durata: document.getElementById('durata').value || '60 minuti',
+    tipoScuola: document.getElementById('tipo-scuola').value || 'scuola superiore'
+  };
+}
+
+function buildPrompts() {
+  const b = getBaseInfo();
+  const nStudenti = document.getElementById('n-studenti')?.value || '25';
+  const livello = document.getElementById('livello')?.value || 'eterogeneo';
+  const caratteristiche = document.getElementById('caratteristiche')?.value || '';
+  const prerequisiti = document.getElementById('prerequisiti')?.value || '';
+  const bes = document.getElementById('bes')?.value || '';
+
+  return {
+    profilo: `Sei un esperto di didattica per la scuola secondaria di secondo grado.\n\nDevo preparare una lezione su "${b.argomento}" per una ${b.classe} di ${b.tipoScuola}, materia: ${b.materia}. Durata: ${b.durata}.\n\nLa classe ha ${nStudenti} studenti, livello: ${livello}.\n${caratteristiche ? 'Caratteristiche: ' + caratteristiche + '\n' : ''}Conoscenze pregresse: ${prerequisiti}.\nPresenza BES/DSA: ${bes}.\n\nSulla base di queste informazioni, delinea un profilo sintetico della classe con punti di forza, possibili difficoltà e un suggerimento sull\'approccio iniziale.`,
+
+    obiettivi: `Materia: ${b.materia}, ${b.classe} (${b.tipoScuola})\nArgomento: "${b.argomento}"\nDurata: ${b.durata}\nFocus: ${document.getElementById('focus-obiettivi')?.value || 'comprensione'}\n\nScrivi ${document.getElementById('n-obiettivi')?.value || '4 obiettivi'} di apprendimento chiari e misurabili usando verbi della tassonomia di Bloom. Per ogni obiettivo: verbo d'azione + comportamento atteso + criterio di valutazione.`,
+
+    struttura: `Crea una struttura dettagliata per la lezione su "${b.argomento}" (${b.materia}, ${b.classe}, ${b.tipoScuola}).\n\nDurata: ${b.durata}\nMetodologia: ${document.getElementById('metodologia')?.value}\nStrumenti: ${document.getElementById('strumenti-classe')?.value}\n\nPer ogni fase indica: nome, durata, attività del docente, attività degli studenti, materiali necessari.`,
+
+    materiali: `Per la lezione su "${b.argomento}" (${b.materia}, ${b.classe}):\n\nCrea: ${document.getElementById('tipo-materiale')?.value}\nLivello: ${document.getElementById('difficolta')?.value}\n\nIl materiale deve essere immediatamente utilizzabile in classe, con istruzioni chiare per gli studenti.`,
+
+    verifica: `Progetta una ${document.getElementById('tipo-verifica')?.value} per la lezione su "${b.argomento}" (${b.materia}, ${b.classe}).\n\nNumero item: ${document.getElementById('n-domande')?.value}\n\nIncludi: domande/item, risposte attese o criteri di correzione, livello tassonomico valutato per ogni domanda.`,
+
+    griglia: (() => {
+      const b = getBaseInfo();
+      const tipo = document.querySelector('input[name="tipo-griglia"]:checked')?.value || 'rubrica';
+      const oggetto = document.getElementById('oggetto-valutazione')?.value || 'elaborato scritto';
+      const nCriteri = document.getElementById('n-criteri')?.value || '4 criteri';
+      const tipoLabel = {
+        rubrica: 'rubrica analitica con livelli di padronanza (Avanzato / Intermedio / Base / In via di acquisizione) e descrittori per ciascun livello',
+        punteggio: 'griglia a punteggio con peso percentuale per criterio e conversione in voto decimale (scala 1–10)',
+        osservazione: 'griglia per osservazione sistematica in classe con indicatori di partecipazione, metodo di lavoro e competenze trasversali',
+        mista: "griglia mista con colonna per la valutazione del docente e colonna per l'autovalutazione dello studente"
+      }[tipo];
+      return `Sei un esperto di didattica e valutazione per la scuola secondaria di secondo grado.\n\nDevo valutare: ${oggetto}\nMateria: ${b.materia}, ${b.classe} (${b.tipoScuola})\nArgomento: "${b.argomento}"\n\nCrea una ${tipoLabel}.\n\nNumero di criteri: ${nCriteri}\n\nLa griglia deve essere:\n- Immediatamente utilizzabile in classe\n- Con criteri specifici per questa materia e questo argomento\n- Con descrittori chiari e distinguibili tra un livello e l'altro\n- Presentata in formato tabella`;
+    })(),
+    bes: `Per la lezione su "${b.argomento}" (${b.materia}, ${b.classe}), progetta adattamenti inclusivi per studenti con: ${document.getElementById('tipo-bes')?.value}.\n\nTipo di adattamento: ${document.getElementById('tipo-adattamento')?.value}\n\nFornisci suggerimenti pratici e concreti con strumenti compensativi e dispensativi dove appropriato.`
+  };
+}
+
+function updatePromptBoxes() {
+  const p = buildPrompts();
+  // Update recap tags in step-3
+  const b = getBaseInfo();
+  const matClasse = document.getElementById('recap-materia-classe');
+  const arg = document.getElementById('recap-argomento-obj');
+  const dur = document.getElementById('recap-durata-obj');
+  const foc = document.getElementById('recap-focus');
+  if (matClasse) matClasse.textContent = (b.materia !== 'la materia' ? b.materia : '—') + (b.classe !== 'classe superiore' ? ' · ' + b.classe : '') + (b.tipoScuola ? ' (' + b.tipoScuola + ')' : '');
+  if (arg) arg.textContent = b.argomento !== "l'argomento" ? '📘 ' + b.argomento : '📘 argomento non inserito';
+  if (dur) dur.textContent = '⏱ ' + (b.durata || '50 minuti');
+  if (foc) { const f = document.getElementById('focus-obiettivi'); foc.textContent = '🎯 ' + (f ? f.value : '—'); }
+  const map = {
+    'prompt-profilo': p.profilo,
+    'prompt-obiettivi': p.obiettivi,
+    'prompt-struttura': p.struttura,
+    'prompt-materiali': p.materiali,
+    'prompt-verifica': p.verifica,
+    'prompt-bes': p.bes,
+    'prompt-griglia': p.griglia,
+  };
+  for (const [id, text] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+}
+
+function copyPrompt(id) {
+  const text = document.getElementById(id)?.textContent;
+  if (text) {
+    navigator.clipboard.writeText(text);
+    const btn = document.querySelector(`button[onclick="copyPrompt('${id}')"]`);
+    if (btn) { btn.textContent = '✓ Copiato!'; setTimeout(() => btn.textContent = 'Copia', 2000); }
+  }
+}
+
+
+function goToStep(n) {
+  document.getElementById(`step-${currentStep}`).classList.remove('visible');
+  document.getElementById(`pill-${currentStep}`).classList.remove('active');
+  document.getElementById(`pill-${currentStep}`).classList.add('done');
+  currentStep = n;
+  document.getElementById(`step-${currentStep}`).classList.add('visible');
+  document.getElementById(`pill-${currentStep}`).classList.remove('done');
+  document.getElementById(`pill-${currentStep}`).classList.add('active');
+  updatePromptBoxes();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep(from) { if (from < 11) goToStep(from + 1); }
+function prevStep(from) { if (from > 0) goToStep(from - 1); }
+
+function restartGuide() {
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
+  });
+  document.querySelectorAll('.step-pill').forEach(el => el.classList.remove('done', 'active'));
+  currentStep = 0;
+  document.getElementById('step-0').classList.add('visible');
+  document.getElementById('pill-0').classList.add('active');
+}
+
+
+function mostraAnteprima() {
+  const titolo = document.getElementById('risultato-titolo').value.trim();
+  const testo = document.getElementById('risultato-testo').value.trim();
+  if (!testo) { alert('Incolla prima il testo del risultato.'); return; }
+  document.getElementById('preview-titolo').textContent = titolo || 'Risultato';
+  document.getElementById('preview-testo').textContent = testo;
+  document.getElementById('risultato-preview').style.display = 'block';
+  document.getElementById('risultato-preview').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function stampaRisultato() {
+  const titolo = document.getElementById('risultato-titolo').value.trim() || 'Risultato IA';
+  const testo = document.getElementById('risultato-testo').value.trim();
+  if (!testo) { alert('Incolla prima il testo del risultato.'); return; }
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${titolo}</title>
+    <style>body{font-family:Georgia,serif;max-width:700px;margin:3rem auto;padding:0 2rem;color:#111;line-height:1.8;}
+    h1{font-size:1.4rem;margin-bottom:0.5rem;}
+    .meta{font-size:0.8rem;color:#888;margin-bottom:2rem;}
+    pre{white-space:pre-wrap;font-family:inherit;font-size:0.92rem;}
+    @media print{body{margin:1rem;}}</style></head>
+    <body><h1>${titolo}</h1>
+    <div class="meta">Corso Didattica & IA · ${new Date().toLocaleDateString('it-IT')}</div>
+    <pre>${testo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+    <script>window.onload=()=>window.print();<\/script></body></html>`);
+  win.document.close();
+}
+
+function generaFeedback() {
+  const checks = {
+    prompt:     document.getElementById('cb-prompt')?.checked,
+    contesto:   document.getElementById('cb-contesto')?.checked,
+    bloom:      document.getElementById('cb-bloom')?.checked,
+    materiali:  document.getElementById('cb-materiali')?.checked,
+    bes:        document.getElementById('cb-bes')?.checked,
+    strumenti:  document.getElementById('cb-strumenti')?.checked,
+    utilita:    document.getElementById('cb-utilita')?.checked,
+    criticita:  document.getElementById('cb-criticita')?.checked,
+    ruolo:      document.getElementById('cb-ruolo')?.checked,
+    apertura:   document.getElementById('cb-apertura')?.checked,
+    lezione:    document.getElementById('cb-lezione')?.checked,
+    collega:    document.getElementById('cb-collega')?.checked,
+    condivisione: document.getElementById('cb-condivisione')?.checked,
+  };
+
+  const spuntate = Object.values(checks).filter(Boolean).length;
+  const totale = Object.keys(checks).length;
+  const pct = Math.round(spuntate / totale * 100);
+
+  let livello, intro, consigli = [];
+
+  if (pct >= 85) {
+    livello = '🟢 Ottimo punto di partenza';
+    intro = 'Hai spuntato la maggior parte delle voci — questo suggerisce che la giornata di formazione ha fatto breccia su tutti i fronti principali. Sei già in una posizione solida per iniziare a sperimentare con le tue classi.';
+  } else if (pct >= 55) {
+    livello = '🟡 Buona base, qualcosa da consolidare';
+    intro = 'Hai acquisito una buona base di consapevolezza, ma alcune aree meritano ancora attenzione. È del tutto normale a fine di una prima lezione: sapere dove concentrarsi è già metà del lavoro.';
+  } else {
+    livello = '🔴 Ancora da esplorare — ma sei nel posto giusto';
+    intro = 'Hai ancora molte porte da aprire, ma questo è esattamente il momento giusto per farlo. Non preoccuparti: spesso chi parte con più incertezze fa i progressi più significativi, perché sa già cosa vuole capire.';
+  }
+
+  if (!checks.prompt || !checks.contesto) {
+    consigli.push("📝 Prompt: rileggi la sezione \"Come si scrive un buon prompt\" e prova a riscrivere un prompt che hai usato oggi aggiungendo ruolo, contesto e formato. Confronta le due risposte.");
+  }
+  if (!checks.bloom) {
+    consigli.push("🎓 Tassonomia di Bloom: torna all\'accordion nella sezione Obiettivi e scegli 2–3 verbi per ciascuno dei 6 livelli. Poi prova a scrivere un obiettivo per la tua prossima lezione usando ogni livello.");
+  }
+  if (!checks.materiali || !checks.bes) {
+    consigli.push("📁 Materiali & BES: prova a generare la stessa scheda in due versioni — una standard e una semplificata per studenti con DSA. Vedrai quanto è rapido e ti darà un modello riusabile.");
+  }
+  if (!checks.strumenti) {
+    consigli.push("🛠 Strumenti: scegli uno strumento dalla sezione 9 (uno solo!) e registrati questa settimana. Non devi usarlo in classe subito — esplora l\'interfaccia e prova a generare qualcosa di piccolo.");
+  }
+  if (!checks.criticita) {
+    consigli.push("⚠️ Senso critico: ricordati che l\'IA può inventare date, citare fonti inesistenti o semplificare eccessivamente. Prenditi l\'abitudine di verificare sempre almeno un fatto per risposta prima di usarla in classe.");
+  }
+  if (!checks.apertura || !checks.utilita) {
+    consigli.push("💬 Approccio: è normale avere riserve. Prova a usare l'IA per un compito piccolo e a basso rischio — preparare 3 domande di ripasso per la prossima lezione. Poi valuta tu stesso se ti ha fatto risparmiare tempo.");
+  }
+  if (!checks.lezione) {
+    consigli.push("🗓 Passo concreto: prima di andare a dormire stasera, scrivi il nome di una lezione che devi preparare nelle prossime 2 settimane. Quella sarà la tua lezione pilota con l'IA.");
+  }
+  if (!checks.collega || !checks.condivisione) {
+    consigli.push("👥 Collaborazione: trova un collega — anche uno solo — con cui condividere un prompt e il suo risultato entro la prossima settimana. Chi impara in coppia consolida molto più velocemente.");
+  }
+
+  if (consigli.length === 0) {
+    consigli.push("✨ Non hai punti deboli evidenti emersi dalla checklist. Il consiglio è uno solo: inizia subito. Scegli la tua prossima lezione e usala come campo di sperimentazione reale.");
+  }
+
+  const testo = `${livello}
+
+${intro}
+
+─────────────────────────────
+Consigli personalizzati per te
+─────────────────────────────
+
+${consigli.join('\n\n')}
+
+─────────────────────────────
+In sintesi: hai spuntato ${spuntate} voci su ${totale} (${pct}%). Ogni voce non spuntata non è un fallimento — è un obiettivo per la prossima lezione del corso.`;
+
+  const box = document.getElementById('feedback-box');
+  document.getElementById('feedback-content').textContent = testo;
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.addEventListener('input', updatePromptBoxes);
+document.addEventListener('change', updatePromptBoxes);
+document.addEventListener('change', updatePromptBoxes);
+</script>
+</body>
+</html>
