@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Segreteria & IA — Guida pratica per il personale ATA</title>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&family=Source+Sans+3:wght@300;400;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-light: #243459;
+    --slate: #f0f3f8;
+    --white: #ffffff;
+    --accent: #2e6fd4;
+    --accent-light: #e8f0fc;
+    --gold: #c8960a;
+    --gold-light: #fdf6e3;
+    --red: #c0392b;
+    --red-light: #fdf0ef;
+    --green: #217a4a;
+    --green-light: #eaf5ef;
+    --muted: #6b7a99;
+    --border: #d8deea;
+    --text: #1e2a3a;
+    --card: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--slate);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 16px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2.5rem;
+    border-bottom: 3px solid var(--accent);
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .header-logo {
+    width: 2.4rem; height: 2.4rem;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+  }
+  .header-title {
+    font-family: 'Bitter', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .header-sub {
+    font-size: 0.72rem;
+    color: #8899bb;
+    margin-top: 0.1rem;
+  }
+  .header-badge {
+    background: var(--accent);
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* TAB NAV */
+  .tab-nav {
+    display: flex;
+    background: var(--navy-light);
+    padding: 0 2.5rem;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #8899bb;
+    padding: 0.75rem 1.2rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .tab-btn:hover { color: #ccd5ee; }
+  .tab-btn.active {
+    color: white;
+    border-bottom-color: var(--gold);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 860px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  /* SECTION CARD */
+  .section-card {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: none;
+    animation: fadeIn 0.3s ease;
+    margin-bottom: 1.5rem;
+  }
+  .section-card.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'Bitter', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .section-header p {
+    font-size: 0.82rem;
+    color: #aabbdd;
+    line-height: 1.4;
+  }
+
+  .section-body { padding: 1.8rem 2rem; }
+
+  /* TIP BOX */
+  .tip-box {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.84rem;
+    color: #1a3a6a;
+    line-height: 1.6;
+  }
+  .tip-box strong { font-weight: 700; }
+
+  /* PRIVACY BOX */
+  .privacy-box {
+    background: var(--red-light);
+    border: 2px solid var(--red);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.82rem;
+    color: #6a1a1a;
+    line-height: 1.6;
+  }
+  .privacy-box .privacy-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--red);
+    margin-bottom: 0.6rem;
+  }
+  .privacy-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+    font-size: 0.81rem;
+  }
+  .privacy-row .icon { flex-shrink: 0; font-weight: 700; }
+
+  /* FORM */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .form-grid.full { grid-template-columns: 1fr; }
+  .field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .field label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  input[type="text"], select, textarea {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    background: var(--slate);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--accent); background: white; }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* PROMPT BOX */
+  .prompt-wrap {
+    background: #111827;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    position: relative;
+  }
+  .prompt-label {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+  .prompt-wrap pre {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.78rem;
+    color: #d1daea;
+    white-space: pre-wrap;
+    line-height: 1.65;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 0.9rem; right: 0.9rem;
+    background: #1f2937;
+    color: #9aa3b2;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.68rem;
+    font-family: 'Source Code Pro', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* ESEMPI RAPIDI */
+  .esempi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+  .esempio-chip {
+    background: var(--slate);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .esempio-chip:hover { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .esempio-chip strong { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.25rem; }
+  .esempio-chip.selected { border-color: var(--accent); background: var(--accent-light); }
+
+  /* SEPARATORE */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.4rem 0;
+  }
+
+  /* BUTTONS */
+  .btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #2460bb; transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* SEZIONE INTRO */
+  .intro-card {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 2rem 2.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .intro-card h2 {
+    font-family: 'Bitter', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+  }
+  .intro-card p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+  }
+  .pillar {
+    background: var(--slate);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    border: 1.5px solid var(--border);
+  }
+  .pillar .p-icon { font-size: 1.4rem; margin-bottom: 0.4rem; }
+  .pillar h4 { font-size: 0.8rem; font-weight: 700; color: var(--navy); margin-bottom: 0.25rem; }
+  .pillar p { font-size: 0.72rem; color: var(--muted); line-height: 1.4; }
+
+  /* PROMPT FORMULA */
+  .formula-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+  .formula-pill {
+    background: var(--navy);
+    color: white;
+    border-radius: 6px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .formula-plus { color: var(--muted); font-size: 1rem; font-weight: 700; }
+
+  /* CONFRONTO */
+  .confronto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.2rem 0;
+  }
+  .confronto-box { border-radius: 10px; overflow: hidden; }
+  .confronto-head {
+    padding: 0.6rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .confronto-head.bad { background: #fdf0ef; color: var(--red); }
+  .confronto-head.good { background: var(--green-light); color: var(--green); }
+  .confronto-body {
+    padding: 0.9rem 1rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    border: 1.5px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+  }
+  .confronto-prompt {
+    background: #111827;
+    padding: 0.7rem 0.9rem;
+    border-radius: 7px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.74rem;
+    color: #d1daea;
+    line-height: 1.5;
+    margin-bottom: 0.7rem;
+  }
+  .confronto-result {
+    font-size: 0.79rem;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.5;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+  }
+  .confronto-result.bad { background: #fdf0ef; color: #8a2222; }
+  .confronto-result.good { background: var(--green-light); color: #1a5a3a; }
+
+  /* SEZIONE TAG CONTESTO */
+  .context-strip {
+    background: var(--slate);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .ctx-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-right: 0.3rem; }
+  .ctx-tag {
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 0.25rem 0.7rem;
+    border-radius: 2rem;
+    background: white;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.74rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+    background: white;
+  }
+
+  @media (max-width: 640px) {
+    .header-inner { padding: 1rem 1.2rem; }
+    main { padding: 0 1rem; }
+    .section-body { padding: 1.2rem; }
+    .form-grid, .esempi-grid, .pillars, .confronto { grid-template-columns: 1fr; }
+    .tab-nav { padding: 0 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-logo">🏫</div>
+      <div>
+        <div class="header-title">Segreteria & IA</div>
+        <div class="header-sub">Guida pratica per il personale ATA — didattica e amministrativa</div>
+      </div>
+    </div>
+    <div class="header-badge">Guida interattiva</div>
+  </div>
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('intro')">🏠 Introduzione</button>
+    <button class="tab-btn" onclick="showTab('mail')">✉️ Mail</button>
+    <button class="tab-btn" onclick="showTab('circolari')">📢 Circolari</button>
+    <button class="tab-btn" onclick="showTab('lettere')">📄 Lettere formali</button>
+    <button class="tab-btn" onclick="showTab('reclami')">💬 Richieste & reclami</button>
+    <button class="tab-btn" onclick="showTab('modulistica')">📋 Modulistica</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- INTRODUZIONE -->
+  <div class="section-card active" id="tab-intro">
+    <div class="section-header">
+      <div class="section-icon">🚀</div>
+      <div>
+        <h2>Benvenuto nella guida</h2>
+        <p>Impara a usare l'IA per velocizzare la scrittura di documenti, mail e comunicazioni scolastiche.</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <p style="font-size:0.9rem;line-height:1.8;color:var(--muted);margin-bottom:1.5rem;">
+        L'intelligenza artificiale può diventare il tuo assistente personale in segreteria — non sostituisce il tuo lavoro, ma ti aiuta a fare le cose <strong style="color:var(--text);">più velocemente e con meno fatica</strong>. Basta sapere come chiederle le cose.
+      </p>
+
+      <div class="pillars" style="margin-bottom:1.5rem;">
+        <div class="pillar">
+          <div class="p-icon">⚡</div>
+          <h4>Velocità</h4>
+          <p>Una circolare che richiede 20 minuti si scrive in 2 con il prompt giusto</p>
+        </div>
+        <div class="pillar">
+          <div class="p-icon">🎯</div>
+          <h4>Precisione</h4>
+          <p>Tono formale, linguaggio istituzionale, struttura corretta — ogni volta</p>
+        </div>
+        <div class="pillar">
+          <div class="p-icon">🔄</div>
+          <h4>Adattabilità</h4>
+          <p>Lo stesso testo può essere riscritto per famiglie, docenti o enti esterni</p>
+        </div>
+        <div class="pillar">
+          <div class="p-icon">🛡️</div>
+          <h4>Controllo</h4>
+          <p>Tu rivedi e approvi sempre — l'IA è un punto di partenza, non il prodotto finale</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <h3 style="font-family:'Bitter',serif;font-size:1.05rem;margin-bottom:1rem;color:var(--navy);">Come si scrive un prompt efficace</h3>
+
+      <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:0.8rem;">Un buon prompt ha sempre 4 ingredienti. Più li usi tutti, più la risposta sarà utile:</p>
+
+      <div class="formula-row">
+        <span class="formula-pill">📌 Ruolo</span>
+        <span class="formula-plus">+</span>
+        <span class="formula-pill">🏫 Contesto scuola</span>
+        <span class="formula-plus">+</span>
+        <span class="formula-pill">📝 Compito specifico</span>
+        <span class="formula-plus">+</span>
+        <span class="formula-pill">📐 Formato richiesto</span>
+      </div>
+
+      <div class="confronto" style="margin-top:1rem;">
+        <div class="confronto-box">
+          <div class="confronto-head bad">❌ Prompt vago</div>
+          <div class="confronto-body">
+            <div class="confronto-prompt">Scrivi una mail ai genitori.</div>
+            <div class="confronto-result bad">Risultato generico, inutilizzabile, da riscrivere quasi completamente.</div>
+          </div>
+        </div>
+        <div class="confronto-box">
+          <div class="confronto-head good">✅ Prompt efficace</div>
+          <div class="confronto-body">
+            <div class="confronto-prompt">Sei la segreteria di un istituto scolastico. Scrivi una mail formale ai genitori degli studenti della classe 3B per comunicare il cambio d'orario del 15 marzo (le lezioni inizieranno alle 9:30 invece delle 8:00). Tono istituzionale, massimo 8 righe.</div>
+            <div class="confronto-result good">Risultato pronto, tono corretto, struttura professionale. Al massimo una piccola revisione.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="privacy-box">
+        <div class="privacy-title">🔒 Attenzione alla privacy — GDPR e dati scolastici</div>
+        <div class="privacy-row"><span class="icon" style="color:var(--red);">✗</span><span><strong>Non inserire mai:</strong> nomi e cognomi di studenti o famiglie, codici fiscali, dati sanitari, situazioni disciplinari specifiche riferibili a singoli, dati economici personali.</span></div>
+        <div class="privacy-row"><span class="icon" style="color:var(--green);">✓</span><span><strong>Puoi inserire:</strong> classe o gruppo generico, tipo di comunicazione, oggetto, date, informazioni organizzative non personali.</span></div>
+        <div class="privacy-row"><span class="icon" style="color:var(--accent);">ℹ</span><span><strong>Regola pratica:</strong> prima di inviare il prompt, chiediti — "se questo testo fosse letto da un estraneo, si potrebbe risalire a una persona specifica?" Se sì, anonimizza.</span></div>
+      </div>
+
+      <p style="font-size:0.85rem;color:var(--muted);text-align:center;margin-top:0.5rem;">Usa le schede in alto per accedere ai prompt pronti per ogni tipo di documento ↑</p>
+    </div>
+  </div>
+
+  <!-- MAIL -->
+  <div class="section-card" id="tab-mail">
+    <div class="section-header">
+      <div class="section-icon">✉️</div>
+      <div>
+        <h2>Mail e comunicazioni</h2>
+        <p>Genera mail istituzionali pronte all'uso per qualsiasi destinatario.</p>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="tip-box"><strong>💡 Suggerimento:</strong> Specifica sempre il destinatario (famiglie, docenti, ente esterno, USR…) e il tono che vuoi. L'IA sa adattare il registro automaticamente.</div>
+
+      <p style="font-size:0.83rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.6rem;">Scegli una situazione tipo o compila libero</p>
+      <div class="esempi-grid">
+        <div class="esempio-chip" onclick="selectEsempio('mail','Comunicazione cambio orario a una o più classi')"><strong>📅 Cambio orario</strong>Modifica dell'orario delle lezioni</div>
+        <div class="esempio-chip" onclick="selectEsempio('mail','Avviso di chiusura della scuola per festività o eventi straordinari')"><strong>🔒 Chiusura scuola</strong>Chiusura straordinaria o recupero</div>
+        <div class="esempio-chip" onclick="selectEsempio('mail','Sollecito di documentazione mancante a una famiglia')"><strong>📎 Richiesta documenti</strong>Sollecito documentazione mancante</div>
+        <div class="esempio-chip" onclick="selectEsempio('mail','Comunicazione di convocazione per un colloquio in segreteria')"><strong>📞 Convocazione</strong>Invito a presentarsi in segreteria</div>
+        <div class="esempio-chip" onclick="selectEsempio('mail','Risposta a una richiesta di informazioni ricevuta da una famiglia')"><strong>💬 Risposta info</strong>Risposta a domanda di una famiglia</div>
+        <div class="esempio-chip" onclick="selectEsempio('mail','Comunicazione interna a tutto il personale docente e ATA')"><strong>📣 Comunicazione interna</strong>Avviso a docenti e personale</div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Destinatario</label>
+          <select id="mail-dest">
+            <option>Famiglie / Genitori</option>
+            <option>Docenti</option>
+            <option>Personale ATA</option>
+            <option>Ente esterno (USR, Comune…)</option>
+            <option>Singola famiglia</option>
+            <option>Tutto il personale</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tono</label>
+          <select id="mail-tono">
+            <option>Formale istituzionale</option>
+            <option>Formale ma cordiale</option>
+            <option>Urgente</option>
+            <option>Informativo / neutro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Oggetto / situazione da comunicare</label>
+          <textarea id="mail-oggetto" placeholder="es. Cambio orario classe 3B il 15 marzo — ingresso alle 9:30 invece delle 8:00…"></textarea>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Lunghezza massima</label>
+          <select id="mail-lunghezza">
+            <option>Breve (5–8 righe)</option>
+            <option>Media (10–15 righe)</option>
+            <option>Dettagliata (oltre 15 righe)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Firma / mittente</label>
+          <input type="text" id="mail-firma" placeholder="es. La Segreteria Didattica">
+        </div>
+      </div>
+
+      <div class="prompt-wrap">
+        <div class="prompt-label">✦ Prompt — copialo su Claude.ai</div>
+        <button class="copy-btn" onclick="copyPrompt('prompt-mail')">Copia</button>
+        <pre id="prompt-mail">Compila i campi sopra per generare il prompt.</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- CIRCOLARI -->
+  <div class="section-card" id="tab-circolari">
+    <div class="section-header">
+      <div class="section-icon">📢</div>
+      <div>
+        <h2>Circolari e avvisi</h2>
+        <p>Produce circolari complete con numero, oggetto, destinatari e corpo del testo.</p>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="tip-box"><strong>💡 Suggerimento:</strong> Le circolari devono rispettare uno stile istituzionale preciso. Specifica sempre se è rivolta all'interno (docenti/ATA) o all'esterno (famiglie), e se prevede una parte dispositiva (azioni richieste).</div>
+
+      <div class="esempi-grid">
+        <div class="esempio-chip" onclick="selectEsempio('circ','Circolare per comunicare il calendario degli scrutini del primo quadrimestre')"><strong>📊 Scrutini</strong>Calendario valutazioni quadrimestrali</div>
+        <div class="esempio-chip" onclick="selectEsempio('circ','Circolare per comunicare le date dei colloqui scuola-famiglia')"><strong>👨‍👩‍👧 Colloqui famiglie</strong>Prenotazione incontri con i docenti</div>
+        <div class="esempio-chip" onclick="selectEsempio('circ','Circolare per comunicare le disposizioni di sicurezza per la prova di evacuazione')"><strong>🚨 Evacuazione</strong>Prova di evacuazione — disposizioni</div>
+        <div class="esempio-chip" onclick="selectEsempio('circ','Circolare per la raccolta delle adesioni a un viaggio di istruzione')"><strong>✈️ Viaggio istruzione</strong>Raccolta adesioni e quote</div>
+        <div class="esempio-chip" onclick="selectEsempio('circ','Circolare interna per comunicare la sostituzione di un docente assente')"><strong>👩‍🏫 Sostituzione docente</strong>Gestione supplenze interne</div>
+        <div class="esempio-chip" onclick="selectEsempio('circ','Circolare per comunicare la sospensione delle attività didattiche')"><strong>⛅ Sospensione attività</strong>Stop lezioni per evento straordinario</div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Numero circolare</label>
+          <input type="text" id="circ-numero" placeholder="es. Circ. n. 47">
+        </div>
+        <div class="field">
+          <label>Destinatari</label>
+          <select id="circ-dest">
+            <option>Tutti i docenti</option>
+            <option>Tutto il personale (docenti e ATA)</option>
+            <option>Famiglie di tutti gli studenti</option>
+            <option>Famiglie di una classe specifica</option>
+            <option>Personale ATA</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Contenuto della circolare</label>
+          <textarea id="circ-contenuto" placeholder="es. Comunicare le date dei colloqui del secondo quadrimestre: martedì 18 marzo e mercoledì 19 marzo, dalle 15:00 alle 18:00. Le prenotazioni si effettuano tramite registro elettronico entro il 14 marzo…"></textarea>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Prevede azione richiesta?</label>
+          <select id="circ-azione">
+            <option>Sì — i destinatari devono fare qualcosa</option>
+            <option>No — è solo un'informazione</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Firma</label>
+          <input type="text" id="circ-firma" placeholder="es. Il Dirigente Scolastico">
+        </div>
+      </div>
+
+      <div class="prompt-wrap">
+        <div class="prompt-label">✦ Prompt — copialo su Claude.ai</div>
+        <button class="copy-btn" onclick="copyPrompt('prompt-circ')">Copia</button>
+        <pre id="prompt-circ">Compila i campi sopra per generare il prompt.</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- LETTERE FORMALI -->
+  <div class="section-card" id="tab-lettere">
+    <div class="section-header">
+      <div class="section-icon">📄</div>
+      <div>
+        <h2>Lettere formali</h2>
+        <p>Convocazioni, diffide, comunicazioni legali e ufficiali — con il linguaggio istituzionale corretto.</p>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="tip-box"><strong>💡 Suggerimento:</strong> Per le lettere a carattere legale (diffide, contestazioni) l'IA fornisce una bozza di partenza. Fai sempre revisionare il testo finale dal dirigente o dal DSGA prima dell'invio.</div>
+
+      <div class="esempi-grid">
+        <div class="esempio-chip" onclick="selectEsempio('lett','Lettera di convocazione di un genitore per colloquio disciplinare')"><strong>⚠️ Convocazione disciplinare</strong>Genitore chiamato per comportamento</div>
+        <div class="esempio-chip" onclick="selectEsempio('lett','Lettera di diffida per assenze reiterate e ingiustificate di uno studente')"><strong>📋 Diffida assenze</strong>Comunicazione formale per assenteismo</div>
+        <div class="esempio-chip" onclick="selectEsempio('lett','Lettera di richiesta di documentazione obbligatoria non ancora consegnata')"><strong>📎 Richiesta documenti</strong>Formale sollecito documenti mancanti</div>
+        <div class="esempio-chip" onclick="selectEsempio('lett','Comunicazione ufficiale alla famiglia di un provvedimento disciplinare')"><strong>🔴 Provvedimento disciplinare</strong>Notifica sospensione o ammonizione</div>
+        <div class="esempio-chip" onclick="selectEsempio('lett','Lettera di risposta formale a un reclamo presentato da una famiglia')"><strong>📩 Risposta formale</strong>Risposta ufficiale a reclamo scritto</div>
+        <div class="esempio-chip" onclick="selectEsempio('lett','Comunicazione ufficiale a un ente esterno per richiesta di collaborazione o informazioni')"><strong>🏛️ Lettera a ente</strong>Comunicazione a USR, Comune, ASL…</div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Tipo di lettera</label>
+          <select id="lett-tipo">
+            <option>Convocazione</option>
+            <option>Diffida</option>
+            <option>Comunicazione di provvedimento</option>
+            <option>Richiesta formale</option>
+            <option>Risposta ufficiale</option>
+            <option>Comunicazione a ente esterno</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Destinatario generico</label>
+          <input type="text" id="lett-dest" placeholder="es. La famiglia, l'ufficio USR, il Comune…">
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Motivo / contenuto (senza dati personali)</label>
+          <textarea id="lett-motivo" placeholder="es. Comunicare che lo studente ha superato il limite di assenze consentito e che la famiglia è convocata per un colloquio con il dirigente entro il 20 marzo…"></textarea>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Riferimento normativo (facoltativo)</label>
+          <input type="text" id="lett-norma" placeholder="es. D.Lgs. 297/94, art. 4 dello Statuto…">
+        </div>
+        <div class="field">
+          <label>Firma</label>
+          <input type="text" id="lett-firma" placeholder="es. Il Dirigente Scolastico">
+        </div>
+      </div>
+
+      <div class="prompt-wrap">
+        <div class="prompt-label">✦ Prompt — copialo su Claude.ai</div>
+        <button class="copy-btn" onclick="copyPrompt('prompt-lett')">Copia</button>
+        <pre id="prompt-lett">Compila i campi sopra per generare il prompt.</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- RICHIESTE E RECLAMI -->
+  <div class="section-card" id="tab-reclami">
+    <div class="section-header">
+      <div class="section-icon">💬</div>
+      <div>
+        <h2>Richieste e reclami</h2>
+        <p>Gestisci con professionalità le comunicazioni in entrata — dai tono giusto alle risposte difficili.</p>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="tip-box"><strong>💡 Suggerimento:</strong> Incolla il testo della richiesta o del reclamo ricevuto (anonimizzato) e chiedi all'IA di aiutarti a formulare una risposta professionale. Risparmierai tempo e ridurrai lo stress.</div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Tipo di comunicazione ricevuta</label>
+          <select id="rec-tipo">
+            <option>Reclamo scritto di una famiglia</option>
+            <option>Richiesta di informazioni urgente</option>
+            <option>Segnalazione di un problema</option>
+            <option>Richiesta di documenti / certificati</option>
+            <option>Richiesta di chiarimenti su una decisione</option>
+            <option>Contestazione di un voto o provvedimento</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tono della risposta</label>
+          <select id="rec-tono">
+            <option>Formale e rassicurante</option>
+            <option>Formale e fermo</option>
+            <option>Empatico ma professionale</option>
+            <option>Neutro e informativo</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Sintesi della comunicazione ricevuta (senza nomi)</label>
+          <textarea id="rec-testo" placeholder="es. Una famiglia lamenta che il figlio non ha ricevuto comunicazione tempestiva del cambio d'orario e chiede spiegazioni e garanzie per il futuro…"></textarea>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Posizione della scuola / risposta da dare</label>
+          <textarea id="rec-risposta" placeholder="es. La comunicazione è stata inviata via registro elettronico 3 giorni prima. Offriamo di inviare un promemoria SMS in aggiunta per i prossimi avvisi…"></textarea>
+        </div>
+      </div>
+
+      <div class="prompt-wrap">
+        <div class="prompt-label">✦ Prompt — copialo su Claude.ai</div>
+        <button class="copy-btn" onclick="copyPrompt('prompt-rec')">Copia</button>
+        <pre id="prompt-rec">Compila i campi sopra per generare il prompt.</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULISTICA -->
+  <div class="section-card" id="tab-modulistica">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div>
+        <h2>Modulistica e documenti standard</h2>
+        <p>Genera template di moduli, liberatorie, dichiarazioni e autorizzazioni pronti da personalizzare.</p>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="tip-box"><strong>💡 Suggerimento:</strong> L'IA genera una bozza strutturata del documento. Aggiungila ai tuoi template e adattala con i dati reali. Tieni sempre una versione revisionata dal DSGA prima di usarla ufficialmente.</div>
+
+      <div class="esempi-grid">
+        <div class="esempio-chip" onclick="selectEsempio('mod','Modulo di autorizzazione per uscita didattica o gita scolastica con raccolta dati allergie e contatti')"><strong>🚌 Uscita didattica</strong>Liberatoria e dati per gita scolastica</div>
+        <div class="esempio-chip" onclick="selectEsempio('mod','Modulo di autocertificazione per rientro dopo assenza per malattia')"><strong>🏥 Rientro da malattia</strong>Autocertificazione assenza sanitaria</div>
+        <div class="esempio-chip" onclick="selectEsempio('mod','Dichiarazione di presa visione del regolamento scolastico da parte della famiglia')"><strong>📜 Regolamento</strong>Firma presa visione regolamento</div>
+        <div class="esempio-chip" onclick="selectEsempio('mod','Modulo di consenso per utilizzo di immagini degli studenti a scopi didattici')"><strong>📷 Uso immagini</strong>Consenso GDPR per foto e video</div>
+        <div class="esempio-chip" onclick="selectEsempio('mod','Modulo di richiesta di accesso agli atti o documenti scolastici')"><strong>🗂️ Accesso atti</strong>Richiesta documenti L. 241/90</div>
+        <div class="esempio-chip" onclick="selectEsempio('mod','Modulo per la comunicazione di variazione dei dati anagrafici o di contatto della famiglia')"><strong>📝 Variazione dati</strong>Aggiornamento informazioni anagrafiche</div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Tipo di documento</label>
+          <select id="mod-tipo">
+            <option>Modulo di autorizzazione</option>
+            <option>Liberatoria</option>
+            <option>Dichiarazione / autocertificazione</option>
+            <option>Modulo di richiesta</option>
+            <option>Consenso informato</option>
+            <option>Comunicazione dati</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Compilato da</label>
+          <select id="mod-compilato">
+            <option>Genitore / tutore</option>
+            <option>Studente maggiorenne</option>
+            <option>Docente</option>
+            <option>Personale ATA</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Scopo del documento</label>
+          <textarea id="mod-scopo" placeholder="es. Autorizzare la partecipazione alla gita a Firenze del 22 aprile, raccogliere info su allergie alimentari e contatti di emergenza, indicare mezzo di trasporto…"></textarea>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Riferimento normativo (facoltativo)</label>
+          <input type="text" id="mod-norma" placeholder="es. GDPR 679/2016, L. 241/90…">
+        </div>
+        <div class="field">
+          <label>Campi da raccogliere (facoltativo)</label>
+          <input type="text" id="mod-campi" placeholder="es. nome, classe, allergie, firma, data…">
+        </div>
+      </div>
+
+      <div class="prompt-wrap">
+        <div class="prompt-label">✦ Prompt — copialo su Claude.ai</div>
+        <button class="copy-btn" onclick="copyPrompt('prompt-mod')">Copia</button>
+        <pre id="prompt-mod">Compila i campi sopra per generare il prompt.</pre>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Segreteria & IA · Guida pratica per il personale ATA · Scuola Secondaria<br>
+  I testi generati dall'IA sono bozze di partenza — vanno sempre revisionati prima dell'invio ufficiale · Non inserire dati personali nei prompt
+</footer>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectEsempio(section, testo) {
+  const map = {
+    mail: 'mail-oggetto',
+    circ: 'circ-contenuto',
+    lett: 'lett-motivo',
+    mod: 'mod-scopo'
+  };
+  const el = document.getElementById(map[section]);
+  if (el) {
+    el.value = testo;
+    el.dispatchEvent(new Event('input'));
+    el.focus();
+  }
+  // highlight chip
+  const chips = el?.closest('.section-body')?.querySelectorAll('.esempio-chip');
+  chips?.forEach(c => c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+}
+
+function buildPrompts() {
+  // MAIL
+  const mailDest = document.getElementById('mail-dest')?.value || 'famiglie';
+  const mailTono = document.getElementById('mail-tono')?.value || 'formale istituzionale';
+  const mailOggetto = document.getElementById('mail-oggetto')?.value || '';
+  const mailLung = document.getElementById('mail-lunghezza')?.value || 'breve';
+  const mailFirma = document.getElementById('mail-firma')?.value || 'La Segreteria';
+  document.getElementById('prompt-mail').textContent =
+    `Sei la segreteria di un istituto scolastico secondario di secondo grado.\n\nScrivi una mail con tono ${mailTono.toLowerCase()} indirizzata a: ${mailDest}.\n\nContenuto da comunicare:\n${mailOggetto || '[descrivi qui cosa comunicare]'}\n\nRequisiti:\n- Lunghezza: ${mailLung.toLowerCase()}\n- Includi: oggetto della mail, saluto iniziale, corpo del testo, formula di chiusura\n- Firma: ${mailFirma || 'La Segreteria'}\n- Linguaggio istituzionale, chiaro e professionale\n- Non usare nomi propri di persone`;
+
+  // CIRCOLARI
+  const circNum = document.getElementById('circ-numero')?.value || 'Circ. n. ___';
+  const circDest = document.getElementById('circ-dest')?.value || '';
+  const circCont = document.getElementById('circ-contenuto')?.value || '';
+  const circAzione = document.getElementById('circ-azione')?.value || '';
+  const circFirma = document.getElementById('circ-firma')?.value || 'Il Dirigente Scolastico';
+  document.getElementById('prompt-circ').textContent =
+    `Sei la segreteria di un istituto scolastico secondario di secondo grado.\n\nRedigi una circolare scolastica con le seguenti caratteristiche:\n\nNumero: ${circNum}\nDestinatari: ${circDest}\nContenuto: ${circCont || '[descrivi il contenuto]'}\n${circAzione?.includes('Sì') ? 'La circolare prevede un\'azione richiesta ai destinatari: specificala chiaramente in una sezione dedicata.' : 'La circolare è puramente informativa.'}\nFirma: ${circFirma}\n\nStruttura richiesta: intestazione istituzionale, oggetto in grassetto, corpo del testo con linguaggio formale, eventuale sezione con istruzioni operative, firma finale.\nNon inserire nomi propri di persone.`;
+
+  // LETTERE
+  const lettTipo = document.getElementById('lett-tipo')?.value || 'lettera formale';
+  const lettDest = document.getElementById('lett-dest')?.value || 'la famiglia';
+  const lettMotivo = document.getElementById('lett-motivo')?.value || '';
+  const lettNorma = document.getElementById('lett-norma')?.value || '';
+  const lettFirma = document.getElementById('lett-firma')?.value || 'Il Dirigente Scolastico';
+  document.getElementById('prompt-lett').textContent =
+    `Sei la segreteria di un istituto scolastico secondario di secondo grado.\n\nRedigi una ${lettTipo.toLowerCase()} formale indirizzata a: ${lettDest}.\n\nMotivo / contenuto:\n${lettMotivo || '[descrivi il motivo]'}\n${lettNorma ? `\nRiferimento normativo da citare: ${lettNorma}` : ''}\n\nRequisiti:\n- Linguaggio giuridico-amministrativo corretto e formale\n- Struttura: luogo e data, destinatario generico, oggetto, corpo, formula di chiusura\n- Firma: ${lettFirma}\n- Non usare nomi propri di persone\n- Lascia spazio vuoto [___] dove vanno inseriti i dati specifici`;
+
+  // RECLAMI
+  const recTipo = document.getElementById('rec-tipo')?.value || '';
+  const recTono = document.getElementById('rec-tono')?.value || 'formale e rassicurante';
+  const recTesto = document.getElementById('rec-testo')?.value || '';
+  const recRisposta = document.getElementById('rec-risposta')?.value || '';
+  document.getElementById('prompt-rec').textContent =
+    `Sei la segreteria di un istituto scolastico secondario di secondo grado.\n\nHai ricevuto: ${recTipo.toLowerCase()}.\n\nSintesi di quanto ricevuto:\n${recTesto || '[descrivi la comunicazione ricevuta]'}\n\nPosizione della scuola / risposta da dare:\n${recRisposta || '[descrivi cosa rispondere]'}\n\nRedigi una risposta scritta con tono ${recTono.toLowerCase()}.\nRequisiti: linguaggio professionale, struttura chiara, nessuna ammissione di colpa se non intenzionale, formula di chiusura cordiale.\nNon usare nomi propri.`;
+
+  // MODULISTICA
+  const modTipo = document.getElementById('mod-tipo')?.value || 'modulo';
+  const modCompilato = document.getElementById('mod-compilato')?.value || 'genitore';
+  const modScopo = document.getElementById('mod-scopo')?.value || '';
+  const modNorma = document.getElementById('mod-norma')?.value || '';
+  const modCampi = document.getElementById('mod-campi')?.value || '';
+  document.getElementById('prompt-mod').textContent =
+    `Sei la segreteria di un istituto scolastico secondario di secondo grado.\n\nCrea un ${modTipo.toLowerCase()} da compilare da parte di: ${modCompilato.toLowerCase()}.\n\nScopo del documento:\n${modScopo || '[descrivi lo scopo]'}\n${modNorma ? `\nRiferimento normativo: ${modNorma}` : ''}${modCampi ? `\nCampi da raccogliere: ${modCampi}` : ''}\n\nRequisiti:\n- Intestazione con spazio per logo/nome scuola\n- Linguaggio chiaro e formale\n- Tutti i campi da compilare indicati con [___]\n- Spazio per data e firma\n- Se necessario, includi informativa privacy sintetica`;
+}
+
+function copyPrompt(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent);
+  const btn = document.querySelector(`button[onclick="copyPrompt('${id}')"]`);
+  if (btn) { btn.textContent = '✓ Copiato!'; setTimeout(() => btn.textContent = 'Copia', 2000); }
+}
+
+// Live update
+document.addEventListener('input', buildPrompts);
+document.addEventListener('change', buildPrompts);
+buildPrompts();
+</script>
+</body>
+</html>
