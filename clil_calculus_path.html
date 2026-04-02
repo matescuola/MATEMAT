@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curve Analysis — CLIL Learning Path</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE6;
+    --ink: #1A1714;
+    --ink2: #5C5750;
+    --ink3: #9C9690;
+    --accent: #2D5F4E;
+    --accent2: #4A8C75;
+    --accent-light: #E0EDE9;
+    --gold: #C4973A;
+    --gold-light: #FAF3E3;
+    --red: #B94040;
+    --red-light: #FAEDED;
+    --blue: #2B4E8C;
+    --blue-light: #E8EEF7;
+    --border: #E0DDD6;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* LAYOUT */
+  .shell { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--ink);
+    color: #fff;
+    padding: 2rem 1.5rem;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 10;
+  }
+  .sidebar-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #fff;
+    border-bottom: 0.5px solid rgba(255,255,255,0.15);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+  }
+  .sidebar-logo span { color: var(--accent2); }
+  .sidebar-subtitle { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  .progress-section { margin-bottom: 2rem; }
+  .progress-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+  .progress-track { background: rgba(255,255,255,0.12); border-radius: 4px; height: 4px; }
+  .progress-fill { height: 4px; border-radius: 4px; background: var(--accent2); transition: width 0.5s ease; width: 0%; }
+  .progress-pct { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 6px; }
+
+  .nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.35); margin-bottom: 8px; margin-top: 1.5rem; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: var(--radius-sm);
+    cursor: pointer; font-size: 13px; color: rgba(255,255,255,0.6);
+    transition: all 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .nav-item.active { background: var(--accent); color: #fff; }
+  .nav-item.done { color: rgba(255,255,255,0.9); }
+  .nav-item .nav-dot {
+    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 500;
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);
+  }
+  .nav-item.active .nav-dot { background: rgba(255,255,255,0.25); color: #fff; }
+  .nav-item.done .nav-dot { background: var(--accent2); color: #fff; }
+
+  /* MAIN */
+  .main { margin-left: 260px; flex: 1; padding: 3rem 3.5rem; max-width: 860px; }
+
+  /* PAGE HEADER */
+  .page-header { margin-bottom: 2.5rem; }
+  .page-tag { display: inline-block; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .tag-glossary { background: var(--gold-light); color: var(--gold); }
+  .tag-concept { background: var(--blue-light); color: var(--blue); }
+  .tag-exercise { background: var(--accent-light); color: var(--accent); }
+  .tag-quiz { background: #EEF0FA; color: #3D4BA0; }
+  .tag-end { background: var(--gold-light); color: var(--gold); }
+
+  .page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 34px; font-weight: 700; letter-spacing: -0.5px;
+    color: var(--ink); line-height: 1.2; margin-bottom: 10px;
+  }
+  .page-header p { font-size: 15px; color: var(--ink2); max-width: 620px; line-height: 1.7; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px; font-weight: 500; color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+  .card p { font-size: 14px; color: var(--ink2); line-height: 1.75; }
+  .card p + p { margin-top: 10px; }
+
+  /* CONTENT BOXES */
+  .box {
+    border-radius: var(--radius-sm);
+    padding: 1.1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .box-rule { background: var(--blue-light); border-left: 3px solid var(--blue); color: var(--ink); }
+  .box-tip { background: var(--gold-light); border-left: 3px solid var(--gold); color: var(--ink); }
+  .box-lang { background: var(--accent-light); border-left: 3px solid var(--accent2); color: var(--ink); }
+  .box-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ink3); margin-bottom: 6px; }
+
+  code { font-family: monospace; background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--ink); }
+
+  ul.points { list-style: none; padding: 0; margin: 0.75rem 0; }
+  ul.points li { padding: 7px 0; font-size: 14px; color: var(--ink); display: flex; gap: 10px; border-bottom: 1px solid var(--border); }
+  ul.points li:last-child { border-bottom: none; }
+  ul.points li::before { content: "→"; color: var(--accent2); font-weight: 500; flex-shrink: 0; }
+
+  /* GLOSSARY */
+  .gloss-search {
+    width: 100%; padding: 12px 16px; font-size: 14px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface); color: var(--ink);
+    margin-bottom: 1rem; font-family: 'DM Sans', sans-serif;
+    outline: none; transition: border-color 0.15s;
+  }
+  .gloss-search:focus { border-color: var(--accent2); }
+  .gloss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 680px) { .gloss-grid { grid-template-columns: 1fr; } }
+  .gloss-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .gloss-card:hover { border-color: var(--accent2); }
+  .gloss-en { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .gloss-it { font-size: 13px; color: var(--accent); margin-top: 2px; }
+  .gloss-def { font-size: 13px; color: var(--ink2); margin-top: 6px; line-height: 1.5; display: none; }
+  .gloss-card.open .gloss-def { display: block; }
+  .gloss-card.open { border-color: var(--accent2); background: var(--accent-light); }
+  .gloss-count { font-size: 12px; color: var(--ink3); margin-bottom: 10px; }
+
+  /* EXERCISE / CHECKBOX */
+  .exercise-block {
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .ex-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+  .ex-num { width: 28px; height: 28px; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+  .ex-title { font-size: 15px; font-weight: 500; color: var(--ink); }
+
+  .ex-question { font-size: 14px; color: var(--ink2); line-height: 1.7; margin-bottom: 1rem; }
+  .ex-question strong { color: var(--ink); font-weight: 500; }
+
+  .step-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ink3); margin-bottom: 6px; margin-top: 1rem; }
+  .step-input {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px;
+  }
+  .step-input input[type="radio"], .step-input input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; }
+  .step-input label { font-size: 14px; color: var(--ink); cursor: pointer; flex: 1; }
+  .step-input.correct-highlight { border-color: var(--accent2); background: var(--accent-light); }
+  .step-input.wrong-highlight { border-color: var(--red); background: var(--red-light); }
+
+  .check-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 22px; background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s; margin-top: 12px;
+  }
+  .check-btn:hover { background: var(--accent2); }
+  .check-btn:disabled { background: var(--ink3); cursor: default; }
+
+  .fb-box { border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 12px; font-size: 14px; line-height: 1.6; display: none; }
+  .fb-ok { background: var(--accent-light); border-left: 3px solid var(--accent2); color: var(--ink); }
+  .fb-ko { background: var(--red-light); border-left: 3px solid var(--red); color: var(--ink); }
+
+  /* SECTION CHECK */
+  .section-check { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-top: 1.25rem; }
+  .section-check input[type="checkbox"] { accent-color: var(--accent); width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
+  .section-check label { font-size: 14px; color: var(--ink2); cursor: pointer; }
+  .section-check.checked { border-color: var(--accent2); background: var(--accent-light); }
+  .section-check.checked label { color: var(--ink); font-weight: 500; }
+
+  /* QUIZ */
+  .quiz-num { font-size: 12px; color: var(--ink3); margin-bottom: 8px; }
+  .quiz-q { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 12px; line-height: 1.5; }
+  .quiz-opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); margin-bottom: 8px;
+    cursor: pointer; font-size: 14px; color: var(--ink);
+    background: var(--surface); transition: all 0.12s; width: 100%; text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--accent2); background: var(--accent-light); }
+  .quiz-opt.correct { border-color: var(--accent2); background: var(--accent-light); font-weight: 500; }
+  .quiz-opt.wrong { border-color: var(--red); background: var(--red-light); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-fb { border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 8px; font-size: 14px; display: none; line-height: 1.6; }
+  .quiz-fb.ok { background: var(--accent-light); border-left: 3px solid var(--accent2); }
+  .quiz-fb.ko { background: var(--red-light); border-left: 3px solid var(--red); }
+  .quiz-score { font-size: 13px; color: var(--ink3); margin-top: 12px; }
+
+  /* NAV FOOTER */
+  .page-nav { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .nav-btn {
+    padding: 11px 24px; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; border: 1px solid var(--border);
+    background: var(--surface); color: var(--ink); transition: all 0.15s;
+  }
+  .nav-btn:hover { background: var(--surface2); }
+  .nav-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .nav-btn.primary:hover { background: var(--accent2); border-color: var(--accent2); }
+  .nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+  /* SECTION DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  /* FEEDBACK PAGE */
+  .feedback-stars { display: flex; gap: 8px; margin: 1rem 0; }
+  .star-btn { font-size: 28px; background: none; border: none; cursor: pointer; opacity: 0.3; transition: opacity 0.15s; line-height: 1; }
+  .star-btn.lit { opacity: 1; }
+  .feedback-textarea {
+    width: 100%; min-height: 100px; padding: 12px 14px; font-size: 14px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; color: var(--ink); background: var(--surface);
+    resize: vertical; outline: none; margin-top: 8px;
+  }
+  .feedback-textarea:focus { border-color: var(--accent2); }
+  .submit-btn {
+    margin-top: 14px; padding: 12px 28px; background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+  }
+  .submit-btn:hover { background: var(--accent2); }
+  .complete-banner {
+    background: var(--ink); color: #fff; border-radius: var(--radius);
+    padding: 2rem; text-align: center; margin-bottom: 1.5rem;
+  }
+  .complete-banner .big { font-family: 'Fraunces', serif; font-size: 42px; margin-bottom: 6px; }
+  .complete-banner p { font-size: 15px; color: rgba(255,255,255,0.7); }
+  .score-display { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: var(--accent2); }
+
+  /* HIDDEN */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* MATH */
+  .math { font-style: italic; }
+
+  /* REQUIRED READING */
+  .reading-gate {
+    border: 1.5px solid var(--gold);
+    border-radius: var(--radius);
+    background: var(--gold-light);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .reading-gate-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+  }
+  .reading-gate-icon {
+    width: 32px; height: 32px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 15px; flex-shrink: 0;
+  }
+  .reading-gate-title { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .reading-gate-sub { font-size: 13px; color: var(--ink2); margin-bottom: 1rem; margin-left: 42px; }
+  .reading-links { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+  .reading-link-row { display: flex; align-items: center; gap: 10px; }
+  .reading-link-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; color: var(--blue);
+    text-decoration: none; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+  }
+  .reading-link-btn:hover { background: var(--blue-light); border-color: var(--blue); }
+  .reading-link-btn .ext-icon { font-size: 11px; opacity: 0.6; }
+  .reading-link-status {
+    font-size: 12px; color: var(--ink3); display: flex; align-items: center; gap: 5px;
+  }
+  .reading-link-status.opened { color: var(--accent); font-weight: 500; }
+  .reading-confirm-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .reading-confirm-row input[type="checkbox"] { accent-color: var(--gold); width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
+  .reading-confirm-row label { font-size: 14px; color: var(--ink2); cursor: pointer; }
+  .reading-confirm-row.confirmed { border-color: var(--accent2); background: var(--accent-light); }
+  .reading-confirm-row.confirmed label { color: var(--ink); font-weight: 500; }
+
+  /* LOCKED CONTENT */
+  .locked-content { position: relative; }
+  .locked-overlay {
+    position: absolute; inset: 0;
+    background: rgba(247,245,240,0.85);
+    backdrop-filter: blur(3px);
+    border-radius: var(--radius);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 5; gap: 8px;
+    border: 1px dashed var(--border);
+  }
+  .locked-overlay-icon { font-size: 28px; opacity: 0.5; }
+  .locked-overlay-text { font-size: 14px; color: var(--ink2); text-align: center; max-width: 280px; line-height: 1.5; }
+  .locked-content.unlocked .locked-overlay { display: none; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    Curve <span>Analysis</span><br>
+    <span class="sidebar-subtitle">CLIL Learning Path</span>
+  </div>
+  <div class="progress-section">
+    <div class="progress-label">Progress</div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+    <div class="progress-pct" id="prog-pct">0% complete</div>
+  </div>
+  <div class="nav-label">Sections</div>
+  <button class="nav-item active" id="nav-0" onclick="goTo(0)">
+    <span class="nav-dot" id="dot-0">G</span> Glossary
+  </button>
+  <button class="nav-item" id="nav-1" onclick="goTo(1)">
+    <span class="nav-dot" id="dot-1">1</span> Differentiability
+  </button>
+  <button class="nav-item" id="nav-2" onclick="goTo(2)">
+    <span class="nav-dot" id="dot-2">2</span> Maxima &amp; Minima
+  </button>
+  <button class="nav-item" id="nav-3" onclick="goTo(3)">
+    <span class="nav-dot" id="dot-3">3</span> Concavity &amp; Inflection
+  </button>
+  <button class="nav-item" id="nav-4" onclick="goTo(4)">
+    <span class="nav-dot" id="dot-4">Q</span> Quiz
+  </button>
+  <button class="nav-item" id="nav-5" onclick="goTo(5)">
+    <span class="nav-dot" id="dot-5">★</span> Evaluation
+  </button>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ========== PAGE 0: GLOSSARY ========== -->
+<div class="page active" id="page-0">
+  <div class="page-header">
+    <div class="page-tag tag-glossary">Glossary</div>
+    <h1>Bilingual Glossary</h1>
+    <p>Key terms in English and Italian. Click on any card to read the definition. Use the glossary to support all three modules — and revisit it before the quiz.</p>
+  </div>
+
+  <input class="gloss-search" placeholder="Search a term in English or Italian..." oninput="filterGloss(this.value)" id="gloss-input">
+  <div class="gloss-count" id="gloss-count">15 terms</div>
+  <div class="gloss-grid" id="gloss-grid"></div>
+
+  <div class="section-check" id="sc-gloss">
+    <input type="checkbox" id="cb-gloss" onchange="markGlossary()">
+    <label for="cb-gloss">I have reviewed all the terms and I'm ready to continue.</label>
+  </div>
+
+  <div class="page-nav">
+    <button class="nav-btn" disabled>← Previous</button>
+    <button class="nav-btn primary" onclick="goTo(1)">Module 1: Differentiability →</button>
+  </div>
+</div>
+
+<!-- ========== PAGE 1: DIFFERENTIABILITY ========== -->
+<div class="page" id="page-1">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 1</div>
+    <h1>Differentiability</h1>
+    <p>Before reading the explanations, you must visit the source page on MathIsFun. Open the link, read it carefully, then confirm below to unlock the module content.</p>
+  </div>
+
+  <!-- REQUIRED READING GATE -->
+  <div class="reading-gate" id="rg-1">
+    <div class="reading-gate-header">
+      <div class="reading-gate-icon">📖</div>
+      <div class="reading-gate-title">Required reading — complete before continuing</div>
+    </div>
+    <div class="reading-gate-sub">Open the page, read it fully, then tick the confirmation box to unlock this module.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://www.mathsisfun.com/calculus/differentiable.html" target="_blank" onclick="markLinkOpened('rl1-1')">
+          Differentiable — MathIsFun <span class="ext-icon">↗</span>
+        </a>
+        <span class="reading-link-status" id="rl1-1-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-1">
+      <input type="checkbox" id="rcb-1" onchange="confirmReading(1)" disabled>
+      <label for="rcb-1">I have read the MathIsFun page and I'm ready to study the module.</label>
+    </div>
+  </div>
+
+  <!-- LOCKED CONTENT WRAPPER -->
+  <div class="locked-content" id="lc-1">
+    <div class="locked-overlay">
+      <div class="locked-overlay-icon">🔒</div>
+      <div class="locked-overlay-text">Open and confirm the required reading above to unlock this module.</div>
+    </div>
+
+  <div class="card">
+    <div class="card-title">What does differentiable mean?</div>
+    <p>A function <code>f(x)</code> is differentiable at a point <code>x = a</code> if the following limit exists:</p>
+    <div class="box box-rule">
+      <div class="box-label">Definition</div>
+      <code>lim<sub>h→0</sub> [f(a+h) − f(a)] / h</code>
+      <p style="margin-top:8px">This limit must exist and must be the same from both the left and the right side.</p>
+    </div>
+    <p>Visually: as you zoom in on the graph at that point, the curve must look like a straight line. If it stays "pointy" (corner or cusp), the derivative does not exist.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">When is a function NOT differentiable?</div>
+    <ul class="points">
+      <li><strong>Sharp corner / cusp</strong> — e.g. <code>f(x) = |x|</code> at x = 0: left limit = −1, right limit = +1. They differ, so no derivative exists.</li>
+      <li><strong>Vertical tangent</strong> — e.g. <code>f(x) = x<sup>1/3</sup></code> at x = 0: derivative → ∞.</li>
+      <li><strong>Discontinuity</strong> — e.g. the floor function at integer values: a jump means no derivative.</li>
+      <li><strong>Infinite oscillation</strong> — e.g. <code>sin(1/x)</code> near x = 0: the slope never settles.</li>
+    </ul>
+    <div class="box box-rule" style="margin-top:1rem">
+      <div class="box-label">Key implication</div>
+      Differentiable ⟹ Continuous &nbsp;|&nbsp; But: Continuous ≠ Differentiable
+    </div>
+    <div class="box box-lang">
+      <div class="box-label">Language focus 🇬🇧 → 🇮🇹</div>
+      <em>"The derivative exists at every point in the domain"</em><br>
+      → <em>"La derivata esiste in ogni punto del dominio"</em><br><br>
+      <em>"The function is not differentiable at x = 0"</em><br>
+      → <em>"La funzione non è derivabile in x = 0"</em>
+    </div>
+  </div>
+
+  <!-- EXERCISE 1 -->
+  <div class="exercise-block" id="ex1-block">
+    <div class="ex-header">
+      <div class="ex-num">1</div>
+      <div class="ex-title">Exercise — Differentiability check</div>
+    </div>
+    <div class="ex-question">
+      Consider the function <strong>f(x) = |x − 3|</strong>. Work through each step and select the correct answer.
+    </div>
+
+    <div class="step-label">Step A — What is the left-hand derivative at x = 3?</div>
+    <div id="ex1a">
+      <div class="step-input"><input type="radio" name="e1a" id="e1a1" value="1"><label for="e1a1">+1</label></div>
+      <div class="step-input"><input type="radio" name="e1a" id="e1a2" value="-1"><label for="e1a2">−1</label></div>
+      <div class="step-input"><input type="radio" name="e1a" id="e1a3" value="0"><label for="e1a3">0</label></div>
+    </div>
+
+    <div class="step-label">Step B — What is the right-hand derivative at x = 3?</div>
+    <div id="ex1b">
+      <div class="step-input"><input type="radio" name="e1b" id="e1b1" value="+1"><label for="e1b1">+1</label></div>
+      <div class="step-input"><input type="radio" name="e1b" id="e1b2" value="-1"><label for="e1b2">−1</label></div>
+      <div class="step-input"><input type="radio" name="e1b" id="e1b3" value="0"><label for="e1b3">0</label></div>
+    </div>
+
+    <div class="step-label">Step C — Conclusion: is f(x) = |x − 3| differentiable at x = 3?</div>
+    <div id="ex1c">
+      <div class="step-input"><input type="radio" name="e1c" id="e1c1" value="yes"><label for="e1c1">Yes, because the two limits are equal.</label></div>
+      <div class="step-input"><input type="radio" name="e1c" id="e1c2" value="no"><label for="e1c2">No, because the left and right limits differ.</label></div>
+      <div class="step-input"><input type="radio" name="e1c" id="e1c3" value="nd"><label for="e1c3">It cannot be determined without more information.</label></div>
+    </div>
+
+    <button class="check-btn" onclick="checkEx1()">Check answers</button>
+    <div class="fb-box" id="ex1-fb"></div>
+  </div>
+
+  <div class="section-check" id="sc-1">
+    <input type="checkbox" id="cb-1" onchange="markSection(1)">
+    <label for="cb-1">I have understood differentiability and completed the exercise.</label>
+  </div>
+
+  </div><!-- end locked-content -->
+
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(0)">← Glossary</button>
+    <button class="nav-btn primary" onclick="goTo(2)">Module 2: Maxima &amp; Minima →</button>
+  </div>
+</div>
+
+<!-- ========== PAGE 2: MAXIMA & MINIMA ========== -->
+<div class="page" id="page-2">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 2</div>
+    <h1>Stationary Points &amp; Monotonicity</h1>
+    <p>Before reading the explanations, visit the MathIsFun source page. Open it, read it carefully, then confirm below to unlock the module.</p>
+  </div>
+
+  <!-- REQUIRED READING GATE -->
+  <div class="reading-gate" id="rg-2">
+    <div class="reading-gate-header">
+      <div class="reading-gate-icon">📖</div>
+      <div class="reading-gate-title">Required reading — complete before continuing</div>
+    </div>
+    <div class="reading-gate-sub">Open the page, read it fully, then tick the confirmation box to unlock this module.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://www.mathsisfun.com/calculus/maxima-minima.html" target="_blank" onclick="markLinkOpened('rl2-1')">
+          Finding Maxima and Minima — MathIsFun <span class="ext-icon">↗</span>
+        </a>
+        <span class="reading-link-status" id="rl2-1-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-2">
+      <input type="checkbox" id="rcb-2" onchange="confirmReading(2)" disabled>
+      <label for="rcb-2">I have read the MathIsFun page and I'm ready to study the module.</label>
+    </div>
+  </div>
+
+  <!-- LOCKED CONTENT WRAPPER -->
+  <div class="locked-content" id="lc-2">
+    <div class="locked-overlay">
+      <div class="locked-overlay-icon">🔒</div>
+      <div class="locked-overlay-text">Open and confirm the required reading above to unlock this module.</div>
+    </div>
+
+  <div class="card">
+    <div class="card-title">Critical (stationary) points</div>
+    <p>A <strong>stationary point</strong> occurs where <code>f′(x) = 0</code>. At these points the tangent line is horizontal — the function momentarily flattens out.</p>
+    <div class="box box-rule">
+      <div class="box-label">Second derivative test</div>
+      Find x where f′(x) = 0, then compute f″(x):<br><br>
+      • f″(x) &lt; 0 → <strong>local maximum</strong> (concave downward at that point)<br>
+      • f″(x) &gt; 0 → <strong>local minimum</strong> (concave upward at that point)<br>
+      • f″(x) = 0 → test is inconclusive (may be a saddle/inflection point)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Intervals of monotonicity</div>
+    <p>The sign of <code>f′(x)</code> tells us whether the function is increasing or decreasing:</p>
+    <ul class="points">
+      <li><strong>f′(x) &gt; 0</strong> on an interval → f is <em>increasing</em> on that interval.</li>
+      <li><strong>f′(x) &lt; 0</strong> on an interval → f is <em>decreasing</em> on that interval.</li>
+      <li>The transition points (where f′ = 0 and the sign changes) are the local extrema.</li>
+    </ul>
+    <div class="box box-tip">
+      <div class="box-label">Real-world example</div>
+      A ball thrown upward: <code>h(t) = 3 + 14t − 5t²</code><br>
+      h′(t) = 14 − 10t = 0 → t = 1.4 s (maximum height)<br>
+      h′ &gt; 0 for t &lt; 1.4 (rising) &nbsp;|&nbsp; h′ &lt; 0 for t &gt; 1.4 (falling)
+    </div>
+    <div class="box box-lang">
+      <div class="box-label">Language focus 🇬🇧 → 🇮🇹</div>
+      <em>"f is increasing on the interval (a, b)"</em><br>
+      → <em>"f è crescente nell'intervallo (a, b)"</em><br><br>
+      <em>"The function has a local minimum at x = c"</em><br>
+      → <em>"La funzione ha un minimo locale in x = c"</em>
+    </div>
+  </div>
+
+  <!-- EXERCISE 2 -->
+  <div class="exercise-block">
+    <div class="ex-header">
+      <div class="ex-num">2</div>
+      <div class="ex-title">Exercise — Stationary points of y = x³ − 3x</div>
+    </div>
+    <div class="ex-question">
+      Given <strong>f(x) = x³ − 3x</strong>, find the stationary points and classify the monotonicity intervals. Work through each step.
+    </div>
+
+    <div class="step-label">Step A — What is f′(x)?</div>
+    <div id="ex2a">
+      <div class="step-input"><input type="radio" name="e2a" id="e2a1" value="a"><label for="e2a1">3x² − 3</label></div>
+      <div class="step-input"><input type="radio" name="e2a" id="e2a2" value="b"><label for="e2a2">x² − 3x</label></div>
+      <div class="step-input"><input type="radio" name="e2a" id="e2a3" value="c"><label for="e2a3">3x² + 3</label></div>
+    </div>
+
+    <div class="step-label">Step B — Setting f′(x) = 0, the critical points are:</div>
+    <div id="ex2b">
+      <div class="step-input"><input type="radio" name="e2b" id="e2b1" value="a"><label for="e2b1">x = 0 and x = 3</label></div>
+      <div class="step-input"><input type="radio" name="e2b" id="e2b2" value="b"><label for="e2b2">x = 1 and x = −1</label></div>
+      <div class="step-input"><input type="radio" name="e2b" id="e2b3" value="c"><label for="e2b3">x = √3 only</label></div>
+    </div>
+
+    <div class="step-label">Step C — Classify each critical point. f″(x) = 6x. At x = −1: f″ = −6 &lt; 0. At x = 1: f″ = +6 &gt; 0. Therefore:</div>
+    <div id="ex2c">
+      <div class="step-input"><input type="radio" name="e2c" id="e2c1" value="a"><label for="e2c1">x = −1 is a local maximum; x = 1 is a local minimum.</label></div>
+      <div class="step-input"><input type="radio" name="e2c" id="e2c2" value="b"><label for="e2c2">x = −1 is a local minimum; x = 1 is a local maximum.</label></div>
+      <div class="step-input"><input type="radio" name="e2c" id="e2c3" value="c"><label for="e2c3">Both are inflection points.</label></div>
+    </div>
+
+    <div class="step-label">Step D — Monotonicity intervals. Choose the correct description:</div>
+    <div id="ex2d">
+      <div class="step-input"><input type="radio" name="e2d" id="e2d1" value="a"><label for="e2d1">Increasing on (−∞, −1) and (1, +∞); decreasing on (−1, 1).</label></div>
+      <div class="step-input"><input type="radio" name="e2d" id="e2d2" value="b"><label for="e2d2">Decreasing on (−∞, −1) and (1, +∞); increasing on (−1, 1).</label></div>
+      <div class="step-input"><input type="radio" name="e2d" id="e2d3" value="c"><label for="e2d3">Always increasing.</label></div>
+    </div>
+
+    <button class="check-btn" onclick="checkEx2()">Check answers</button>
+    <div class="fb-box" id="ex2-fb"></div>
+  </div>
+
+  <div class="section-check" id="sc-2">
+    <input type="checkbox" id="cb-2" onchange="markSection(2)">
+    <label for="cb-2">I have understood stationary points, monotonicity, and completed the exercise.</label>
+  </div>
+
+  </div><!-- end locked-content -->
+
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(1)">← Module 1</button>
+    <button class="nav-btn primary" onclick="goTo(3)">Module 3: Concavity →</button>
+  </div>
+</div>
+
+<!-- ========== PAGE 3: CONCAVITY & INFLECTION ========== -->
+<div class="page" id="page-3">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 3</div>
+    <h1>Concavity &amp; Inflection Points</h1>
+    <p>Before reading the explanations, visit both MathIsFun source pages. Open them, read carefully, then confirm below to unlock the module.</p>
+  </div>
+
+  <!-- REQUIRED READING GATE -->
+  <div class="reading-gate" id="rg-3">
+    <div class="reading-gate-header">
+      <div class="reading-gate-icon">📖</div>
+      <div class="reading-gate-title">Required reading — complete before continuing</div>
+    </div>
+    <div class="reading-gate-sub">Open both pages, read them fully, then tick the confirmation box to unlock this module.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://www.mathsisfun.com/calculus/concave-up-down-convex.html" target="_blank" onclick="markLinkOpened('rl3-1')">
+          Concave Upward &amp; Downward — MathIsFun <span class="ext-icon">↗</span>
+        </a>
+        <span class="reading-link-status" id="rl3-1-status">not opened yet</span>
+      </div>
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://www.mathsisfun.com/calculus/inflection-points.html" target="_blank" onclick="markLinkOpened('rl3-2')">
+          Inflection Points — MathIsFun <span class="ext-icon">↗</span>
+        </a>
+        <span class="reading-link-status" id="rl3-2-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-3">
+      <input type="checkbox" id="rcb-3" onchange="confirmReading(3)" disabled>
+      <label for="rcb-3">I have read both MathIsFun pages and I'm ready to study the module.</label>
+    </div>
+  </div>
+
+  <!-- LOCKED CONTENT WRAPPER -->
+  <div class="locked-content" id="lc-3">
+    <div class="locked-overlay">
+      <div class="locked-overlay-icon">🔒</div>
+      <div class="locked-overlay-text">Open and confirm the required readings above to unlock this module.</div>
+    </div>
+
+  <div class="card">
+    <div class="card-title">Concave upward and concave downward</div>
+    <p>Concavity describes how the slope is changing:</p>
+    <div class="box box-rule">
+      <div class="box-label">Rules</div>
+      • <strong>f″(x) &gt; 0</strong> → curve is <em>concave upward</em> (∪ shape — like a cup)<br>
+      &emsp;the slope is <em>increasing</em><br><br>
+      • <strong>f″(x) &lt; 0</strong> → curve is <em>concave downward</em> (∩ shape — like a cap)<br>
+      &emsp;the slope is <em>decreasing</em>
+    </div>
+    <div class="box box-tip">
+      <div class="box-label">Memory trick</div>
+      <strong>CUP</strong> = <strong>C</strong>oncave <strong>U</strong>p → the shape holds water like a cup ∪
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Inflection points</div>
+    <p>An <strong>inflection point</strong> is where the curve switches from concave upward to concave downward (or vice versa). The second derivative changes sign there.</p>
+    <ul class="points">
+      <li>Set <code>f″(x) = 0</code> and check that the sign of f″ actually changes around that point.</li>
+      <li><strong>Warning:</strong> f″(x₀) = 0 is necessary but NOT sufficient. The sign must change.</li>
+      <li>Example: for <code>y = x⁴</code>, f″(0) = 0 but f″ &gt; 0 on both sides → no inflection point.</li>
+    </ul>
+    <div class="box box-lang">
+      <div class="box-label">Language focus 🇬🇧 → 🇮🇹</div>
+      <em>"The curve switches from concave upward to concave downward"</em><br>
+      → <em>"La curva passa dalla concavità verso l'alto a quella verso il basso"</em><br><br>
+      <em>"There is an inflection point at x = c"</em><br>
+      → <em>"C'è un punto di flesso in x = c"</em>
+    </div>
+  </div>
+
+  <!-- EXERCISE 3 -->
+  <div class="exercise-block">
+    <div class="ex-header">
+      <div class="ex-num">3</div>
+      <div class="ex-title">Exercise — Concavity of f(x) = 5x³ + 2x² − 3x</div>
+    </div>
+    <div class="ex-question">
+      Given <strong>f(x) = 5x³ + 2x² − 3x</strong>, determine the concavity and find any inflection points. The first derivative is f′(x) = 15x² + 4x − 3.
+    </div>
+
+    <div class="step-label">Step A — What is f″(x)?</div>
+    <div id="ex3a">
+      <div class="step-input"><input type="radio" name="e3a" id="e3a1" value="a"><label for="e3a1">30x + 4</label></div>
+      <div class="step-input"><input type="radio" name="e3a" id="e3a2" value="b"><label for="e3a2">15x + 4</label></div>
+      <div class="step-input"><input type="radio" name="e3a" id="e3a3" value="c"><label for="e3a3">30x² + 4</label></div>
+    </div>
+
+    <div class="step-label">Step B — Setting f″(x) = 0: the candidate inflection point is at x =</div>
+    <div id="ex3b">
+      <div class="step-input"><input type="radio" name="e3b" id="e3b1" value="a"><label for="e3b1">x = −2/15</label></div>
+      <div class="step-input"><input type="radio" name="e3b" id="e3b2" value="b"><label for="e3b2">x = 2/15</label></div>
+      <div class="step-input"><input type="radio" name="e3b" id="e3b3" value="c"><label for="e3b3">x = 0</label></div>
+    </div>
+
+    <div class="step-label">Step C — For x &lt; −2/15, f″(x) is negative; for x &gt; −2/15, f″(x) is positive. Therefore the curve is:</div>
+    <div id="ex3c">
+      <div class="step-input"><input type="radio" name="e3c" id="e3c1" value="a"><label for="e3c1">Concave downward to the left of x = −2/15 and concave upward to the right → confirmed inflection point.</label></div>
+      <div class="step-input"><input type="radio" name="e3c" id="e3c2" value="b"><label for="e3c2">Concave upward on both sides → no inflection point.</label></div>
+      <div class="step-input"><input type="radio" name="e3c" id="e3c3" value="c"><label for="e3c3">Concave downward on both sides → no inflection point.</label></div>
+    </div>
+
+    <div class="step-label">Step D — Select all features this inflection point has: (select all that apply)</div>
+    <div id="ex3d">
+      <div class="step-input"><input type="checkbox" id="e3d1" value="a"><label for="e3d1">f″ changes sign at x = −2/15 ✓</label></div>
+      <div class="step-input"><input type="checkbox" id="e3d2" value="b"><label for="e3d2">f′(−2/15) = 0 (it is also a stationary point)</label></div>
+      <div class="step-input"><input type="checkbox" id="e3d3" value="c"><label for="e3d3">The curve changes concavity direction ✓</label></div>
+      <div class="step-input"><input type="checkbox" id="e3d4" value="d"><label for="e3d4">It is a local maximum</label></div>
+    </div>
+
+    <button class="check-btn" onclick="checkEx3()">Check answers</button>
+    <div class="fb-box" id="ex3-fb"></div>
+  </div>
+
+  <div class="section-check" id="sc-3">
+    <input type="checkbox" id="cb-3" onchange="markSection(3)">
+    <label for="cb-3">I have understood concavity, inflection points, and completed the exercise.</label>
+  </div>
+
+  </div><!-- end locked-content -->
+
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(2)">← Module 2</button>
+    <button class="nav-btn primary" onclick="goTo(4)">Quiz →</button>
+  </div>
+</div>
+
+<!-- ========== PAGE 4: QUIZ ========== -->
+<div class="page" id="page-4">
+  <div class="page-header">
+    <div class="page-tag tag-quiz">Final Quiz</div>
+    <h1>Test your knowledge</h1>
+    <p>Ten questions covering all three modules and the glossary. Read carefully and select the best answer for each question.</p>
+  </div>
+
+  <div id="quiz-container"></div>
+
+  <div id="quiz-result" style="display:none">
+    <div class="card" id="quiz-result-card" style="padding:2rem">
+
+      <!-- Score banner -->
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <div class="score-display" id="quiz-score-text"></div>
+        <p style="margin-top:6px;color:var(--ink2);font-size:15px" id="quiz-msg"></p>
+      </div>
+
+      <!-- Performance by topic -->
+      <div style="border-top:1px solid var(--border);padding-top:1.25rem;margin-bottom:1.25rem">
+        <div class="box-label" style="margin-bottom:10px">Performance by topic</div>
+        <div id="topic-breakdown"></div>
+      </div>
+
+      <!-- Personalised advice -->
+      <div class="box box-tip" id="quiz-advice" style="margin-bottom:1rem"></div>
+
+      <!-- Weak questions list -->
+      <div id="quiz-review-section" style="display:none">
+        <div class="box-label" style="margin-bottom:8px">Questions to review</div>
+        <div id="quiz-review-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-nav" style="margin-top:1.5rem">
+    <button class="nav-btn" onclick="goTo(3)">← Module 3</button>
+    <button class="nav-btn primary" id="btn-to-feedback" onclick="goTo(5)">Your evaluation →</button>
+  </div>
+</div>
+
+<!-- ========== PAGE 5: STUDENT EVALUATION ========== -->
+<div class="page" id="page-5">
+  <div class="page-header">
+    <div class="page-tag tag-end">Final evaluation</div>
+    <h1>Your learning evaluation</h1>
+    <p>A complete picture of your performance across the entire path — based on your quiz answers.</p>
+  </div>
+
+  <div id="eval-container">
+    <div class="card" style="text-align:center;color:var(--ink2);font-size:14px;padding:2rem">
+      Complete the quiz first to generate your evaluation.
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(4)">← Quiz</button>
+    <button class="nav-btn primary" onclick="goTo(0)">↺ Restart from beginning</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ========== DATA ==========
+
+const glossaryData = [
+  { en: "Differentiable", it: "Derivabile", def: "A function is differentiable at a point if its derivative (the limit of the difference quotient) exists at that point." },
+  { en: "Derivative", it: "Derivata", def: "The instantaneous rate of change of a function; geometrically, the slope of the tangent line to the curve at a point." },
+  { en: "Domain", it: "Dominio", def: "The set of all input values (x-values) for which the function is defined." },
+  { en: "Limit", it: "Limite", def: "The value a function approaches as the input gets closer and closer to a given point." },
+  { en: "Critical / stationary point", it: "Punto critico / stazionario", def: "A point where f′(x) = 0 or f′(x) is undefined; the tangent line is horizontal or does not exist." },
+  { en: "Local maximum", it: "Massimo locale", def: "A point where f(x) is greater than all nearby values; f′ = 0 and f″ < 0." },
+  { en: "Local minimum", it: "Minimo locale", def: "A point where f(x) is less than all nearby values; f′ = 0 and f″ > 0." },
+  { en: "Extremum / Extrema", it: "Estremo / Estremanti", def: "General term for local maxima and minima (the 'extreme' values of a function)." },
+  { en: "Saddle point", it: "Punto di sella", def: "A point where f′(x) = 0 but which is neither a local maximum nor a local minimum. The name comes from the shape of a horse saddle: it curves upward in one direction and downward in another. At a saddle point the second derivative test fails (f″ = 0), and the function neither rises nor falls — it flattens out and continues in the same direction. Example: x = 0 for f(x) = x³ is a saddle point." },
+  { en: "Second derivative test", it: "Criterio della derivata seconda", def: "Using f″(x) at a critical point to classify it: f″ < 0 → maximum; f″ > 0 → minimum; f″ = 0 → inconclusive." },
+  { en: "Monotonicity", it: "Monotonia", def: "A function is monotone increasing if f′ > 0, and monotone decreasing if f′ < 0 on an interval." },
+  { en: "Concave upward", it: "Concavità verso l'alto", def: "The slope is increasing; f″(x) > 0. The curve looks like a cup ∪." },
+  { en: "Concave downward", it: "Concavità verso il basso", def: "The slope is decreasing; f″(x) < 0. The curve looks like a cap ∩." },
+  { en: "Inflection point", it: "Punto di flesso", def: "A point where the curve switches concavity (from upward to downward or vice versa); f″ changes sign." },
+  { en: "Tangent line", it: "Retta tangente", def: "The straight line that touches the curve at exactly one point (locally), with slope equal to f′ at that point." }
+];
+
+const quizData = [
+  // --- Glossary questions ---
+  {
+    q: "Which Italian term corresponds to 'inflection point'?",
+    opts: ["Punto di massimo", "Punto di sella", "Punto di flesso", "Punto di discontinuità"],
+    correct: 2,
+    ok: "Correct! 'Punto di flesso' is the Italian for inflection point — where the concavity switches direction.",
+    ko: "Not quite. The correct Italian term is 'punto di flesso'. 'Punto di sella' = saddle point."
+  },
+  {
+    q: "What is the Italian translation of 'local minimum'?",
+    opts: ["Minimo assoluto", "Minimo locale", "Punto stazionario", "Massimo locale"],
+    correct: 1,
+    ok: "Correct! 'Minimo locale' = local minimum. A local minimum is lower than all nearby points.",
+    ko: "Not quite. 'Minimo locale' is the correct translation. 'Minimo assoluto' would be the global minimum."
+  },
+  {
+    q: "What does 'monotonicity' describe in calculus?",
+    opts: ["Whether a function has a derivative", "Whether a function is consistently increasing or decreasing on an interval", "The number of inflection points", "The value of the second derivative"],
+    correct: 1,
+    ok: "Correct! Monotonicity tells us on which intervals the function is always increasing (f′ > 0) or always decreasing (f′ < 0).",
+    ko: "Not quite. Monotonicity describes whether a function is consistently increasing or decreasing on a given interval, determined by the sign of f′."
+  },
+  // --- Differentiability ---
+  {
+    q: "A function has a sharp corner at x = 2. What is true at that point?",
+    opts: ["It is differentiable, because it is continuous.", "It is not differentiable, because the left and right limits of the derivative differ.", "It has a local maximum at x = 2.", "The second derivative is zero."],
+    correct: 1,
+    ok: "Correct! A sharp corner means the one-sided limits of the derivative are different, so the derivative does not exist — the function is not differentiable.",
+    ko: "Not quite. A sharp corner means the left-hand and right-hand derivatives are different, so the function is NOT differentiable at that point."
+  },
+  {
+    q: "Which statement is always true?",
+    opts: ["Continuous ⟹ Differentiable", "Differentiable ⟹ Continuous", "Differentiable ⟹ has a maximum", "Continuous ⟺ Differentiable"],
+    correct: 1,
+    ok: "Correct! Every differentiable function is continuous. However the converse is false: |x| is continuous but not differentiable at x = 0.",
+    ko: "Not quite. The correct implication is: Differentiable ⟹ Continuous. The converse does NOT hold in general."
+  },
+  // --- Maxima / Minima ---
+  {
+    q: "At a critical point x₀ you compute f″(x₀) = −5. What type of point is x₀?",
+    opts: ["Local minimum", "Inflection point", "Local maximum", "The test is inconclusive"],
+    correct: 2,
+    ok: "Correct! f″ < 0 means the curve is concave downward at x₀, so the function has a local maximum there.",
+    ko: "Not quite. f″(x₀) < 0 means concave downward → local maximum by the second derivative test."
+  },
+  {
+    q: "For f(x) = x³ − 3x, on which interval is f INCREASING?",
+    opts: ["(−1, 1)", "(−∞, −1) and (1, +∞)", "(0, +∞)", "(−∞, 0)"],
+    correct: 1,
+    ok: "Correct! f′(x) = 3x² − 3 > 0 when x < −1 or x > 1, so f is increasing on (−∞, −1) ∪ (1, +∞).",
+    ko: "Not quite. f′(x) = 3x² − 3 > 0 for x < −1 and x > 1, so the function increases on (−∞, −1) and (1, +∞)."
+  },
+  // --- Concavity ---
+  {
+    q: "Which condition guarantees that a curve is concave UPWARD on an interval?",
+    opts: ["f′(x) > 0 on that interval", "f″(x) > 0 on that interval", "f(x) > 0 on that interval", "f″(x) = 0 on that interval"],
+    correct: 1,
+    ok: "Correct! f″(x) > 0 means the slope is increasing, which gives concave upward (∪ shape).",
+    ko: "Not quite. Concave upward is determined by the SECOND derivative: f″(x) > 0 on the interval."
+  },
+  {
+    q: "For y = x⁴, f″(0) = 0. Is x = 0 an inflection point?",
+    opts: ["Yes, because f″(0) = 0.", "No, because the sign of f″ does not change around x = 0.", "Yes, because f′(0) = 0.", "Cannot be determined."],
+    correct: 1,
+    ok: "Correct! f″(x) = 12x² ≥ 0 everywhere — it never changes sign. The curve stays concave upward on both sides of x = 0, so there is NO inflection point.",
+    ko: "Not quite. f″(x) = 12x² is non-negative everywhere and does not change sign at x = 0, so x = 0 is NOT an inflection point."
+  },
+  {
+    q: "The inflection point of f(x) = 5x³ + 2x² − 3x is at x = −2/15. Which statement about it is correct?",
+    opts: ["f″ is negative on both sides, so there is no inflection point.", "f″ changes sign from negative to positive at x = −2/15, confirming an inflection point.", "f′(−2/15) = 0, making it a stationary point.", "f″ > 0 on both sides."],
+    correct: 1,
+    ok: "Correct! f″ = 30x + 4 is negative for x < −2/15 and positive for x > −2/15 — the sign changes, confirming an inflection point.",
+    ko: "Not quite. f″ = 30x + 4 changes from negative to positive at x = −2/15, which confirms it is an inflection point."
+  }
+];
+
+// ========== STATE ==========
+let currentPage = 0;
+const completed = new Set();
+let quizAnswered = new Array(quizData.length).fill(false);
+let quizCorrect = 0;
+
+// ========== NAVIGATION ==========
+function goTo(idx) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + idx).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach((n, i) => {
+    n.classList.remove('active');
+    if (i === idx) n.classList.add('active');
+  });
+  currentPage = idx;
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  const total = 6;
+  const pct = Math.round((completed.size / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '% complete';
+  [0,1,2,3,4,5].forEach(i => {
+    const dot = document.getElementById('dot-' + i);
+    const nav = document.getElementById('nav-' + i);
+    if (completed.has(i)) {
+      dot.textContent = '✓';
+      nav.classList.add('done');
+    }
+  });
+}
+
+// ========== GLOSSARY ==========
+function buildGlossary(data) {
+  const grid = document.getElementById('gloss-grid');
+  grid.innerHTML = data.map((g, i) => `
+    <div class="gloss-card" id="gc-${i}" onclick="toggleGloss(${i})">
+      <div class="gloss-en">${g.en}</div>
+      <div class="gloss-it">${g.it}</div>
+      <div class="gloss-def">${g.def}</div>
+    </div>`).join('');
+  document.getElementById('gloss-count').textContent = data.length + ' terms';
+}
+
+function toggleGloss(i) {
+  document.getElementById('gc-' + i).classList.toggle('open');
+}
+
+function filterGloss(val) {
+  const f = val.toLowerCase();
+  const filtered = f ? glossaryData.filter(g =>
+    g.en.toLowerCase().includes(f) || g.it.toLowerCase().includes(f) || g.def.toLowerCase().includes(f)
+  ) : glossaryData;
+  buildGlossary(filtered);
+}
+
+function markGlossary() {
+  const cb = document.getElementById('cb-gloss');
+  const sc = document.getElementById('sc-gloss');
+  if (cb.checked) {
+    sc.classList.add('checked');
+    completed.add(0);
+  } else {
+    sc.classList.remove('checked');
+    completed.delete(0);
+  }
+  updateProgress();
+}
+
+function markSection(n) {
+  const cb = document.getElementById('cb-' + n);
+  const sc = document.getElementById('sc-' + n);
+  if (cb.checked) {
+    sc.classList.add('checked');
+    completed.add(n);
+  } else {
+    sc.classList.remove('checked');
+    completed.delete(n);
+  }
+  updateProgress();
+}
+
+// ========== EXERCISES ==========
+
+// Exercise 1: differentiability of |x−3|
+function checkEx1() {
+  const a = document.querySelector('input[name="e1a"]:checked');
+  const b = document.querySelector('input[name="e1b"]:checked');
+  const c = document.querySelector('input[name="e1c"]:checked');
+  if (!a || !b || !c) { alert('Please answer all steps before checking.'); return; }
+
+  const aOk = a.value === '-1';
+  const bOk = b.value === '+1';
+  const cOk = c.value === 'no';
+  const allOk = aOk && bOk && cOk;
+
+  highlightRadio('e1a', '-1', aOk);
+  highlightRadio('e1b', '+1', bOk);
+  highlightRadio('e1c', 'no', cOk);
+
+  showFb('ex1-fb', allOk,
+    '✓ Perfect! Left-hand derivative = −1 (the slope of −(x−3) = −1), right-hand derivative = +1 (slope of +(x−3) = 1). Since −1 ≠ +1, the derivative does not exist at x = 3 → f is NOT differentiable there.',
+    `✗ Let's review: For |x−3|, when x < 3 the function equals −(x−3), so its slope is −1. When x > 3, it equals +(x−3), so its slope is +1. The two one-sided derivatives differ, so f is NOT differentiable at x = 3.`
+  );
+  document.querySelector('#ex1-block .check-btn').disabled = true;
+}
+
+// Exercise 2: stationary points of x³−3x
+function checkEx2() {
+  const a = document.querySelector('input[name="e2a"]:checked');
+  const b = document.querySelector('input[name="e2b"]:checked');
+  const c = document.querySelector('input[name="e2c"]:checked');
+  const d = document.querySelector('input[name="e2d"]:checked');
+  if (!a || !b || !c || !d) { alert('Please answer all steps before checking.'); return; }
+
+  const aOk = a.value === 'a'; // 3x²−3
+  const bOk = b.value === 'b'; // x=1, x=−1
+  const cOk = c.value === 'a'; // −1 max, 1 min
+  const dOk = d.value === 'a'; // increasing (−∞,−1),(1,+∞)
+  const allOk = aOk && bOk && cOk && dOk;
+
+  highlightRadio('e2a', 'a', aOk);
+  highlightRadio('e2b', 'b', bOk);
+  highlightRadio('e2c', 'a', cOk);
+  highlightRadio('e2d', 'a', dOk);
+
+  showFb('ex2-fb', allOk,
+    '✓ Excellent! f′(x) = 3x²−3. Setting to zero: 3(x²−1)=0 → x=±1. f″(x)=6x → f″(−1)=−6<0 (local max at x=−1, f(−1)=2) and f″(1)=6>0 (local min at x=1, f(1)=−2). f is increasing where f′>0: x<−1 and x>1.',
+    `✗ Let's review step by step: f′(x) = 3x²−3 (power rule). 3x²−3=0 → x²=1 → x=1 and x=−1. f″=6x: at x=−1 → −6<0 (max); at x=1 → +6>0 (min). f′>0 outside (−1,1) → increasing on (−∞,−1)∪(1,+∞); decreasing on (−1,1).`
+  );
+  document.querySelectorAll('#page-2 .check-btn')[0].disabled = true;
+}
+
+// Exercise 3: concavity of 5x³+2x²−3x
+function checkEx3() {
+  const a = document.querySelector('input[name="e3a"]:checked');
+  const b = document.querySelector('input[name="e3b"]:checked');
+  const c = document.querySelector('input[name="e3c"]:checked');
+  if (!a || !b || !c) { alert('Please answer all steps A–C before checking.'); return; }
+
+  const aOk = a.value === 'a'; // 30x+4
+  const bOk = b.value === 'a'; // −2/15
+  const cOk = c.value === 'a'; // concave down left, up right
+
+  // Checkboxes: correct = d1 and d3 only
+  const d1 = document.getElementById('e3d1').checked;
+  const d2 = document.getElementById('e3d2').checked;
+  const d3 = document.getElementById('e3d3').checked;
+  const d4 = document.getElementById('e3d4').checked;
+  const dOk = d1 && !d2 && d3 && !d4;
+
+  const allOk = aOk && bOk && cOk && dOk;
+
+  highlightRadio('e3a', 'a', aOk);
+  highlightRadio('e3b', 'a', bOk);
+  highlightRadio('e3c', 'a', cOk);
+
+  showFb('ex3-fb', allOk,
+    '✓ Well done! f″(x) = 30x+4. Setting to 0: x = −4/30 = −2/15. For x < −2/15, f″<0 (concave down); for x > −2/15, f″>0 (concave up). The sign changes → confirmed inflection point. The correct features are: f″ changes sign ✓ and the curve changes concavity ✓. It is NOT necessarily a stationary point, and NOT a local maximum.',
+    `✗ Let's review: f″(x) = 30x+4 (differentiate f′=15x²+4x−3). 30x+4=0 → x=−2/15. f″<0 to the left, f″>0 to the right → concavity changes → inflection point confirmed. The correct checkboxes are: "f″ changes sign" and "The curve changes concavity direction". Note: an inflection point is NOT necessarily a stationary point.`
+  );
+  document.querySelectorAll('#page-3 .check-btn')[0].disabled = true;
+}
+
+function highlightRadio(name, correctValue, userWasRight) {
+  document.querySelectorAll(`input[name="${name}"]`).forEach(inp => {
+    const wrap = inp.closest('.step-input');
+    if (inp.value === correctValue) wrap.classList.add('correct-highlight');
+    else if (inp.checked && !userWasRight) wrap.classList.add('wrong-highlight');
+  });
+}
+
+function showFb(id, ok, okMsg, koMsg) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  el.className = 'fb-box ' + (ok ? 'fb-ok' : 'fb-ko');
+  el.textContent = ok ? okMsg : koMsg;
+}
+
+// ========== QUIZ ==========
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = quizData.map((q, qi) => `
+    <div class="card" id="qcard-${qi}">
+      <div class="quiz-num">Question ${qi + 1} of ${quizData.length}</div>
+      <div class="quiz-q">${q.q}</div>
+      ${q.opts.map((o, oi) => `
+        <button class="quiz-opt" id="qopt-${qi}-${oi}" onclick="answerQuiz(${qi},${oi})">${o}</button>
+      `).join('')}
+      <div class="quiz-fb" id="qfb-${qi}"></div>
+    </div>
+  `).join('');
+}
+
+function answerQuiz(qi, oi) {
+  if (quizAnswered[qi]) return;
+  quizAnswered[qi] = true;
+  const q = quizData[qi];
+  for (let i = 0; i < q.opts.length; i++) {
+    const btn = document.getElementById(`qopt-${qi}-${i}`);
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === oi) btn.classList.add('wrong');
+  }
+  const fb = document.getElementById(`qfb-${qi}`);
+  const isOk = oi === q.correct;
+  if (isOk) quizCorrect++;
+  fb.className = 'quiz-fb ' + (isOk ? 'ok' : 'ko');
+  fb.textContent = isOk ? q.ok : q.ko;
+  fb.style.display = 'block';
+
+  if (quizAnswered.every(Boolean)) {
+    setTimeout(showQuizResult, 600);
+    completed.add(4);
+    updateProgress();
+  }
+}
+
+function showQuizResult() {
+  const res = document.getElementById('quiz-result');
+  res.style.display = 'block';
+  const pct = Math.round((quizCorrect / quizData.length) * 100);
+
+  // Score text + emoji
+  let emoji = pct >= 90 ? '🏆' : pct >= 70 ? '🎯' : pct >= 50 ? '📘' : '🔄';
+  let msg = pct >= 90 ? 'Outstanding! You have mastered all the topics.'
+          : pct >= 70 ? 'Very good! A few questions to revisit below.'
+          : pct >= 50 ? 'Good effort — review the highlighted topics before retrying.'
+          : 'Keep going — revisit the modules and the glossary, then try again.';
+
+  document.getElementById('quiz-score-text').textContent = `${emoji}  ${quizCorrect} / ${quizData.length}  —  ${pct}%`;
+  document.getElementById('quiz-msg').textContent = msg;
+
+  // Topic breakdown: map questions to topics
+  const topics = [
+    { label: 'Glossary', qs: [0,1,2], color: 'var(--gold)' },
+    { label: 'Differentiability', qs: [3,4], color: 'var(--blue)' },
+    { label: 'Maxima & Minima', qs: [5,6], color: 'var(--accent)' },
+    { label: 'Concavity & Inflection', qs: [7,8,9], color: 'var(--red)' },
+  ];
+  const breakdown = document.getElementById('topic-breakdown');
+  breakdown.innerHTML = topics.map(t => {
+    const correct = t.qs.filter(qi => quizAnswered[qi] && quizData[qi] && isCorrectAnswer(qi)).length;
+    const total = t.qs.length;
+    const tpct = Math.round((correct / total) * 100);
+    const barColor = tpct >= 80 ? 'var(--accent2)' : tpct >= 50 ? 'var(--gold)' : 'var(--red)';
+    return `
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+          <span style="color:var(--ink);font-weight:500">${t.label}</span>
+          <span style="color:var(--ink2)">${correct}/${total} correct</span>
+        </div>
+        <div style="background:var(--surface2);border-radius:4px;height:6px">
+          <div style="width:${tpct}%;height:6px;border-radius:4px;background:${barColor};transition:width 0.6s ease"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Personalised advice
+  const weakTopics = topics.filter(t => {
+    const correct = t.qs.filter(qi => isCorrectAnswer(qi)).length;
+    return correct / t.qs.length < 0.67;
+  }).map(t => t.label);
+  const adviceEl = document.getElementById('quiz-advice');
+  adviceEl.innerHTML = weakTopics.length === 0
+    ? '<div class="box-label">Advice</div>Excellent performance across all topics! Challenge yourself by exploring the MathIsFun pages more deeply.'
+    : `<div class="box-label">Advice</div>Focus your revision on: <strong>${weakTopics.join(', ')}</strong>. Go back to the relevant module(s) and re-read the required source pages before retrying the quiz.`;
+
+  // Questions to review
+  const wrongQs = quizData.map((q,qi) => ({ q, qi })).filter(({qi}) => !isCorrectAnswer(qi));
+  if (wrongQs.length > 0) {
+    document.getElementById('quiz-review-section').style.display = 'block';
+    document.getElementById('quiz-review-list').innerHTML = wrongQs.map(({q,qi}) =>
+      `<div style="padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;font-size:13px;color:var(--ink2)">
+        <span style="font-weight:500;color:var(--ink)">Q${qi+1}.</span> ${q.q}
+      </div>`
+    ).join('');
+  }
+
+  // Update feedback page score recap
+  document.getElementById('fb-score-recap') && (document.getElementById('fb-score-recap').textContent = `${quizCorrect} / ${quizData.length} — ${pct}%`);
+
+  res.scrollIntoView({ behavior: 'smooth' });
+  buildEvaluation();
+}
+
+function buildEvaluation() {
+  const container = document.getElementById('eval-container');
+  if (!container) return;
+
+  const pct = Math.round((quizCorrect / quizData.length) * 100);
+
+  const topics = [
+    { label: 'Glossary & terminology',   qs: [0,1,2],   module: 0 },
+    { label: 'Differentiability',         qs: [3,4],     module: 1 },
+    { label: 'Maxima & Minima',           qs: [5,6],     module: 2 },
+    { label: 'Concavity & Inflection',    qs: [7,8,9],   module: 3 },
+  ];
+
+  // Overall grade
+  const grade = pct >= 90 ? { label: 'Excellent',      color: '#0F6E56', bg: '#E1F5EE', desc: 'You have demonstrated a thorough and confident mastery of all topics covered in this path.' }
+              : pct >= 75 ? { label: 'Good',            color: '#2B4E8C', bg: '#E8EEF7', desc: 'You have a solid understanding of the material with only minor gaps to address.' }
+              : pct >= 60 ? { label: 'Satisfactory',    color: '#C4973A', bg: '#FAF3E3', desc: 'You have grasped the core concepts but need to consolidate some areas before moving on.' }
+              : pct >= 40 ? { label: 'Needs improvement', color: '#B94040', bg: '#FAEDED', desc: 'Several key concepts need further study. Revisit the modules and required readings carefully.' }
+              :             { label: 'Insufficient',    color: '#7A1A1A', bg: '#FAEDED', desc: 'The foundational concepts have not yet been acquired. Please restart the path from the glossary.' };
+
+  // Per-topic analysis
+  const topicRows = topics.map(t => {
+    const tot = t.qs.length;
+    const ok  = t.qs.filter(qi => isCorrectAnswer(qi)).length;
+    const tpct = Math.round((ok / tot) * 100);
+    const level = tpct === 100 ? { txt: 'Mastered',   col: '#0F6E56', bg: '#E1F5EE' }
+                : tpct >= 67  ? { txt: 'Adequate',    col: '#2B4E8C', bg: '#E8EEF7' }
+                : tpct >= 34  ? { txt: 'Partial',     col: '#C4973A', bg: '#FAF3E3' }
+                :               { txt: 'To review',   col: '#B94040', bg: '#FAEDED' };
+
+    // Specific comments per topic
+    const comments = {
+      0: ok === tot ? 'Bilingual terminology is well consolidated.'
+                    : 'Review the glossary cards — pay attention to the Italian equivalents and the precise mathematical definitions.',
+      1: ok === tot ? 'The concept of differentiability and its conditions are clearly understood.'
+                    : 'Go back to the MathIsFun page on differentiability. Focus on the difference between continuity and differentiability, and on one-sided limits.',
+      2: ok === tot ? 'Stationary points, the second derivative test, and monotonicity intervals are well handled.'
+                    : 'Revisit Module 2. Make sure you can apply the second derivative test and determine intervals of increase/decrease from the sign of f′.',
+      3: ok === tot ? 'Concavity rules and the identification of inflection points are fully mastered.'
+                    : 'Revisit Module 3. Pay particular attention to the condition for a true inflection point: f″ must change sign, not just equal zero.',
+    };
+
+    return { ...t, ok, tot, tpct, level, comment: comments[t.module] };
+  });
+
+  // Strengths and weaknesses
+  const strong = topicRows.filter(t => t.tpct >= 67).map(t => t.label);
+  const weak   = topicRows.filter(t => t.tpct < 67).map(t => t.label);
+
+  // Behaviour observations
+  const behaviourNotes = [];
+  if (pct === 100) behaviourNotes.push('Answered all 10 questions correctly — demonstrates exceptional attention and preparation.');
+  if (weak.length === 0) behaviourNotes.push('Consistent performance across all topic areas — no significant gaps detected.');
+  if (weak.length >= 3) behaviourNotes.push('Widespread difficulties suggest the required readings may need to be revisited more carefully before re-attempting the quiz.');
+  if (strong.length > 0 && weak.length > 0) behaviourNotes.push(`Shows an uneven profile: strong in ${strong.join(' and ')}, but needs consolidation in ${weak.join(' and ')}.`);
+  if (pct >= 60 && pct < 75) behaviourNotes.push('Performance suggests a surface understanding of some concepts — deeper engagement with the exercises is recommended.');
+
+  container.innerHTML = `
+
+    <!-- OVERALL GRADE BANNER -->
+    <div style="background:${grade.bg};border:1.5px solid ${grade.color};border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem">
+      <div style="text-align:center;flex-shrink:0">
+        <div style="font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:${grade.color};line-height:1">${pct}%</div>
+        <div style="font-size:11px;color:${grade.color};text-transform:uppercase;letter-spacing:1px;margin-top:2px">${quizCorrect} / ${quizData.length} correct</div>
+      </div>
+      <div>
+        <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:${grade.color};margin-bottom:4px">${grade.label}</div>
+        <div style="font-size:14px;color:var(--ink2);line-height:1.6">${grade.desc}</div>
+      </div>
+    </div>
+
+    <!-- PER-TOPIC BREAKDOWN -->
+    <div class="card">
+      <div class="card-title">Performance by topic</div>
+      ${topicRows.map(t => `
+        <div style="margin-bottom:1.1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:14px;font-weight:500;color:var(--ink)">${t.label}</span>
+            <span style="font-size:12px;font-weight:500;padding:3px 10px;border-radius:12px;background:${t.level.bg};color:${t.level.col}">${t.level.txt} — ${t.ok}/${t.tot}</span>
+          </div>
+          <div style="background:var(--surface2);border-radius:4px;height:5px;margin-bottom:8px">
+            <div style="width:${t.tpct}%;height:5px;border-radius:4px;background:${t.level.col};transition:width 0.7s ease"></div>
+          </div>
+          <div style="font-size:13px;color:var(--ink2);line-height:1.6">${t.comment}</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- BEHAVIOUR & STUDY NOTES -->
+    ${behaviourNotes.length > 0 ? `
+    <div class="card">
+      <div class="card-title">Observations</div>
+      ${behaviourNotes.map(n => `
+        <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink2)">
+          <span style="color:var(--accent2);flex-shrink:0">→</span>${n}
+        </div>`).join('')}
+    </div>` : ''}
+
+    <!-- NEXT STEPS -->
+    <div class="card">
+      <div class="card-title">Recommended next steps</div>
+      ${weak.length === 0
+        ? `<p style="font-size:14px;color:var(--ink2)">All topics mastered. You are ready to move on to more advanced calculus concepts such as integration, related rates, or optimisation problems.</p>`
+        : `<ul class="points">
+            ${weak.map(w => `<li>Return to the <strong>${w}</strong> module, re-read the MathIsFun source page, and redo the exercise before retrying the quiz.</li>`).join('')}
+            <li>Use the glossary to reinforce any terminology you are unsure about.</li>
+           </ul>`}
+    </div>`;
+
+  completed.add(5);
+  updateProgress();
+}
+
+function isCorrectAnswer(qi) {
+  const correctBtn = document.getElementById(`qopt-${qi}-${quizData[qi].correct}`);
+  if (!correctBtn) return false;
+  const anyWrong = document.querySelector(`#qcard-${qi} .quiz-opt.wrong`);
+  return correctBtn.classList.contains('correct') && !anyWrong;
+}
+
+// ========== READING GATE ==========
+// Track which links have been opened and which modules are reading-confirmed
+const readingState = {
+  // module 1
+  'rl1-1': false,
+  // module 2
+  'rl2-1': false,
+  // module 3
+  'rl3-1': false,
+  'rl3-2': false,
+};
+
+// Links required per module
+const moduleLinks = {
+  1: ['rl1-1'],
+  2: ['rl2-1'],
+  3: ['rl3-1', 'rl3-2'],
+};
+
+function markLinkOpened(linkId) {
+  readingState[linkId] = true;
+  const statusEl = document.getElementById(linkId + '-status');
+  if (statusEl) {
+    statusEl.textContent = '✓ opened';
+    statusEl.classList.add('opened');
+  }
+  // Determine which module this link belongs to
+  const modNum = parseInt(linkId.replace('rl','').split('-')[0]);
+  checkAllLinksOpened(modNum);
+}
+
+function checkAllLinksOpened(modNum) {
+  const links = moduleLinks[modNum];
+  const allOpen = links.every(l => readingState[l]);
+  const cb = document.getElementById('rcb-' + modNum);
+  const rcRow = document.getElementById('rc-' + modNum);
+  if (allOpen && cb) {
+    cb.disabled = false;
+    rcRow.style.borderColor = 'var(--gold)';
+  }
+}
+
+function confirmReading(modNum) {
+  const cb = document.getElementById('rcb-' + modNum);
+  const rcRow = document.getElementById('rc-' + modNum);
+  const lc = document.getElementById('lc-' + modNum);
+  if (cb.checked) {
+    rcRow.classList.add('confirmed');
+    lc.classList.add('unlocked');
+  } else {
+    rcRow.classList.remove('confirmed');
+    lc.classList.remove('unlocked');
+  }
+}
+
+// ========== INIT ==========
+buildGlossary(glossaryData);
+buildQuiz();
+updateProgress();
+</script>
+</body>
+</html>
