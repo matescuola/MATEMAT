@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercitatore Integrali</title>
+    
+    <!-- Tailwind CSS per lo stile -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX per il rendering delle formule matematiche -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <!-- React e ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel per compilare JSX nel browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICONE SVG (Sostituiscono la libreria lucide-react) ---
+        const CheckCircle2 = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        );
+        const XCircle = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+        );
+        const ArrowRight = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        );
+        const RotateCcw = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        );
+        const BookOpen = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        );
+        const GraduationCap = ({ size = 24, className = "", strokeWidth = 2 }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21.42 10.922a2 2 0 0 1-.01 2.83l-7.1 7.1a2 2 0 0 1-2.83 0l-7.1-7.1a2 2 0 0 1-.01-2.83L11.6 3.65a2 2 0 0 1 2.82 0l7 7.272Z"/><path d="M14 19.3v-4.8"/><path d="M10 19.3v-4.8"/><path d="M10 22h4"/><path d="M19 13.5v5.3"/><path d="M22 18.5h-6"/></svg>
+        );
+        const Play = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        );
+
+        // --- DATI: Esattamente 21 domande, una per ogni regola del formulario ---
+        const questionPool = [
+          {
+            id: 1,
+            question: "\\int x^5 dx",
+            options: [
+              "\\frac{1}{6}x^6 + c",
+              "\\frac{1}{5}x^6 + c",
+              "5x^4 + c",
+              "\\frac{1}{6}x^5 + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Potenze",
+            ruleFormula: "\\int x^n dx = \\frac{1}{n+1} x^{n+1} + c \\quad (n \\neq -1)"
+          },
+          {
+            id: 2,
+            question: "\\int 2x(x^2 + 1)^3 dx",
+            options: [
+              "\\frac{1}{4}(x^2 + 1)^4 + c",
+              "\\frac{1}{3}(x^2 + 1)^4 + c",
+              "(x^2 + 1)^4 + c",
+              "6x(x^2 + 1)^2 + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Potenza di Funzione Composta",
+            ruleFormula: "\\int [f(x)]^n \\cdot f'(x) dx = \\frac{1}{n+1}[f(x)]^{n+1} + c"
+          },
+          {
+            id: 3,
+            question: "\\int \\frac{2x}{x^2 + 5} dx",
+            options: [
+              "\\ln|x^2 + 5| + c",
+              "\\arctg(x^2 + 5) + c",
+              "\\frac{1}{x^2 + 5} + c",
+              "2\\ln|x| + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Logaritmo",
+            ruleFormula: "\\int \\frac{f'(x)}{f(x)} dx = \\ln|f(x)| + c"
+          },
+          {
+            id: 4,
+            question: "\\int \\sen(x^3) \\cdot 3x^2 dx",
+            options: [
+              "-\\cos(x^3) + c",
+              "\\cos(x^3) + c",
+              "-\\frac{1}{3}\\cos(x^3) + c",
+              "3x^2\\cos(x^3) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Seno (Funzione Composta)",
+            ruleFormula: "\\int \\sen[f(x)] \\cdot f'(x) dx = -\\cos[f(x)] + c"
+          },
+          {
+            id: 5,
+            question: "\\int \\cos(e^x) \\cdot e^x dx",
+            options: [
+              "\\sen(e^x) + c",
+              "-\\sen(e^x) + c",
+              "e^x\\sen(e^x) + c",
+              "\\sen(x) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Coseno (Funzione Composta)",
+            ruleFormula: "\\int \\cos[f(x)] \\cdot f'(x) dx = \\sen[f(x)] + c"
+          },
+          {
+            id: 6,
+            question: "\\int \\frac{2x}{\\cos^2(x^2)} dx",
+            options: [
+              "\\tg(x^2) + c",
+              "-\\tg(x^2) + c",
+              "\\frac{1}{\\cos(x^2)} + c",
+              "\\cotg(x^2) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Tangente Composta",
+            ruleFormula: "\\int \\frac{f'(x)}{\\cos^2[f(x)]} dx = \\tg[f(x)] + c"
+          },
+          {
+            id: 7,
+            question: "\\int \\frac{e^x}{\\sen^2(e^x)} dx",
+            options: [
+              "-\\cotg(e^x) + c",
+              "\\cotg(e^x) + c",
+              "-\\tg(e^x) + c",
+              "\\frac{1}{\\sen(e^x)} + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Cotangente Composta",
+            ruleFormula: "\\int \\frac{f'(x)}{\\sen^2[f(x)]} dx = -\\cotg[f(x)] + c"
+          },
+          {
+            id: 8,
+            question: "\\int \\sen(5x) dx",
+            options: [
+              "-\\frac{1}{5}\\cos(5x) + c",
+              "\\frac{1}{5}\\cos(5x) + c",
+              "-5\\cos(5x) + c",
+              "-\\cos(5x) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Seno con fattore m",
+            ruleFormula: "\\int \\sen(mx) dx = -\\frac{1}{m}\\cos(mx) + c"
+          },
+          {
+            id: 9,
+            question: "\\int \\cos(3x) dx",
+            options: [
+              "\\frac{1}{3}\\sen(3x) + c",
+              "-\\frac{1}{3}\\sen(3x) + c",
+              "3\\sen(3x) + c",
+              "\\sen(3x) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Coseno con fattore m",
+            ruleFormula: "\\int \\cos(mx) dx = \\frac{1}{m}\\sen(mx) + c"
+          },
+          {
+            id: 10,
+            question: "\\int e^x dx",
+            options: [
+              "e^x + c",
+              "\\frac{1}{x}e^x + c",
+              "xe^{x-1} + c",
+              "\\ln(e^x) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Esponenziale (Base e)",
+            ruleFormula: "\\int e^x dx = e^x + c"
+          },
+          {
+            id: 11,
+            question: "\\int 7^x dx",
+            options: [
+              "\\frac{1}{\\ln 7} 7^x + c",
+              "7^x \\ln 7 + c",
+              "\\frac{1}{x+1}7^{x+1} + c",
+              "7^x + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Esponenziale (Base a)",
+            ruleFormula: "\\int a^x dx = \\frac{1}{\\ln a} a^x + c"
+          },
+          {
+            id: 12,
+            question: "\\int \\frac{1}{\\sqrt{1 - x^2}} dx",
+            options: [
+              "\\arcsen(x) + c",
+              "\\arccos(x) + c",
+              "\\arctg(x) + c",
+              "\\sqrt{1 - x^2} + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Arcoseno Base",
+            ruleFormula: "\\int \\frac{1}{\\sqrt{1-x^2}} dx = \\arcsen(x) + c"
+          },
+          {
+            id: 13,
+            question: "\\int \\frac{1}{\\sqrt{25 - x^2}} dx",
+            options: [
+              "\\arcsen\\left(\\frac{x}{5}\\right) + c",
+              "\\frac{1}{5}\\arcsen\\left(\\frac{x}{5}\\right) + c",
+              "\\arcsen(x-5) + c",
+              "\\ln|x + \\sqrt{25-x^2}| + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Arcoseno (Parametrico)",
+            ruleFormula: "\\int \\frac{1}{\\sqrt{a^2-x^2}} dx = \\arcsen\\left(\\frac{x}{|a|}\\right) + c"
+          },
+          {
+            id: 14,
+            question: "\\int \\frac{2x}{\\sqrt{16 - x^4}} dx",
+            options: [
+              "\\arcsen\\left(\\frac{x^2}{4}\\right) + c",
+              "\\frac{1}{4}\\arcsen\\left(\\frac{x^2}{4}\\right) + c",
+              "\\arcsen(x^2) + c",
+              "2x\\arcsen(x^2) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Arcoseno (Funzione Composta)",
+            ruleFormula: "\\int \\frac{f'(x)}{\\sqrt{a^2-f^2(x)}} dx = \\arcsen\\left(\\frac{f(x)}{|a|}\\right) + c"
+          },
+          {
+            id: 15,
+            question: "\\int \\frac{1}{1 + x^2} dx",
+            options: [
+              "\\arctg(x) + c",
+              "\\text{arccotg}(x) + c",
+              "\\ln|1 + x^2| + c",
+              "\\frac{1}{2}\\arctg(x) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Arcotangente Base",
+            ruleFormula: "\\int \\frac{1}{1+x^2} dx = \\arctg(x) + c"
+          },
+          {
+            id: 16,
+            question: "\\int \\frac{1}{9 + x^2} dx",
+            options: [
+              "\\frac{1}{3}\\arctg\\left(\\frac{x}{3}\\right) + c",
+              "\\arctg\\left(\\frac{x}{3}\\right) + c",
+              "\\frac{1}{9}\\arctg\\left(\\frac{x}{3}\\right) + c",
+              "\\ln|9 + x^2| + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Arcotangente (Parametrico)",
+            ruleFormula: "\\int \\frac{1}{a^2+x^2} dx = \\frac{1}{a}\\arctg\\left(\\frac{x}{a}\\right) + c"
+          },
+          {
+            id: 17,
+            question: "\\int \\frac{\\cos(x)}{4 + \\sen^2(x)} dx",
+            options: [
+              "\\frac{1}{2}\\arctg\\left(\\frac{\\sen(x)}{2}\\right) + c",
+              "\\arctg\\left(\\frac{\\sen(x)}{2}\\right) + c",
+              "\\frac{1}{2}\\arctg(\\sen(x)) + c",
+              "\\ln|4 + \\sen^2(x)| + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Arcotangente (Funzione Composta)",
+            ruleFormula: "\\int \\frac{f'(x)}{a^2+f^2(x)} dx = \\frac{1}{a}\\arctg\\left(\\frac{f(x)}{a}\\right) + c"
+          },
+          {
+            id: 18,
+            question: "\\int \\frac{x}{\\sqrt{x^2 + 7}} dx",
+            options: [
+              "\\sqrt{x^2 + 7} + c",
+              "2\\sqrt{x^2 + 7} + c",
+              "\\frac{1}{\\sqrt{x^2 + 7}} + c",
+              "\\ln|x + \\sqrt{x^2 + 7}| + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Radicale (Somma)",
+            ruleFormula: "\\int \\frac{x}{\\sqrt{x^2+a}} dx = \\sqrt{x^2+a} + c"
+          },
+          {
+            id: 19,
+            question: "\\int \\frac{x}{\\sqrt{9 - x^2}} dx",
+            options: [
+              "-\\sqrt{9 - x^2} + c",
+              "\\sqrt{9 - x^2} + c",
+              "-\\frac{1}{2}\\sqrt{9 - x^2} + c",
+              "\\arcsen\\left(\\frac{x}{3}\\right) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Radicale (Differenza)",
+            ruleFormula: "\\int \\frac{x}{\\sqrt{a-x^2}} dx = -\\sqrt{a-x^2} + c \\quad (a>0)"
+          },
+          {
+            id: 20,
+            question: "\\int \\frac{1}{16 - x^2} dx",
+            options: [
+              "\\frac{1}{8}\\ln\\left|\\frac{4+x}{4-x}\\right| + c",
+              "\\frac{1}{4}\\ln\\left|\\frac{4+x}{4-x}\\right| + c",
+              "\\frac{1}{2}\\ln\\left|\\frac{4+x}{4-x}\\right| + c",
+              "\\arcsen\\left(\\frac{x}{4}\\right) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Logaritmo Fratto",
+            ruleFormula: "\\int \\frac{1}{a^2-x^2} dx = \\frac{1}{2a}\\ln\\left|\\frac{a+x}{a-x}\\right| + c"
+          },
+          {
+            id: 21,
+            question: "\\int \\frac{1}{\\sqrt{x^2 + 25}} dx",
+            options: [
+              "\\ln|x + \\sqrt{x^2 + 25}| + c",
+              "\\frac{1}{5}\\ln|x + \\sqrt{x^2 + 25}| + c",
+              "\\sqrt{x^2 + 25} + c",
+              "\\arcsen\\left(\\frac{x}{5}\\right) + c"
+            ],
+            correctIndex: 0,
+            ruleTitle: "Settorseno / Logaritmo Irrazionale",
+            ruleFormula: "\\int \\frac{1}{\\sqrt{x^2+a^2}} dx = \\ln|x+\\sqrt{x^2+a^2}| + c"
+          }
+        ];
+
+        // --- COMPONENTE: MathRenderer (KaTeX Wrapper) ---
+        const MathRenderer = ({ math, displayMode = false, className = "" }) => {
+          const containerRef = useRef(null);
+
+          useEffect(() => {
+            if (window.katex && containerRef.current) {
+              try {
+                window.katex.render(math, containerRef.current, {
+                  displayMode: displayMode,
+                  throwOnError: false,
+                  trust: true,
+                  strict: false,
+                  macros: {
+                    "\\sen": "\\operatorname{sen}",
+                    "\\arcsen": "\\operatorname{arcsen}",
+                    "\\arctg": "\\operatorname{arctg}",
+                    "\\tg": "\\operatorname{tg}",
+                    "\\cotg": "\\operatorname{cotg}"
+                  }
+                });
+              } catch (e) {
+                console.error("KaTeX error:", e);
+                containerRef.current.innerText = math;
+              }
+            }
+          }, [math]);
+
+          return <span ref={containerRef} className={className} />;
+        };
+
+        // --- COMPONENTE PRINCIPALE: App ---
+        function App() {
+          const [gameState, setGameState] = useState('intro'); // 'intro', 'quiz', 'results'
+          const [activeQuiz, setActiveQuiz] = useState([]); // Domande selezionate per la sessione
+          const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
+          const [selectedOption, setSelectedOption] = useState(null);
+          const [isAnswerChecked, setIsAnswerChecked] = useState(false);
+          const [score, setScore] = useState(0);
+          const [shuffledOptions, setShuffledOptions] = useState([]);
+
+          // Mescola le opzioni quando cambia la domanda
+          useEffect(() => {
+            if (gameState === 'quiz' && activeQuiz.length > 0) {
+              const q = activeQuiz[currentQuestionIdx];
+              const optionsWithOriginalIndex = q.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+              // Algoritmo di Fisher-Yates
+              for (let i = optionsWithOriginalIndex.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [optionsWithOriginalIndex[i], optionsWithOriginalIndex[j]] = [optionsWithOriginalIndex[j], optionsWithOriginalIndex[i]];
+              }
+              setShuffledOptions(optionsWithOriginalIndex);
+              setSelectedOption(null);
+              setIsAnswerChecked(false);
+            }
+          }, [currentQuestionIdx, gameState, activeQuiz]);
+
+          const startQuiz = () => {
+            // Seleziona TUTTE le domande dal pool (21) e mescolale
+            const shuffledPool = [...questionPool].sort(() => 0.5 - Math.random());
+            setActiveQuiz(shuffledPool);
+            
+            setGameState('quiz');
+            setCurrentQuestionIdx(0);
+            setScore(0);
+          };
+
+          const handleOptionClick = (shuffledIndex) => {
+            if (isAnswerChecked) return;
+            setSelectedOption(shuffledIndex);
+            setIsAnswerChecked(true);
+            
+            const isCorrect = shuffledOptions[shuffledIndex].originalIndex === activeQuiz[currentQuestionIdx].correctIndex;
+            if (isCorrect) {
+              setScore(prev => prev + 1);
+            }
+          };
+
+          const handleNextQuestion = () => {
+            if (currentQuestionIdx < activeQuiz.length - 1) {
+              setCurrentQuestionIdx(prev => prev + 1);
+            } else {
+              setGameState('results');
+            }
+          };
+
+          // --- SCHERMATA INIZIALE ---
+          if (gameState === 'intro') {
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 font-sans text-slate-800">
+                <div className="bg-white max-w-lg w-full rounded-3xl shadow-xl overflow-hidden text-center p-10 border border-white/50 backdrop-blur-sm">
+                  <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                    <GraduationCap size={40} />
+                  </div>
+                  <h1 className="text-3xl font-extrabold mb-4 text-slate-900 tracking-tight">Esercitatore Integrali</h1>
+                  <p className="text-slate-600 mb-8 leading-relaxed">
+                    Metti alla prova le tue conoscenze sugli integrali indefiniti. Le domande sono basate direttamente sul formulario ufficiale.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center space-x-2 text-sm text-slate-500 bg-slate-50 p-3 rounded-xl">
+                      <BookOpen size={18} />
+                      <span>{questionPool.length} Domande totali (una per ogni regola)</span>
+                    </div>
+                    <button 
+                      onClick={startQuiz}
+                      className="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-2xl transition-all hover:shadow-lg active:scale-95"
+                    >
+                      <Play size={20} className="fill-current" />
+                      <span>Inizia l'Allenamento</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          // --- SCHERMATA RISULTATI ---
+          if (gameState === 'results') {
+            const percentage = Math.round((score / activeQuiz.length) * 100);
+            let message = "";
+            if (percentage === 100) message = "Perfetto! Sei un maestro degli integrali.";
+            else if (percentage >= 75) message = "Ottimo lavoro! Conosci bene il formulario.";
+            else if (percentage >= 50) message = "Non male, ma puoi ancora migliorare.";
+            else message = "Ti consiglio di ripassare il formulario e riprovare.";
+
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 font-sans text-slate-800">
+                <div className="bg-white max-w-lg w-full rounded-3xl shadow-xl overflow-hidden text-center p-10 border border-white/50">
+                  <h2 className="text-3xl font-bold mb-2 text-slate-900">Risultato Finale</h2>
+                  <p className="text-slate-500 mb-8">{message}</p>
+                  
+                  <div className="relative w-40 h-40 mx-auto mb-8 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                      <path
+                        className="text-slate-100"
+                        strokeWidth="3"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <path
+                        className={percentage >= 50 ? "text-green-500" : "text-amber-500"}
+                        strokeWidth="3"
+                        strokeDasharray={`${percentage}, 100`}
+                        strokeLinecap="round"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                    </svg>
+                    <div className="absolute text-4xl font-extrabold text-slate-800">
+                      {score}<span className="text-xl text-slate-400">/{activeQuiz.length}</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={startQuiz}
+                    className="w-full flex items-center justify-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 px-8 rounded-2xl transition-all hover:shadow-lg active:scale-95"
+                  >
+                    <RotateCcw size={20} />
+                    <span>Nuovo Test (Domande Diverse)</span>
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          // --- SCHERMATA QUIZ ---
+          const currentQ = activeQuiz[currentQuestionIdx];
+
+          if (!currentQ) return null;
+
+          return (
+            <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800 pb-10">
+              <header className="bg-white shadow-sm px-6 py-4 sticky top-0 z-10">
+                <div className="max-w-3xl mx-auto flex items-center justify-between">
+                  <div className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                    <div className="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center">
+                      <span className="text-sm font-black">&int;</span>
+                    </div>
+                    <span>Esercitatore</span>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm font-medium">
+                    <span className="text-slate-500">Punti: <span className="text-blue-600 font-bold">{score}</span></span>
+                    <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-slate-200">
+                      {currentQuestionIdx + 1} / {activeQuiz.length}
+                    </span>
+                  </div>
+                </div>
+                <div className="max-w-3xl mx-auto mt-4 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-blue-600 h-full transition-all duration-500 ease-out"
+                    style={{ width: `${((currentQuestionIdx) / activeQuiz.length) * 100}%` }}
+                  />
+                </div>
+              </header>
+
+              <main className="flex-1 max-w-3xl w-full mx-auto p-4 md:p-6 flex flex-col mt-4">
+                
+                <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 mb-6 text-center transition-all">
+                  <h2 className="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-6">Risolvi il seguente integrale</h2>
+                  <div className="text-4xl md:text-5xl py-6 overflow-x-auto text-slate-900">
+                    <MathRenderer math={currentQ.question} displayMode={true} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                  {shuffledOptions.map((option, index) => {
+                    const isCorrectOption = option.originalIndex === currentQ.correctIndex;
+                    let buttonStateClasses = "bg-white border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-blue-50";
+                    
+                    if (isAnswerChecked) {
+                      if (isCorrectOption) {
+                        buttonStateClasses = "bg-green-50 border-green-500 text-green-900 ring-2 ring-green-500 ring-opacity-50"; 
+                      } else if (selectedOption === index) {
+                        buttonStateClasses = "bg-red-50 border-red-400 text-red-900"; 
+                      } else {
+                        buttonStateClasses = "bg-white border-slate-100 text-slate-400 opacity-60"; 
+                      }
+                    }
+
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleOptionClick(index)}
+                        disabled={isAnswerChecked}
+                        className={`
+                          relative flex items-center justify-center p-6 rounded-2xl border-2 transition-all duration-200 text-lg sm:text-xl
+                          ${buttonStateClasses}
+                          ${!isAnswerChecked ? "active:scale-95 shadow-sm hover:shadow" : ""}
+                        `}
+                      >
+                        <MathRenderer math={option.text} inline={true} />
+                        
+                        {isAnswerChecked && isCorrectOption && (
+                          <div className="absolute top-3 right-3 text-green-500">
+                            <CheckCircle2 size={24} className="text-green-500 bg-white rounded-full" />
+                          </div>
+                        )}
+                        {isAnswerChecked && selectedOption === index && !isCorrectOption && (
+                          <div className="absolute top-3 right-3 text-red-500">
+                            <XCircle size={24} className="text-red-500 bg-white rounded-full" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {isAnswerChecked && (
+                  <div className="mb-8" style={{ animation: 'fadeIn 0.5s ease-in' }}>
+                    <div className={`
+                      rounded-2xl p-6 border 
+                      ${shuffledOptions[selectedOption].originalIndex === currentQ.correctIndex 
+                        ? "bg-green-50/50 border-green-200" 
+                        : "bg-amber-50/50 border-amber-200"}
+                    `}>
+                      <div className="flex items-start gap-4">
+                        <div className={`mt-1 ${shuffledOptions[selectedOption].originalIndex === currentQ.correctIndex ? "text-green-600" : "text-amber-600"}`}>
+                          <BookOpen size={24} />
+                        </div>
+                        <div className="flex-1 overflow-hidden">
+                          <h3 className="font-bold text-slate-800 mb-1">
+                            {shuffledOptions[selectedOption].originalIndex === currentQ.correctIndex 
+                              ? "Esatto! Ottimo lavoro." 
+                              : "Attenzione!"}
+                          </h3>
+                          <p className="text-slate-600 text-sm mb-4">
+                            La regola del formulario da applicare in questo caso è: <strong className="text-slate-800">{currentQ.ruleTitle}</strong>
+                          </p>
+                          <div className="bg-white px-4 py-3 rounded-xl border border-slate-100 shadow-sm overflow-x-auto">
+                            <MathRenderer math={currentQ.ruleFormula} displayMode={true} className="text-blue-800 text-lg" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {isAnswerChecked && (
+                  <div className="flex justify-end mt-auto pb-8" style={{ animation: 'fadeIn 0.3s ease-in' }}>
+                    <button
+                      onClick={handleNextQuestion}
+                      className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 px-8 rounded-2xl transition-all shadow-md hover:shadow-lg active:scale-95"
+                    >
+                      <span>{currentQuestionIdx === activeQuiz.length - 1 ? "Vedi Risultati" : "Prossima Domanda"}</span>
+                      <ArrowRight size={20} />
+                    </button>
+                  </div>
+                )}
+
+              </main>
+              <style dangerouslySetInnerHTML={{__html: `
+                @keyframes fadeIn {
+                  from { opacity: 0; transform: translateY(10px); }
+                  to { opacity: 1; transform: translateY(0); }
+                }
+              `}} />
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
