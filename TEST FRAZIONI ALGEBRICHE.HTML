@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: Frazioni Algebriche ed Espressioni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .option-card:hover { border-color: #3b82f6; background-color: #eff6ff; }
+        .correct { background-color: #d1fae5 !important; border-color: #10b981 !important; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; }
+        .answered button { cursor: default; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Quiz di Matematica: Frazioni Algebriche</h1>
+            <p class="text-gray-600 italic">Liceo Scientifico - Scienze Applicate</p>
+            <div class="mt-4 flex justify-center gap-4">
+                <span id="score-display" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Punteggio: 0/11</span>
+                <button onclick="location.reload()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-full transition shadow-sm">Ricomincia</button>
+            </div>
+        </header>
+
+        <div id="quiz-container" class="space-y-8"></div>
+
+        <div id="final-result" class="hidden mt-12 p-8 bg-white rounded-xl shadow-lg text-center border-2 border-blue-500">
+            <h2 class="text-2xl font-bold mb-4">Quiz Completato!</h2>
+            <p id="final-score-text" class="text-4xl font-extrabold text-blue-600 mb-4"></p>
+            <p id="final-comment" class="text-lg text-gray-700"></p>
+        </div>
+    </div>
+
+    <script>
+        const questionsData = [
+            {
+                id: 1,
+                level: "C.E.",
+                text: "Determina le Condizioni di Esistenza (C.E.) della seguente frazione algebrica: \\( \\frac{x^2 + 1}{x^3 - x} \\)",
+                options: [
+                    "\\( x \\neq 0, x \\neq 1, x \\neq -1 \\)",
+                    "\\( x \\neq 1, x \\neq -1 \\)",
+                    "\\( x \\neq 0 \\)",
+                    "\\( x \\neq 0, x \\neq 1 \\)"
+                ],
+                correct: 0,
+                explanation: "Scomponendo il denominatore: \\( x(x^2 - 1) = x(x-1)(x+1) \\). Ponendo ogni fattore diverso da zero si ottengono le tre condizioni."
+            },
+            {
+                id: 2,
+                level: "Semplificazione",
+                text: "Semplifica la frazione utilizzando il raccoglimento parziale al numeratore: \\( \\frac{ax + 2x - ay - 2y}{a^2 - 4} \\)",
+                options: [
+                    "\\( \\frac{x-y}{a-2} \\)",
+                    "\\( \\frac{x-y}{a+2} \\)",
+                    "\\( \\frac{x+y}{a-2} \\)",
+                    "\\( x-y \\)"
+                ],
+                correct: 0,
+                explanation: "Al numeratore: \\( x(a+2) - y(a+2) = (x-y)(a+2) \\). Al denominatore: \\( (a-2)(a+2) \\). Semplificando resta \\( \\frac{x-y}{a-2} \\)."
+            },
+            {
+                id: 3,
+                level: "Espressione",
+                text: "Risolvi la seguente espressione con divisione: \\( \\left( \\frac{1}{x} + \\frac{1}{y} \\right) : \\frac{x+y}{xy^2} \\)",
+                options: [
+                    "\\( y \\)",
+                    "\\( x \\)",
+                    "\\( \\frac{1}{y} \\)",
+                    "\\( xy \\)"
+                ],
+                correct: 0,
+                explanation: "Somma nella parentesi: \\( \\frac{y+x}{xy} \\). Moltiplicando per l'inverso: \\( \\frac{x+y}{xy} \\cdot \\frac{xy^2}{x+y} = y \\)."
+            },
+            {
+                id: 4,
+                level: "Somma Algebrica",
+                text: "Esegui la sottrazione tra le frazioni: \\( \\frac{a}{a-1} - \\frac{1}{a^2-a} \\)",
+                options: [
+                    "\\( \\frac{a+1}{a} \\)",
+                    "\\( \\frac{a-1}{a} \\)",
+                    "\\( 1 \\)",
+                    "\\( \\frac{a}{a-1} \\)"
+                ],
+                correct: 0,
+                explanation: "m.c.m. è \\( a(a-1) \\). Il numeratore diventa \\( a^2 - 1 = (a-1)(a+1) \\). Semplificando per \\( (a-1) \\) resta \\( \\frac{a+1}{a} \\)."
+            },
+            {
+                id: 5,
+                level: "Espressione Prodotto",
+                text: "Calcola il risultato della seguente espressione: \\( \\left( x - \\frac{x^2}{x+1} \\right) \\cdot \\frac{x^2-1}{x} \\)",
+                options: [
+                    "\\( x-1 \\)",
+                    "\\( x+1 \\)",
+                    "\\( x \\)",
+                    "\\( \\frac{x-1}{x} \\)"
+                ],
+                correct: 0,
+                explanation: "Nella parentesi: \\( \\frac{x^2+x-x^2}{x+1} = \\frac{x}{x+1} \\). Moltiplicando per \\( \\frac{(x-1)(x+1)}{x} \\) si ottiene \\( x-1 \\)."
+            },
+            {
+                id: 6,
+                level: "Moltiplicazione",
+                text: "Semplifica il prodotto: \\( \\frac{x^2 - 5x + 6}{x^2 - 1} \\cdot \\frac{x+1}{x-3} \\)",
+                options: [
+                    "\\( \\frac{x-2}{x-1} \\)",
+                    "\\( \\frac{x-2}{x+1} \\)",
+                    "\\( \\frac{x+2}{x-1} \\)",
+                    "\\( \\frac{x-3}{x-1} \\)"
+                ],
+                correct: 0,
+                explanation: "Il primo numeratore è \\( (x-2)(x-3) \\). Semplificando incrociato resta \\( \\frac{x-2}{x-1} \\)."
+            },
+            {
+                id: 7,
+                level: "Espressione Complessa",
+                text: "Risolvi l'espressione: \\( \\left( 1 - \\frac{1}{x+1} \\right) : \\left( \\frac{x}{x^2 - 1} - \\frac{1}{x-1} \\right) \\)",
+                options: [
+                    "\\( -x(x-1) \\)",
+                    "\\( -x \\)",
+                    "\\( x(x-1) \\)",
+                    "\\( 1-x \\)"
+                ],
+                correct: 0,
+                explanation: "Prima parte: \\( \\frac{x}{x+1} \\). Seconda parte: \\( \\frac{x-(x+1)}{x^2-1} = \\frac{-1}{x^2-1} \\). Risultato: \\( \\frac{x}{x+1} \\cdot \\frac{(x-1)(x+1)}{-1} = -x(x-1) \\)."
+            },
+            {
+                id: 8,
+                level: "Espressione Mista",
+                text: "Semplifica la seguente espressione: \\( \\left[ \\frac{a^2 + b^2}{a^2 - b^2} - \\frac{a-b}{a+b} \\right] \\cdot \\frac{a+b}{2b} \\)",
+                options: [
+                    "\\( \\frac{a}{a-b} \\)",
+                    "\\( \\frac{b}{a+b} \\)",
+                    "\\( \\frac{a}{a+b} \\)",
+                    "\\( 1 \\)"
+                ],
+                correct: 0,
+                explanation: "La parentesi quadra diventa \\( \\frac{2ab}{(a-b)(a+b)} \\). Moltiplicando per il fattore esterno, i termini \\( 2b \\) e \\( a+b \\) si semplificano lasciando \\( \\frac{a}{a-b} \\)."
+            },
+            {
+                id: 9,
+                level: "Teoria",
+                text: "In una divisione tra frazioni algebriche, quali termini non possono essere nulli per le C.E.?",
+                options: [
+                    "Entrambi i denominatori e il numeratore della frazione divisore.",
+                    "Solo i due denominatori iniziali.",
+                    "Tutti i numeratori e i denominatori.",
+                    "Solo il primo numeratore."
+                ],
+                correct: 0,
+                explanation: "Perché la divisione sia definita, il divisore non può essere nullo; quindi anche il suo numeratore deve essere diverso da zero."
+            },
+            {
+                id: 10,
+                level: "Teoria",
+                text: "Qual è il valore della frazione \\( \\frac{x^2-4}{x-2} \\) quando \\( x = 2 \\)?",
+                options: [
+                    "Nessun valore (non definita).",
+                    "4",
+                    "0",
+                    "2"
+                ],
+                correct: 0,
+                explanation: "Nonostante la semplificazione dia \\( x+2 \\), la condizione originaria \\( x \\neq 2 \\) impedisce di calcolare la frazione in quel punto."
+            },
+            {
+                id: 11,
+                level: "Mega Espressione Finale",
+                text: "Semplifica la seguente espressione lunga: \\( \\left( \\frac{x}{x-1} + \\frac{1}{x+1} - \\frac{2x}{x^2-1} \\right) : \\frac{x-1}{x+1} \\)",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( \\frac{x+1}{x-1} \\)",
+                    "\\( \\frac{x-1}{x+1} \\)",
+                    "\\( x \\)"
+                ],
+                correct: 1,
+                explanation: "Il m.c.m. nella parentesi è \\( (x-1)(x+1) \\). Svolgendo i calcoli al numeratore si ottiene \\( x^2-1 \\). La parentesi vale dunque 1. Risultato: \\( 1 : \\frac{x-1}{x+1} = \\frac{x+1}{x-1} \\)."
+            }
+        ];
+
+        let userScore = 0;
+        let answeredCount = 0;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            // Non rimescoliamo le domande in questa versione per mantenere l'ordine didattico richiesto
+            const currentQuestions = [...questionsData];
+
+            currentQuestions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = "bg-white p-6 rounded-xl shadow-sm border border-gray-200";
+                
+                let optionsHtml = q.options.map((opt, i) => `
+                    <button onclick="checkAnswer(this, ${q.id}, ${i}, ${q.correct})" 
+                            class="option-card w-full text-left p-4 my-2 border-2 border-gray-100 rounded-lg transition-all flex items-center justify-between">
+                        <span>${opt}</span>
+                        <span class="status-icon hidden font-bold text-xl"></span>
+                    </button>
+                `).join('');
+
+                qDiv.innerHTML = `
+                    <div class="mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-600 px-2 py-1 rounded">Quesito ${index + 1} - ${q.level}</span>
+                    </div>
+                    <div class="text-lg text-gray-800 mb-6 font-medium">${q.text}</div>
+                    <div class="options-container" id="opt-container-${q.id}">
+                        ${optionsHtml}
+                    </div>
+                    <div id="explanation-${q.id}" class="hidden mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-sm text-gray-700 italic">
+                        <strong>Spiegazione:</strong> ${q.explanation}
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        window.checkAnswer = function(btn, qId, selectedIdx, correctIdx) {
+            const container = document.getElementById(`opt-container-${qId}`);
+            if (container.classList.contains('answered')) return;
+            
+            const buttons = container.querySelectorAll('button');
+            const explanation = document.getElementById(`explanation-${qId}`);
+            
+            container.classList.add('answered');
+            answeredCount++;
+
+            buttons.forEach((b, i) => {
+                b.disabled = true;
+                if (i === correctIdx) {
+                    b.classList.add('correct');
+                    b.querySelector('.status-icon').innerHTML = "✓";
+                    b.querySelector('.status-icon').classList.remove('hidden');
+                }
+                if (i === selectedIdx && i !== correctIdx) {
+                    b.classList.add('incorrect');
+                    b.querySelector('.status-icon').innerHTML = "✕";
+                    b.querySelector('.status-icon').classList.remove('hidden');
+                }
+            });
+
+            if (selectedIdx === correctIdx) userScore++;
+            explanation.classList.remove('hidden');
+            document.getElementById('score-display').innerText = `Punteggio: ${userScore}/11`;
+
+            if (answeredCount === questionsData.length) showFinalResult();
+        };
+
+        function showFinalResult() {
+            const finalDiv = document.getElementById('final-result');
+            finalDiv.classList.remove('hidden');
+            document.getElementById('final-score-text').innerText = `${userScore} / 11`;
+            
+            let comment = userScore >= 9 ? "Ottimo! Padronanza completa delle frazioni algebriche." : userScore >= 6 ? "Sufficiente, ma ripassa le espressioni lunghe." : "Insuccesso. Serve molto studio sulle scomposizioni e il m.c.m.";
+            document.getElementById('final-comment').innerText = comment;
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        window.onload = createQuiz;
+    </script>
+</body>
+</html>
