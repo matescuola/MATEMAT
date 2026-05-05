@@ -1,0 +1,504 @@
+import React, { useState, useEffect } from 'react';
+import { BookOpen, CheckCircle, Lightbulb, ChevronRight, ChevronDown, FunctionSquare, Calculator, DivideSquare, Activity, Beaker } from 'lucide-react';
+
+// ==========================================
+// DATI DELLA SIMULAZIONE (Testi e Soluzioni)
+// ==========================================
+const examData = {
+  INTRO: {
+    title: "Benvenuto nella Simulazione 2026",
+    subtitle: "Guida Interattiva alla Risoluzione",
+    icon: <BookOpen className="w-8 h-8 text-blue-500" />,
+    content: `
+      <div class="space-y-4 text-slate-700 leading-relaxed text-lg">
+        <p>Ciao! Ho preparato questa piattaforma interattiva per aiutarti a ripassare in vista dell'Esame di Stato.</p>
+        <p>Qui troverai la risoluzione completa e commentata della <b>Simulazione Zanichelli 2026</b>.</p>
+        <ul class="list-disc pl-6 space-y-2 mt-4">
+          <li>Seleziona un Problema o un Quesito dal menu laterale.</li>
+          <li>Leggi il testo e prova a rifletterci su.</li>
+          <li>Apri gli step di risoluzione uno alla volta per confrontare i tuoi passaggi con quelli corretti.</li>
+          <li>Cerca i box <span class="font-bold text-yellow-600">"Il consiglio del prof"</span> per dritte su come evitare gli errori più comuni all'esame!</li>
+        </ul>
+        <p class="mt-6 font-medium text-blue-600">Buono studio e in bocca al lupo!</p>
+      </div>
+    `
+  },
+  P1: {
+    title: "Problema 1",
+    subtitle: "Studio di funzione logaritmica e Teorema di Rolle",
+    icon: <Activity className="w-6 h-6" />,
+    text: "Il grafico in figura è quello della funzione $$ f(x) = \\ln\\left(\\frac{x^2+a}{3|x+b|}\\right) $$ dove a e b sono parametri reali.",
+    steps: [
+      {
+        id: '1a',
+        title: "Punto A: Analisi del grafico e parametri",
+        content: `
+          <p>Dal grafico deduciamo due informazioni chiave:</p>
+          <ol class="list-decimal pl-6 space-y-2 mt-2">
+            <li>C'è un asintoto verticale in $x = 1$. L'argomento del logaritmo deve annullarsi al denominatore in quel punto. Quindi poniamo $-b = 1 \\implies \\mathbf{b = -1}$.</li>
+            <li>La funzione passa per l'origine $(0,0)$. Sostituiamo $x=0$ e $y=0$:<br>
+            $0 = \\ln\\left(\\frac{a}{3|-1|}\\right) \\implies \\ln\\left(\\frac{a}{3}\\right) = 0$.<br>
+            Affinché il logaritmo valga zero, l'argomento deve essere $1$: $\\frac{a}{3} = 1 \\implies \\mathbf{a = 3}$.</li>
+          </ol>
+        `,
+        tip: "All'esame, quando devi dedurre parametri da un grafico, cerca sempre punti evidenti: intersezioni con gli assi, asintoti e punti di massimo/minimo."
+      },
+      {
+        id: '1b',
+        title: "Punto B: Minimi relativi e tangenti",
+        content: `
+          <p>La funzione è $f(x) = \\ln\\left(\\frac{x^2+3}{3|x-1|}\\right)$. Per calcolare i minimi deriviamo. Sfruttiamo le proprietà dei logaritmi per semplificare i calcoli:</p>
+          <p>$$ f(x) = \\ln(x^2+3) - \\ln 3 - \\ln|x-1| $$</p>
+          <p>La derivata è (ricorda che la derivata di $\\ln|g(x)|$ è $g'(x)/g(x)$):</p>
+          <p>$$ f'(x) = \\frac{2x}{x^2+3} - \\frac{1}{x-1} = \\frac{x^2-2x-3}{(x^2+3)(x-1)} $$</p>
+          <p>Annullando la derivata ($x^2-2x-3=0$) troviamo $x = -1$ e $x = 3$. Lo studio del segno conferma che sono entrambi <b>minimi relativi</b>.</p>
+          <p>Per le tangenti, intersechiamo $f(x)$ con l'asse x ($f(x)=0$). Risolvendo l'argomento uguale a 1 otteniamo le ascisse $x=0$ e $x=-3$. Le pendenze (calcolate con la derivata) sono $m_1 = 1$ e $m_2 = -1/4$.</p>
+          <ul class="list-disc pl-6">
+            <li>Tangente in $(0,0)$: $\\mathbf{y = x}$</li>
+            <li>Tangente in $(-3,0)$: $\\mathbf{y = -\\frac{1}{4}x - \\frac{3}{4}}$</li>
+          </ul>
+        `
+      },
+      {
+        id: '1c',
+        title: "Punto C: Teorema di Rolle",
+        content: `
+          <p>Sostituendo $f'(x)$ nell'espressione di $h(x)$ si dimostra facilmente che l'algebra si semplifica ottenendo esattamente $g(x) = \\frac{-x^2+2x+3}{x^2+3}$.</p>
+          <p>Verifichiamo Rolle per $g(x)$ in $[-1, 3]$:</p>
+          <ul class="list-disc pl-6 space-y-1">
+            <li><b>Continuità:</b> il denominatore $x^2+3$ non si annulla mai. OK.</li>
+            <li><b>Derivabilità:</b> idem, è derivabile in tutto $\\mathbb{R}$. OK.</li>
+            <li><b>Valori agli estremi:</b> $g(-1) = 0$ e $g(3) = 0$. OK.</li>
+          </ul>
+          <p>Poniamo la derivata di $g(x)$ uguale a zero: $$g'(x) = \\frac{-2x^2-12x+6}{(x^2+3)^2} = 0$$</p>
+          <p>Le soluzioni sono $x = -3 \\pm 2\\sqrt{3}$. L'unica accettabile nell'intervallo è $\\mathbf{c = -3 + 2\\sqrt{3}}$.</p>
+        `,
+        tip: "Rolle richiede sempre tre ipotesi. Scrivile esplicitamente sul foglio protocollo, anche se ti sembrano banali. I commissari valutano il rigore logico!"
+      },
+      {
+        id: '1d',
+        title: "Punto D: Valore medio",
+        content: `
+          <p>Uso il Teorema della media integrale. Devo calcolare:</p>
+          <p>$$ V_m = \\frac{1}{3 - (-1)} \\int_{-1}^{3} \\frac{-x^2+2x+3}{x^2+3} dx $$</p>
+          <p>Eseguo la divisione polinomiale per grado uguale: l'integranda diventa $-1 + \\frac{2x+6}{x^2+3}$. Spezzo la seconda frazione in $\\frac{2x}{x^2+3}$ (che dà un logaritmo) e $\\frac{6}{x^2+3}$ (che dà un arcotangente).</p>
+          <p>$$ V_m = \\frac{1}{4} \\left[ -x + \\ln(x^2+3) + \\frac{6}{\\sqrt{3}}\\arctan\\left(\\frac{x}{\\sqrt{3}}\\right) \\right]_{-1}^{3} $$</p>
+          <p>Sostituendo gli estremi ottengo il valore: $\\mathbf{\\frac{-4 + \\ln 3 + \\pi\\sqrt{3}}{4}}$.</p>
+        `
+      }
+    ]
+  },
+  P2: {
+    title: "Problema 2",
+    subtitle: "Famiglia di funzioni e integrali",
+    icon: <FunctionSquare className="w-6 h-6" />,
+    text: "Considera la famiglia di funzioni $$ f_a(x) = \\frac{x(x-a)^2}{x^3+1} $$ con $a \\in \\mathbb{R}$.",
+    steps: [
+      {
+        id: '2a',
+        title: "Punti A e B: Ricerca parametro e studio",
+        content: `
+          <p>Per trovare il parametro $a$ in modo che ci sia un punto stazionario in $x=2$, calcoliamo la derivata prima e imponiamo $f_a'(2) = 0$.</p>
+          <p>Sviluppando la derivata con la regola del quoziente e sostituendo $x=2$ si ottiene l'equazione $(2-a)(15a+6) = 0$, da cui i due valori $\\mathbf{a = 2}$ e $\\mathbf{a = -\\frac{2}{5}}$.</p>
+          <p>Studio di $f_2(x) = \\frac{x(x-2)^2}{x^3+1}$:</p>
+          <ul class="list-disc pl-6 space-y-1">
+            <li><b>Dominio:</b> $\\mathbb{R} \\setminus \\{-1\\}$</li>
+            <li><b>Asintoti:</b> $y=1$ (orizzontale), $x=-1$ (verticale).</li>
+            <li><b>Derivata:</b> Annullando la derivata si confermano i punti stazionari in $x=2$ (minimo) e in $x=1/2$ (massimo, come richiesto di dimostrare).</li>
+          </ul>
+        `
+      },
+      {
+        id: '2c',
+        title: "Punto C: Discussione del parametro k",
+        content: `
+          <p>Guardando il grafico di $f_2(x)$, tracciamo le rette orizzontali $y = k$ e contiamo le intersezioni:</p>
+          <ul class="list-disc pl-6 space-y-1">
+            <li>Per $k < 0$: <b>1 soluzione</b> (sul ramo asintotico di sinistra in basso).</li>
+            <li>Per $k = 0$: <b>2 soluzioni</b> (origine e minimo tangenziale).</li>
+            <li>Per $0 < k < 1$: <b>3 soluzioni</b> (interseca la gobba e il ramo di destra).</li>
+            <li>Per $k = 1$: <b>1 soluzione</b> (solo il massimo in $x=1/2$, il resto è asintotico).</li>
+            <li>Per $k > 1$: <b>2 soluzioni</b> (sopra l'asintoto orizzontale).</li>
+          </ul>
+        `,
+        tip: "Attenzione all'asintoto orizzontale! Spesso gli studenti contano un'intersezione in più credendo che la funzione lo attraversi, ricordati di controllare l'andamento ai limiti."
+      },
+      {
+        id: '2d',
+        title: "Punto D: Area della regione piana",
+        content: `
+          <p>Dopo aver verificato l'identità algebrica (basta svolgere i calcoli e semplificare i trinomi irriducibili), abbiamo $g(x) = \\frac{-5x^2+4x}{x+1}$.</p>
+          <p>Il grafico di $g(x)$ interseca l'asse x per $x=0$ e $x=4/5$. In questo intervallo è positiva. Calcoliamo l'integrale:</p>
+          <p>$$ Area = \\int_{0}^{4/5} \\frac{-5x^2+4x}{x+1} dx $$</p>
+          <p>Dividiamo il numeratore per il denominatore ottenendo: $-5x + 9 - \\frac{9}{x+1}$. Integrando termine a termine otteniamo $-\\frac{5}{2}x^2 + 9x - 9\\ln|x+1|$. Sostituendo gli estremi otteniamo $\\mathbf{\\frac{28}{5} - 9\\ln\\left(\\frac{9}{5}\\right)}$.</p>
+        `
+      }
+    ]
+  },
+  Q1: {
+    title: "Quesito 1",
+    subtitle: "Calcolo delle probabilità",
+    icon: <DivideSquare className="w-6 h-6" />,
+    text: "Un'urna contiene 10 biglie, numerate da 1 a 10. Si estraggono simultaneamente 4 biglie. Andrea scommette sulla somma pari, Barbara sulla somma dispari. Chi ha la maggiore probabilità di vincere?",
+    steps: [
+      {
+        id: 'q1',
+        title: "Soluzione",
+        content: `
+          <p>Ci sono 5 numeri pari e 5 dispari nell'urna. Il numero totale di estrazioni possibili (combinazioni) è $$\\binom{10}{4} = 210$$.</p>
+          <p>Una somma di 4 numeri è <b>pari</b> se estraggo:</p>
+          <ul class="list-disc pl-6 space-y-1">
+            <li>4 pari: $\\binom{5}{4} = 5$ modi</li>
+            <li>4 dispari: $\\binom{5}{4} = 5$ modi</li>
+            <li>2 pari e 2 dispari: $\\binom{5}{2} \\cdot \\binom{5}{2} = 10 \\cdot 10 = 100$ modi</li>
+          </ul>
+          <p>Totale casi pari: $5 + 5 + 100 = 110$. I casi dispari saranno la differenza: $210 - 110 = 100$.</p>
+          <p>La probabilità di Andrea è $\\frac{110}{210}$, quella di Barbara è $\\frac{100}{210}$. <b>Vince Andrea!</b></p>
+        `,
+        tip: "Quando devi sommare più numeri, ragiona sempre sulla parità: Pari+Pari=Pari, Dispari+Dispari=Pari. Un numero dispari di addendi dispari dà sempre dispari!"
+      }
+    ]
+  },
+  Q2: {
+    title: "Quesito 2",
+    subtitle: "Geometria nello spazio",
+    icon: <Calculator className="w-6 h-6" />,
+    text: "Considera la sfera $(x-5)^2+(y-1)^2+(z-3)^2=9$ e il piano $2x-y+(2-3k)z+3(k-2)=0$. Determina $k$ per tangenza e per divisione a metà.",
+    steps: [
+      {
+        id: 'q2a',
+        title: "Punto A: Condizione di tangenza",
+        content: `
+          <p>La sfera ha centro $C(5, 1, 3)$ e raggio $R = \\sqrt{9} = 3$. Un piano è tangente se la sua distanza dal centro è pari al raggio.</p>
+          <p>Usiamo la formula della distanza punto-piano:</p>
+          <p>$$ \\frac{|2(5) - 1(1) + (2-3k)(3) + 3k - 6|}{\\sqrt{2^2 + (-1)^2 + (2-3k)^2}} = 3 $$</p>
+          <p>Semplificando si ottiene l'equazione $|3 - 2k| = \\sqrt{9k^2 - 12k + 9}$. Elevando al quadrato entrambi i membri si eliminano molti termini, lasciando $5k^2 = 0$, da cui $\\mathbf{k = 0}$.</p>
+        `
+      },
+      {
+        id: 'q2b',
+        title: "Punto B: Divisione a metà",
+        content: `
+          <p>Un piano divide una sfera in due parti congruenti (due emisfere) se e solo se passa esattamente per il suo centro.</p>
+          <p>Basta sostituire le coordinate del centro $C(5,1,3)$ nell'equazione del piano e imporre l'uguaglianza a zero:</p>
+          <p>$$ 2(5) - 1(1) + (2-3k)(3) + 3k - 6 = 0 $$</p>
+          <p>Risolvendo l'equazione di primo grado si ottiene $9 - 6k = 0$, ovvero $\\mathbf{k = \\frac{3}{2}}$.</p>
+        `
+      }
+    ]
+  },
+  Q3: {
+    title: "Quesito 3",
+    subtitle: "Funzioni goniometriche ed esponenziali",
+    icon: <Activity className="w-6 h-6" />,
+    text: "Determina il periodo $T$ di $f(x)=\\sin^2 x$ e trova gli estremi relativi di $g(x)=e^{\\sin^2 x}$ in $[0, \\pi]$.",
+    steps: [
+      {
+        id: 'q3',
+        title: "Soluzione",
+        content: `
+          <p>Per il periodo, abbassiamo di grado il seno tramite le formule di bisezione: $f(x) = \\frac{1 - \\cos(2x)}{2}$. Poiché l'argomento è raddoppiato ($2x$), il periodo base del coseno ($2\\pi$) si dimezza: $\\mathbf{T = \\pi}$.</p>
+          <p>Per la funzione $g(x) = e^{\\sin^2 x}$, calcoliamo la derivata prima: $$g'(x) = e^{\\sin^2 x} \\cdot (2\\sin x \\cos x) = e^{\\sin^2 x} \\sin(2x)$$</p>
+          <p>Studiamo il segno: $\\sin(2x) \\ge 0$ nell'intervallo $[0, \\pi]$ diventa $0 \\le 2x \\le \\pi \\implies 0 \\le x \\le \\frac{\\pi}{2}$.</p>
+          <p>Quindi la funzione cresce fino a $\\pi/2$ e poi decresce. Valutiamo i punti:</p>
+          <ul class="list-disc pl-6 space-y-1">
+            <li>$x = 0 \\implies y = 1$ (<b>minimo</b> locale ed estremo)</li>
+            <li>$x = \\pi/2 \\implies y = e$ (<b>massimo</b> relativo e assoluto)</li>
+            <li>$x = \\pi \\implies y = 1$ (<b>minimo</b> locale ed estremo)</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  Q4: {
+    title: "Quesito 4",
+    subtitle: "Funzione integrale e De L'Hôpital",
+    icon: <DivideSquare className="w-6 h-6" />,
+    text: "Date $F(x) = \\int_{0}^{x} \\frac{\\ln(1+4t)}{t+1} dt$ e $g(x) = 2x^2$. Calcola la derivata di $(F \\circ g)(x)$ in $x=1$ e il limite per $x \\to 0$ di $F(x)/g(x)$.",
+    steps: [
+      {
+        id: 'q4',
+        title: "Soluzione",
+        content: `
+          <p>Usiamo il Teorema Fondamentale del Calcolo Integrale: $F'(x)$ è semplicemente l'integranda calcolata in $x$. Quindi $F'(x) = \\frac{\\ln(1+4x)}{x+1}$.</p>
+          <p>La funzione composta è $h(x) = F(g(x))$. La sua derivata (regola della catena) è $h'(x) = F'(g(x)) \\cdot g'(x)$. Sostituendo $g(x)=2x^2$ e la sua derivata $g'(x)=4x$:</p>
+          <p>$$ h'(x) = \\frac{\\ln(1+4(2x^2))}{2x^2+1} \\cdot 4x $$</p>
+          <p>In $x=1$ otteniamo $h'(1) = \\frac{4\\ln(9)}{3} = \\mathbf{\\frac{8\\ln 3}{3}}$.</p>
+          <hr class="my-4 border-slate-200">
+          <p>Per il limite $\\lim_{x \\to 0} \\frac{F(x)}{g(x)}$, abbiamo una forma indeterminata $0/0$. Usiamo De L'Hôpital derivando numeratore e denominatore:</p>
+          <p>$$ \\lim_{x \\to 0} \\frac{F'(x)}{g'(x)} = \\lim_{x \\to 0} \\frac{\\frac{\\ln(1+4x)}{x+1}}{4x} = \\lim_{x \\to 0} \\left[ \\frac{\\ln(1+4x)}{4x} \\cdot \\frac{1}{x+1} \\right] $$</p>
+          <p>Il primo fattore è un limite notevole che tende a 1. Il secondo tende banalmente a 1. Il risultato del limite è $\\mathbf{1}$.</p>
+        `,
+        tip: "Quando vedi una funzione definita come un integrale da un numero a x, quasi sicuramente dovrai derivarla per togliere di mezzo l'integrale!"
+      }
+    ]
+  },
+  Q5: {
+    title: "Quesito 5",
+    subtitle: "Problema di ottimizzazione",
+    icon: <FunctionSquare className="w-6 h-6" />,
+    text: "Stabilisci se il rettangolo di area massima inscritto in un triangolo equilatero è anche quello che genera il cilindro di volume massimo ruotando.",
+    steps: [
+      {
+        id: 'q5',
+        title: "Soluzione",
+        content: `
+          <p>Sia $x$ la base del rettangolo e $y$ l'altezza. Sfruttando la similitudine dei triangoli, esprimiamo $y$ in funzione di $x$: $y = \\frac{\\sqrt{3}}{2}(l - x)$.</p>
+          <p><b>1. Area massima:</b> La funzione area è $A(x) = x \\cdot y = \\frac{\\sqrt{3}}{2}(lx - x^2)$. Derivando e ponendo uguale a zero, si trova un massimo per $\\mathbf{x = \\frac{l}{2}}$.</p>
+          <p><b>2. Volume cilindro massimo:</b> Facendo ruotare il rettangolo, l'altezza del cilindro è $x$ e il raggio di base è $y$. Il volume è $V(x) = \\pi y^2 x = \\pi \\left[\\frac{\\sqrt{3}}{2}(l-x)\\right]^2 x$. Sviluppando e derivando, otteniamo $V'(x) ανάλογη a 3x^2 - 4lx + l^2 = 0$. Le soluzioni sono $x=l$ (minimo) e $\\mathbf{x = \\frac{l}{3}}$ (massimo).</p>
+          <p>Conclusione: Poiché $l/2 \\neq l/3$, l'affermazione è <b>FALSA</b>.</p>
+        `
+      }
+    ]
+  },
+  Q6: {
+    title: "Quesito 6",
+    subtitle: "Tangenza tra due curve",
+    icon: <Activity className="w-6 h-6" />,
+    text: "Determina $a$ e $b$ affinché $f(x) = \\frac{3x-a}{x+1}$ e $g(x) = x^2-bx$ siano tangenti in $x=1$. Ricava la tangente e dimostra che c'è un secondo punto di intersezione B.",
+    steps: [
+      {
+        id: 'q6',
+        title: "Soluzione",
+        content: `
+          <p>Per avere tangenza in $x=1$, devono avere la stessa ordinata e la stessa derivata:</p>
+          <ol class="list-decimal pl-6">
+            <li>$f(1) = g(1) \\implies \\frac{3-a}{2} = 1-b$</li>
+            <li>$f'(1) = g'(1) \\implies \\frac{a+3}{4} = 2-b$</li>
+          </ol>
+          <p>Risolvendo il sistema otteniamo $\\mathbf{b = \\frac{2}{3}}$ e $\\mathbf{a = \\frac{7}{3}}$.</p>
+          <p>La retta tangente passa per $(1, 1/3)$ con pendenza $m = 4/3$. L'equazione è $\\mathbf{y = \\frac{4}{3}x - 1}$.</p>
+          <p>Per trovare l'intersezione residua uguagliamo $f(x) = g(x)$ con i parametri inseriti. Sviluppando i calcoli si arriva a un'equazione di 3° grado: $3x^3 + x^2 - 11x + 7 = 0$. Sapendo che $x=1$ è soluzione doppia (per la tangenza), possiamo usare Ruffini due volte per fattorizzare l'equazione in $(x-1)^2(3x+7)=0$. Da cui si evince la seconda soluzione $x = -7/3$. Il punto è $\\mathbf{B(-7/3, 7)}$.</p>
+        `
+      }
+    ]
+  },
+  Q7: {
+    title: "Quesito 7",
+    subtitle: "Continuità e derivabilità su tratti",
+    icon: <FunctionSquare className="w-6 h-6" />,
+    text: "Trova i parametri affinché la funzione a tratti sia continua e derivabile in $x=0$, poi valuta l'esistenza della derivata seconda.",
+    steps: [
+      {
+        id: 'q7',
+        title: "Soluzione",
+        content: `
+          <p><b>1. Continuità:</b> Uguagliamo limite sinistro e destro in $x=0$.<br>
+          $Sx: f(0) = b$<br>
+          $Dx: \\lim_{x \\to 0^+} (x^2 - bx + a - 2) = a - 2$<br>
+          Quindi: $b = a - 2$.</p>
+          <p><b>2. Derivabilità:</b> Uguagliamo le derivate in $x=0$.<br>
+          $f'_{sx}(x) = \\frac{a-b}{(x+1)^2} \\implies f'_{sx}(0) = a - b$<br>
+          $f'_{dx}(x) = 2x - b \\implies f'_{dx}(0) = -b$<br>
+          Quindi: $a - b = -b \\implies \\mathbf{a = 0}$. Sostituendo nella prima condizione otteniamo $\\mathbf{b = -2}$.</p>
+          <p><b>3. Derivata seconda:</b> Con i parametri trovati, le derivate prime sono $2(x+1)^{-2}$ a sinistra e $2x+2$ a destra. Derivando ancora:<br>
+          $f''_{sx}(x) = -4(x+1)^{-3} \\implies f''_{sx}(0) = -4$<br>
+          $f''_{dx}(x) = 2 \\implies f''_{dx}(0) = 2$<br>
+          Essendo limiti diversi, <b>la derivata seconda non esiste</b> in $x=0$ (c'è un "punto angoloso" per la derivata prima).</p>
+        `
+      }
+    ]
+  },
+  Q8: {
+    title: "Quesito 8",
+    subtitle: "Geometria: Il Sangaku",
+    icon: <Calculator className="w-6 h-6" />,
+    text: "Nel quadrato ABCD di lato 5 cm, determina il lato del quadrato inscritto EFGH e il raggio della circonferenza tangente.",
+    steps: [
+      {
+        id: 'q8',
+        title: "Soluzione",
+        content: `
+          <p><b>1. Lato del quadrato EFGH:</b> Sfruttando la simmetria lungo la diagonale $AC$, se chiamiamo $x$ il lato cercato, esso dista dal vertice $A$ la quantità $3x/2$ (si forma un triangolo isoscele, e sommiamo la distanza ai lati paralleli). Applicando Pitagora tra questo vertice, il punto medio del segmento sull'arco e il raggio (che vale 5 come il lato ABCD):<br>
+          $$ \\left(\\frac{x}{2}\\right)^2 + \\left(\\frac{3x}{2}\\right)^2 = 5^2 \\implies \\frac{10x^2}{4} = 25 \\implies \\mathbf{x = \\sqrt{10}} $$</p>
+          <p><b>2. Raggio della circonferenza:</b> La diagonale del quadrato grande è $5\\sqrt{2}$. La circonferenza è tangente ai lati nell'angolo $C$, quindi la distanza di $C$ dal centro $O$ della circonferenza è $r\\sqrt{2}$. La distanza del centro $O$ da $A$ è la somma dei raggi dell'arco grande e del piccolo: $5 + r$. Eguagliamo i segmenti sulla diagonale $AC$:<br>
+          $$ 5 + r = 5\\sqrt{2} - r\\sqrt{2} $$<br>
+          Raccogliendo $r$ e razionalizzando, si ottiene: $\\mathbf{r = 15 - 10\\sqrt{2}}$ cm.</p>
+        `
+      }
+    ]
+  }
+};
+
+// ==========================================
+// COMPONENTI UI
+// ==========================================
+
+export default function App() {
+  const [currentTab, setCurrentTab] = useState('INTRO');
+  const [expandedSteps, setExpandedSteps] = useState({});
+
+  // Integrazione di MathJax per il rendering delle formule
+  useEffect(() => {
+    let isMounted = true;
+    
+    const renderMath = () => {
+      if (window.MathJax && isMounted) {
+        window.MathJax.typesetPromise().catch(err => console.error(err));
+      }
+    };
+
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$']],
+          displayMath: [['$$', '$$']]
+        },
+        startup: { typeset: false }
+      };
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.async = true;
+      document.head.appendChild(script);
+      script.onload = renderMath;
+    } else {
+      renderMath();
+    }
+
+    return () => { isMounted = false; };
+  }, [currentTab, expandedSteps]);
+
+  const toggleStep = (stepId) => {
+    setExpandedSteps(prev => ({
+      ...prev,
+      [stepId]: !prev[stepId]
+    }));
+  };
+
+  const handleTabChange = (tabId) => {
+    setCurrentTab(tabId);
+    setExpandedSteps({}); // Reset degli accordion quando si cambia tab
+    window.scrollTo(0, 0);
+  };
+
+  const navItems = [
+    { id: 'INTRO', label: 'Benvenuto' },
+    { id: 'P1', label: 'Problema 1' },
+    { id: 'P2', label: 'Problema 2' },
+    { id: 'Q1', label: 'Quesito 1' },
+    { id: 'Q2', label: 'Quesito 2' },
+    { id: 'Q3', label: 'Quesito 3' },
+    { id: 'Q4', label: 'Quesito 4' },
+    { id: 'Q5', label: 'Quesito 5' },
+    { id: 'Q6', label: 'Quesito 6' },
+    { id: 'Q7', label: 'Quesito 7' },
+    { id: 'Q8', label: 'Quesito 8' },
+  ];
+
+  const data = examData[currentTab];
+
+  return (
+    <div className="flex flex-col md:flex-row h-screen bg-slate-50 font-sans text-slate-800">
+      
+      {/* SIDEBAR */}
+      <div className="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col shadow-sm flex-shrink-0 md:h-full overflow-y-auto">
+        <div className="p-4 border-b border-slate-100 flex items-center space-x-2 bg-blue-600 text-white">
+          <Beaker className="w-6 h-6" />
+          <h1 className="font-bold text-lg tracking-tight">Simulazione 2026</h1>
+        </div>
+        
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-x-auto flex md:flex-col snap-x">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => handleTabChange(item.id)}
+              className={`snap-start whitespace-nowrap md:whitespace-normal text-left px-4 py-2.5 rounded-lg transition-colors flex items-center font-medium ${
+                currentTab === item.id
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* MAIN CONTENT AREA */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <header className="bg-white border-b border-slate-200 px-6 py-4 lg:px-8 shrink-0">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-50 rounded-xl text-blue-600">
+              {data.icon}
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">{data.title}</h2>
+              <p className="text-sm font-medium text-slate-500">{data.subtitle}</p>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+          <div className="max-w-4xl mx-auto space-y-6">
+            
+            {/* TEXT OF THE PROBLEM */}
+            {data.text && (
+              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 md:p-6 shadow-sm">
+                <h3 className="text-xs uppercase tracking-wider font-bold text-blue-800 mb-2">Testo</h3>
+                <div 
+                  className="text-lg text-slate-800"
+                  dangerouslySetInnerHTML={{ __html: data.text }} 
+                />
+              </div>
+            )}
+
+            {/* INTRO CONTENT (Only for Benvenuto) */}
+            {data.content && (
+              <div 
+                className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200 mt-4"
+                dangerouslySetInnerHTML={{ __html: data.content }}
+              />
+            )}
+
+            {/* RESOLUTION STEPS */}
+            {data.steps && data.steps.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-slate-800 mt-8 mb-4 flex items-center">
+                  <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
+                  Passaggi di Risoluzione
+                </h3>
+                
+                {data.steps.map((step, idx) => (
+                  <div key={step.id} className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden transition-all duration-200">
+                    <button
+                      onClick={() => toggleStep(step.id)}
+                      className="w-full flex items-center justify-between p-5 text-left bg-white hover:bg-slate-50 focus:outline-none"
+                    >
+                      <span className="font-semibold text-lg text-slate-800">
+                        {step.title}
+                      </span>
+                      {expandedSteps[step.id] ? (
+                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                      ) : (
+                        <ChevronRight className="w-5 h-5 text-slate-400" />
+                      )}
+                    </button>
+                    
+                    {expandedSteps[step.id] && (
+                      <div className="px-5 pb-6 pt-2 border-t border-slate-100">
+                        <div 
+                          className="prose prose-slate max-w-none math-content space-y-3"
+                          dangerouslySetInnerHTML={{ __html: step.content }} 
+                        />
+                        
+                        {step.tip && (
+                          <div className="mt-5 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start space-x-3">
+                            <Lightbulb className="w-6 h-6 text-amber-500 shrink-0 mt-0.5" />
+                            <div>
+                              <h4 className="font-bold text-amber-800 text-sm uppercase tracking-wide">Il consiglio del prof</h4>
+                              <p className="text-amber-900 mt-1 font-medium">{step.tip}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
