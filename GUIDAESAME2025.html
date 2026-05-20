@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAT-TUTOR 2025</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter per l'interfaccia e Playfair Display per la matematica editoriale -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .math-font {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] min-h-screen p-4 md:p-12 text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
+
+  <div class="max-w-2xl mx-auto">
+    <!-- HEADER -->
+    <header class="mb-10 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <div class="bg-indigo-600 p-2.5 rounded-xl text-white shadow-lg shadow-indigo-200">
+          <!-- Icon: Check -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-black text-slate-900 tracking-tighter leading-none">MAT-TUTOR</h1>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Simulazione 2025</p>
+        </div>
+      </div>
+      <div id="step-badge" class="hidden bg-indigo-50 border border-indigo-100 px-4 py-1.5 rounded-full text-[10px] font-black text-indigo-600 uppercase tracking-wider">
+        Step: Analisi
+      </div>
+    </header>
+
+    <!-- SCHERMATA HOME -->
+    <div id="section-home" class="space-y-6">
+      <div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-2xl shadow-indigo-100/30 text-center">
+        <div class="inline-flex p-6 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-[2.5rem] text-white mb-8 shadow-2xl shadow-indigo-200">
+          <!-- Icon: BookOpen -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <h2 class="text-3xl font-black text-slate-800 tracking-tight mb-4">Continuità e Derivabilità</h2>
+        <p class="text-slate-500 text-sm leading-relaxed max-w-sm mx-auto mb-10">
+          Analizzeremo il comportamento di una funzione in un punto critico. Mettiti alla prova con i quesiti della seconda prova d'esame.
+        </p>
+        <button 
+          onclick="startSession()"
+          class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-lg hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all transform active:scale-[0.98]"
+        >
+          Inizia la Verifica
+        </button>
+      </div>
+    </div>
+
+    <!-- AREA SESSIONE DI STUDIO (Nascosta inizialmente) -->
+    <div id="section-session" class="hidden space-y-6">
+      <!-- Testo Quesito Attivo -->
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-2 h-full bg-indigo-600"></div>
+        <div class="flex items-center gap-2 text-indigo-600 font-black text-[10px] mb-4 uppercase tracking-widest">
+          <!-- Icon: MessageSquare -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          Problema 1 - Quesito (a)
+        </div>
+        <p class="text-slate-800 text-lg font-medium leading-relaxed italic math-font">
+          "Dati r &gt; 0 e k &lt; 0, si considerino la circonferenza C<sub>r</sub> e la funzione f<sub>k</sub>(x) = k|x|. Verificare che f<sub>k</sub> è continua ma non derivabile in x = 0 qualunque sia il valore di k."
+        </p>
+      </div>
+
+      <!-- STEP 1: ANALISI PRELIMINARE -->
+      <div id="step-analisi" class="space-y-6">
+        <div class="bg-slate-900 text-white p-4 rounded-xl flex items-center gap-3">
+          <!-- Icon: Info -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 class="font-bold text-sm">Analisi Preliminare</h3>
+        </div>
+        
+        <div class="space-y-3">
+          <div class="flex gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-sm items-start">
+            <span class="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0">1</span>
+            <p class="text-sm text-slate-700 leading-snug">
+              <strong>Parametri:</strong> r rappresenta il raggio (positivo), mentre k è la pendenza dei rami della funzione (sempre negativa).
+            </p>
+          </div>
+          <div class="flex gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-sm items-start">
+            <span class="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0">2</span>
+            <p class="text-sm text-slate-700 leading-snug">
+              <strong>Continuità:</strong> Per verificare che sia continua in x = 0, dobbiamo assicurarci che il valore f(0) coincida con il limite per x che tende a 0.
+            </p>
+          </div>
+          <div class="flex gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-sm items-start">
+            <span class="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0">3</span>
+            <p class="text-sm text-slate-700 leading-snug">
+              <strong>Derivabilità:</strong> Per confermare la non derivabilità, dobbiamo studiare i limiti destro e sinistro del rapporto incrementale per h che tende a zero.
+            </p>
+          </div>
+        </div>
+
+        <button 
+          onclick="goToCalcolo()"
+          class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
+        >
+          Passa al calcolo dei limiti
+          <!-- Icon: ArrowRight -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- STEP 2: METTITI ALLA PROVA -->
+      <div id="step-calcolo" class="hidden space-y-6">
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-5 rounded-r-xl">
+          <h3 class="font-bold text-amber-800 text-sm flex items-center gap-2 mb-2">
+            <!-- Icon: Edit3 -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Mettiti alla prova
+          </h3>
+          <p class="text-xs text-amber-700 leading-relaxed">
+            Inserisci i risultati dei limiti del rapporto incrementale per x che tende a zero.<br>
+            Ricorda: per x &gt; 0, |x| = x (limite destro); per x &lt; 0, |x| = -x (limite sinistro).
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm">
+            <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Limite Destro (h &rarr; 0<sup>+</sup>)</label>
+            <input 
+              type="text" 
+              id="input-destro"
+              placeholder="Inserisci il valore (es. k o -k)"
+              class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg font-serif italic text-lg outline-none focus:border-indigo-500 transition-colors"
+            >
+          </div>
+          <div class="bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm">
+            <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Limite Sinistro (h &rarr; 0<sup>-</sup>)</label>
+            <input 
+              type="text" 
+              id="input-sinistro"
+              placeholder="Inserisci il valore (es. k o -k)"
+              class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg font-serif italic text-lg outline-none focus:border-indigo-500 transition-colors"
+            >
+          </div>
+        </div>
+
+        <!-- Banner errore / Suggerimenti Dispense -->
+        <div id="hint-banner" class="hidden p-4 bg-orange-50 border border-orange-100 rounded-xl flex gap-3 animate-pulse">
+          <!-- Icon: AlertCircle -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div class="text-xs text-orange-800 leading-normal">
+            <p class="font-bold">Risposta non corretta</p>
+            <p class="mt-1">
+              Rileggi con attenzione il segno di k. Nella frazione del rapporto incrementale avrai k·(h)/h a destra, e k·(-h)/h a sinistra.<br>
+              Ti consigliamo di consultare la tua dispensa: <strong>TEORIA SULLE DERIVATE – PARTE PRIMA.pdf</strong>.
+            </p>
+          </div>
+        </div>
+
+        <button 
+          onclick="verifyCalcolo()"
+          class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all shadow-lg"
+        >
+          Conferma Risultati
+        </button>
+      </div>
+
+      <!-- STEP 3: FEEDBACK & SVOLGIMENTO COMPLETO -->
+      <div id="step-feedback" class="hidden space-y-8">
+        <div class="bg-emerald-50 border border-emerald-100 p-8 rounded-[2.5rem] shadow-sm">
+          <div class="flex items-center gap-3 text-emerald-700 mb-8 justify-center">
+            <!-- Icon: CheckCircle -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="text-2xl font-black italic tracking-tight">Verifica Completata con Successo</h3>
+          </div>
+          
+          <div class="space-y-8">
+            <!-- Sotto-sezione Continuità -->
+            <section>
+              <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">1. Verifica della Continuità</h4>
+              <p class="text-sm text-slate-600 text-center mb-4">La funzione f<sub>k</sub>(x) = k|x| valutata nell'origine vale:</p>
+              
+              <!-- Blocco Equazione Formattata in HTML -->
+              <div class="text-center my-4">
+                <div class="inline-block bg-white px-8 py-5 rounded-2xl border border-slate-100 shadow-sm">
+                  <span class="text-xl font-serif italic text-slate-800 tracking-wide">
+                    f<sub>k</sub>(0) = k · |0| = 0
+                  </span>
+                </div>
+              </div>
+
+              <p class="text-sm text-slate-600 text-center leading-relaxed">
+                Calcolando il limite per x che tende a 0, si ha lo stesso valore:
+              </p>
+              
+              <div class="text-center my-4">
+                <div class="inline-block bg-white px-8 py-5 rounded-2xl border border-slate-100 shadow-sm">
+                  <span class="text-xl font-serif italic text-slate-800 tracking-wide">
+                    lim<sub>x &rarr; 0</sub> f<sub>k</sub>(x) = 0
+                  </span>
+                </div>
+              </div>
+
+              <p class="text-sm text-slate-600 text-center leading-relaxed">
+                Poiché il limite destro e sinistro coincidono con il valore della funzione nel punto, f<sub>k</sub> è <strong>continua</strong> in x = 0.
+              </p>
+            </section>
+
+            <div class="h-px bg-emerald-200 w-1/3 mx-auto"></div>
+
+            <!-- Sotto-sezione Derivabilità -->
+            <section>
+              <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">2. Analisi della Derivabilità</h4>
+              <p class="text-sm text-slate-600 text-center mb-4">Impostiamo il rapporto incrementale per h che tende a zero:</p>
+
+              <div class="text-center my-4">
+                <div class="inline-block bg-white px-8 py-5 rounded-2xl border border-slate-100 shadow-sm">
+                  <span class="text-xl font-serif italic text-slate-800 tracking-wide">
+                    <sup>[ f<sub>k</sub>(0 + h) &minus; f<sub>k</sub>(0) ]</sup> &frasl; <sub>h</sub> = <sup>[ k|h| &minus; 0 ]</sup> &frasl; <sub>h</sub> = k · <sup>|h|</sup> &frasl; <sub>h</sub>
+                  </span>
+                </div>
+              </div>
+
+              <p class="text-sm text-slate-600 text-center mb-4">Adesso calcoliamo separatamente i due limiti:</p>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div class="p-5 bg-white rounded-2xl border border-emerald-100 shadow-sm text-center">
+                  <span class="text-[9px] text-slate-400 block mb-2 font-bold uppercase tracking-wider">Limite Destro (h &rarr; 0<sup>+</sup>)</span>
+                  <div class="my-2">
+                    <span class="text-sm font-serif italic text-slate-500 block">lim<sub>h &rarr; 0<sup>+</sup></sub> k · <sup>h</sup>&frasl;<sub>h</sub></span>
+                  </div>
+                  <span class="text-2xl font-serif italic text-indigo-600">k</span>
+                </div>
+                <div class="p-5 bg-white rounded-2xl border border-emerald-100 shadow-sm text-center">
+                  <span class="text-[9px] text-slate-400 block mb-2 font-bold uppercase tracking-wider">Limite Sinistro (h &rarr; 0<sup>-</sup>)</span>
+                  <div class="my-2">
+                    <span class="text-sm font-serif italic text-slate-500 block">lim<sub>h &rarr; 0<sup>-</sup></sub> k · <sup>(&minus;h)</sup>&frasl;<sub>h</sub></span>
+                  </div>
+                  <span class="text-2xl font-serif italic text-indigo-600">&minus;k</span>
+                </div>
+              </div>
+
+              <div class="mt-8 p-6 bg-white/50 rounded-2xl border border-emerald-100 italic text-center text-slate-700 leading-relaxed">
+                Poiché il testo impone la condizione <span class="font-bold font-serif text-slate-900">k &lt; 0</span>, ricaviamo che <span class="font-bold font-serif text-slate-950">k &ne; &minus;k</span>.<br>
+                Essendo i due limiti destro e sinistro finiti ma diversi, l'origine x = 0 rappresenta un <strong>punto angoloso</strong>.<br>
+                La funzione f<sub>k</sub> è quindi continua ma <strong>non derivabile</strong> in x = 0.
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <button 
+          onclick="resetSession()"
+          class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all shadow-xl"
+        >
+          Esercizio Concluso - Torna alla Home
+        </button>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-12 pt-8 border-t border-slate-200 text-center text-slate-400 text-xs">
+      Tutor Matematica per la Seconda Prova d'Esame 2025
+    </footer>
+  </div>
+
+  <!-- SCRIPT DI CONTROLLO STATO -->
+  <script>
+    function startSession() {
+      document.getElementById('section-home').classList.add('hidden');
+      document.getElementById('section-session').classList.remove('hidden');
+      showStep('analisi');
+    }
+
+    function goToCalcolo() {
+      showStep('calcolo');
+    }
+
+    function verifyCalcolo() {
+      const d = document.getElementById('input-destro').value.trim().toLowerCase();
+      const s = document.getElementById('input-sinistro').value.trim().toLowerCase();
+
+      // Risposte corrette attese: destro -> "k", sinistro -> "-k" o "minus k"
+      if (d === 'k' && (s === '-k' || s === '&minus;k' || s === 'minus k')) {
+        document.getElementById('hint-banner').classList.add('hidden');
+        showStep('feedback');
+      } else {
+        document.getElementById('hint-banner').classList.remove('hidden');
+      }
+    }
+
+    function resetSession() {
+      document.getElementById('input-destro').value = '';
+      document.getElementById('input-sinistro').value = '';
+      document.getElementById('hint-banner').classList.add('hidden');
+      document.getElementById('section-session').classList.add('hidden');
+      document.getElementById('section-home').classList.remove('hidden');
+      document.getElementById('step-badge').classList.add('hidden');
+    }
+
+    function showStep(stepName) {
+      const stepBadge = document.getElementById('step-badge');
+      stepBadge.classList.remove('hidden');
+      stepBadge.innerText = `Step: ${stepName.toUpperCase()}`;
+
+      // Nascondi tutti gli step di sessione
+      document.getElementById('step-analisi').classList.add('hidden');
+      document.getElementById('step-calcolo').classList.add('hidden');
+      document.getElementById('step-feedback').classList.add('hidden');
+
+      // Mostra lo step corrente
+      document.getElementById(`step-${stepName}`).classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
