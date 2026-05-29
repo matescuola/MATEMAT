@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integral Calculus — CLIL Learning Path</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#F7F5F0;--surface:#FFFFFF;--surface2:#F0EDE6;
+    --ink:#1A1714;--ink2:#5C5750;--ink3:#9C9690;
+    --accent:#2D5F4E;--accent2:#4A8C75;--accent-light:#E0EDE9;
+    --gold:#C4973A;--gold-light:#FAF3E3;
+    --red:#B94040;--red-light:#FAEDED;
+    --blue:#2B4E8C;--blue-light:#E8EEF7;
+    --border:#E0DDD6;--radius:12px;--radius-sm:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;}
+  .shell{display:flex;min-height:100vh;}
+  .sidebar{width:260px;flex-shrink:0;background:var(--ink);color:#fff;padding:2rem 1.5rem;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:10;}
+  .sidebar-logo{font-family:'Fraunces',serif;font-size:18px;font-weight:700;letter-spacing:-0.3px;color:#fff;border-bottom:0.5px solid rgba(255,255,255,0.15);padding-bottom:1.25rem;margin-bottom:1.5rem;line-height:1.3;}
+  .sidebar-logo span{color:var(--accent2);}
+  .sidebar-subtitle{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+  .progress-section{margin-bottom:2rem;}
+  .progress-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px;}
+  .progress-track{background:rgba(255,255,255,0.12);border-radius:4px;height:4px;}
+  .progress-fill{height:4px;border-radius:4px;background:var(--accent2);transition:width 0.5s ease;width:0%;}
+  .progress-pct{font-size:12px;color:rgba(255,255,255,0.5);margin-top:6px;}
+  .nav-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,0.35);margin-bottom:8px;margin-top:1.5rem;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:rgba(255,255,255,0.6);transition:all 0.15s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left;}
+  .nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+  .nav-item.active{background:var(--accent);color:#fff;}
+  .nav-item.done{color:rgba(255,255,255,0.9);}
+  .nav-item .nav-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);}
+  .nav-item.active .nav-dot{background:rgba(255,255,255,0.25);color:#fff;}
+  .nav-item.done .nav-dot{background:var(--accent2);color:#fff;}
+  .main{margin-left:260px;flex:1;padding:3rem 3.5rem;max-width:860px;}
+  .page-header{margin-bottom:2.5rem;}
+  .page-tag{display:inline-block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1px;padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+  .tag-glossary{background:var(--gold-light);color:var(--gold);}
+  .tag-concept{background:var(--blue-light);color:var(--blue);}
+  .tag-quiz{background:#EEF0FA;color:#3D4BA0;}
+  .tag-end{background:var(--gold-light);color:var(--gold);}
+  .page-header h1{font-family:'Fraunces',serif;font-size:34px;font-weight:700;letter-spacing:-0.5px;color:var(--ink);line-height:1.2;margin-bottom:10px;}
+  .page-header p{font-size:15px;color:var(--ink2);max-width:620px;line-height:1.7;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem;}
+  .card-title{font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:var(--ink);margin-bottom:0.75rem;}
+  .card p{font-size:14px;color:var(--ink2);line-height:1.75;}
+  .card p+p{margin-top:10px;}
+  .box{border-radius:var(--radius-sm);padding:1.1rem 1.25rem;margin:1rem 0;font-size:14px;line-height:1.7;}
+  .box-rule{background:var(--blue-light);border-left:3px solid var(--blue);color:var(--ink);}
+  .box-tip{background:var(--gold-light);border-left:3px solid var(--gold);color:var(--ink);}
+  .box-lang{background:var(--accent-light);border-left:3px solid var(--accent2);color:var(--ink);}
+  .box-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:var(--ink3);margin-bottom:6px;}
+  code{font-family:monospace;background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:13px;color:var(--ink);}
+  ul.points{list-style:none;padding:0;margin:0.75rem 0;}
+  ul.points li{padding:7px 0;font-size:14px;color:var(--ink);display:flex;gap:10px;border-bottom:1px solid var(--border);}
+  ul.points li:last-child{border-bottom:none;}
+  ul.points li::before{content:"→";color:var(--accent2);font-weight:500;flex-shrink:0;}
+  .gloss-search{width:100%;padding:12px 16px;font-size:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);margin-bottom:1rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s;}
+  .gloss-search:focus{border-color:var(--accent2);}
+  .gloss-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:680px){.gloss-grid{grid-template-columns:1fr;}}
+  .gloss-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;cursor:pointer;transition:border-color 0.15s;}
+  .gloss-card:hover{border-color:var(--accent2);}
+  .gloss-en{font-size:14px;font-weight:500;color:var(--ink);}
+  .gloss-it{font-size:13px;color:var(--accent);margin-top:2px;}
+  .gloss-def{font-size:13px;color:var(--ink2);margin-top:6px;line-height:1.5;display:none;}
+  .gloss-card.open .gloss-def{display:block;}
+  .gloss-card.open{border-color:var(--accent2);background:var(--accent-light);}
+  .gloss-count{font-size:12px;color:var(--ink3);margin-bottom:10px;}
+  .exercise-block{background:var(--surface2);border-radius:var(--radius);padding:1.5rem;margin:1.25rem 0;}
+  .ex-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+  .ex-num{width:28px;height:28px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;}
+  .ex-title{font-size:15px;font-weight:500;color:var(--ink);}
+  .ex-question{font-size:14px;color:var(--ink);line-height:1.7;margin-bottom:1rem;}
+  .ex-question strong{color:var(--ink);font-weight:500;}
+  .step-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:var(--ink3);margin-bottom:6px;margin-top:1rem;}
+  .step-input{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;}
+  .step-input input[type="radio"],.step-input input[type="checkbox"]{accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;cursor:pointer;}
+  .step-input label{font-size:14px;color:var(--ink);cursor:pointer;flex:1;}
+  .step-input.correct-highlight{border-color:var(--accent2);background:var(--accent-light);}
+  .step-input.wrong-highlight{border-color:var(--red);background:var(--red-light);}
+  .check-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;margin-top:12px;}
+  .check-btn:hover{background:var(--accent2);}
+  .check-btn:disabled{background:var(--ink3);cursor:default;}
+  .fb-box{border-radius:var(--radius-sm);padding:12px 16px;margin-top:12px;font-size:14px;line-height:1.6;display:none;}
+  .fb-ok{background:var(--accent-light);border-left:3px solid var(--accent2);color:var(--ink);}
+  .fb-ko{background:var(--red-light);border-left:3px solid var(--red);color:var(--ink);}
+  .section-check{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:1.25rem;}
+  .section-check input[type="checkbox"]{accent-color:var(--accent);width:18px;height:18px;flex-shrink:0;cursor:pointer;}
+  .section-check label{font-size:14px;color:var(--ink2);cursor:pointer;}
+  .section-check.checked{border-color:var(--accent2);background:var(--accent-light);}
+  .section-check.checked label{color:var(--ink);font-weight:500;}
+  .quiz-num{font-size:12px;color:var(--ink3);margin-bottom:8px;}
+  .quiz-q{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:12px;line-height:1.5;}
+  .quiz-opt{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;font-size:14px;color:var(--ink);background:var(--surface);transition:all 0.12s;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+  .quiz-opt:hover:not(:disabled){border-color:var(--accent2);background:var(--accent-light);}
+  .quiz-opt.correct{border-color:var(--accent2);background:var(--accent-light);font-weight:500;}
+  .quiz-opt.wrong{border-color:var(--red);background:var(--red-light);}
+  .quiz-opt:disabled{cursor:default;}
+  .quiz-fb{border-radius:var(--radius-sm);padding:12px 16px;margin-top:8px;font-size:14px;display:none;line-height:1.6;}
+  .quiz-fb.ok{background:var(--accent-light);border-left:3px solid var(--accent2);}
+  .quiz-fb.ko{background:var(--red-light);border-left:3px solid var(--red);}
+  .page-nav{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+  .nav-btn{padding:11px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:1px solid var(--border);background:var(--surface);color:var(--ink);transition:all 0.15s;}
+  .nav-btn:hover{background:var(--surface2);}
+  .nav-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .nav-btn.primary:hover{background:var(--accent2);border-color:var(--accent2);}
+  .nav-btn:disabled{opacity:0.35;cursor:default;}
+  .score-display{font-family:'Fraunces',serif;font-size:28px;font-weight:700;color:var(--accent2);}
+  .page{display:none;}
+  .page.active{display:block;}
+  .reading-gate{border:1.5px solid var(--gold);border-radius:var(--radius);background:var(--gold-light);padding:1.5rem 1.75rem;margin-bottom:1.5rem;}
+  .reading-gate-header{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+  .reading-gate-icon{width:32px;height:32px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0;}
+  .reading-gate-title{font-size:14px;font-weight:500;color:var(--ink);}
+  .reading-gate-sub{font-size:13px;color:var(--ink2);margin-bottom:1rem;margin-left:42px;}
+  .reading-links{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem;}
+  .reading-link-row{display:flex;align-items:center;gap:10px;}
+  .reading-link-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--blue);text-decoration:none;cursor:pointer;transition:all 0.15s;flex-shrink:0;}
+  .reading-link-btn:hover{background:var(--blue-light);border-color:var(--blue);}
+  .reading-link-status{font-size:12px;color:var(--ink3);display:flex;align-items:center;gap:5px;}
+  .reading-link-status.opened{color:var(--accent);font-weight:500;}
+  .reading-confirm-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);}
+  .reading-confirm-row input[type="checkbox"]{accent-color:var(--gold);width:17px;height:17px;flex-shrink:0;cursor:pointer;}
+  .reading-confirm-row label{font-size:14px;color:var(--ink2);cursor:pointer;}
+  .reading-confirm-row.confirmed{border-color:var(--accent2);background:var(--accent-light);}
+  .locked-content{position:relative;}
+  .locked-overlay{position:absolute;inset:0;background:rgba(247,245,240,0.85);backdrop-filter:blur(3px);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;gap:8px;border:1px dashed var(--border);}
+  .locked-overlay-icon{font-size:28px;opacity:0.5;}
+  .locked-overlay-text{font-size:14px;color:var(--ink2);text-align:center;max-width:280px;line-height:1.5;}
+  .locked-content.unlocked .locked-overlay{display:none;}
+  @media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;padding:1.5rem;}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-logo">Integral <span>Calculus</span><br><span class="sidebar-subtitle">CLIL Learning Path</span></div>
+  <div class="progress-section">
+    <div class="progress-label">Progress</div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+    <div class="progress-pct" id="prog-pct">0% complete</div>
+  </div>
+  <div class="nav-label">Sections</div>
+  <button class="nav-item active" id="nav-0" onclick="goTo(0)"><span class="nav-dot" id="dot-0">G</span> Glossary</button>
+  <button class="nav-item" id="nav-1" onclick="goTo(1)"><span class="nav-dot" id="dot-1">1</span> Introduction to Integration</button>
+  <button class="nav-item" id="nav-2" onclick="goTo(2)"><span class="nav-dot" id="dot-2">2</span> Definite Integrals &amp; FTC</button>
+  <button class="nav-item" id="nav-3" onclick="goTo(3)"><span class="nav-dot" id="dot-3">3</span> Area Between Curves</button>
+  <button class="nav-item" id="nav-4" onclick="goTo(4)"><span class="nav-dot" id="dot-4">4</span> Volumes: Disk Method</button>
+  <button class="nav-item" id="nav-5" onclick="goTo(5)"><span class="nav-dot" id="dot-5">5</span> Volumes: Shells</button>
+  <button class="nav-item" id="nav-6" onclick="goTo(6)"><span class="nav-dot" id="dot-6">6</span> Volumes: Cross Sections</button>
+  <button class="nav-item" id="nav-7" onclick="goTo(7)"><span class="nav-dot" id="dot-7">Q</span> Quiz</button>
+  <button class="nav-item" id="nav-8" onclick="goTo(8)"><span class="nav-dot" id="dot-8">&#9733;</span> Evaluation</button>
+</aside>
+<main class="main">
+
+<!-- PAGE 0: GLOSSARY -->
+<div class="page active" id="page-0">
+  <div class="page-header">
+    <div class="page-tag tag-glossary">Glossary</div>
+    <h1>Bilingual Glossary</h1>
+    <p>Key terms in English and Italian. Click any card to expand the definition. Review all terms before starting the modules — they will appear in the quiz.</p>
+  </div>
+  <input class="gloss-search" placeholder="Search a term in English or Italian..." oninput="filterGloss(this.value)">
+  <div class="gloss-count" id="gloss-count">17 terms</div>
+  <div class="gloss-grid" id="gloss-grid"></div>
+  <div class="section-check" id="sc-gloss">
+    <input type="checkbox" id="cb-gloss" onchange="markGlossary()">
+    <label for="cb-gloss">I have reviewed all the terms and I'm ready to continue.</label>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" disabled>&#8592; Previous</button>
+    <button class="nav-btn primary" onclick="goTo(1)">Module 1: Introduction to Integration &#8594;</button>
+  </div>
+</div>
+
+<!-- PAGE 1: INTRODUCTION TO INTEGRATION -->
+<div class="page" id="page-1">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 1</div>
+    <h1>Introduction to Integration</h1>
+    <p>Before reading the explanations, open and read the MathIsFun source page. Confirm the reading to unlock the module content.</p>
+  </div>
+  <div class="reading-gate">
+    <div class="reading-gate-header"><div class="reading-gate-icon">&#128214;</div><div class="reading-gate-title">Required reading &#8212; complete before continuing</div></div>
+    <div class="reading-gate-sub">Open the page, read it fully, then tick the confirmation box to unlock this module.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://www.mathsisfun.com/calculus/integration-introduction.html" target="_blank" onclick="markLinkOpened('rl1-1')">Introduction to Integration &#8212; MathIsFun <span style="font-size:11px;opacity:0.6">&#8599;</span></a>
+        <span class="reading-link-status" id="rl1-1-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-1">
+      <input type="checkbox" id="rcb-1" onchange="confirmReading(1)" disabled>
+      <label for="rcb-1">I have read the MathIsFun page and I'm ready to study the module.</label>
+    </div>
+  </div>
+  <div class="locked-content" id="lc-1">
+    <div class="locked-overlay"><div class="locked-overlay-icon">&#128274;</div><div class="locked-overlay-text">Open and confirm the required reading above to unlock this module.</div></div>
+    <div class="card">
+      <div class="card-title">What is integration?</div>
+      <p>Integration is the process of finding the area under a curve. Given a function f(x), its <strong>integral</strong> accumulates all the infinitely thin slices of area between the curve and the x-axis over an interval.</p>
+      <div class="box box-rule"><div class="box-label">The Riemann Sum idea</div>Divide [a,b] into n thin rectangles of width &#916;x. Area of each = f(x&#7522;)&#183;&#916;x.<br>As n&#8594;&#8734; and &#916;x&#8594;0, the sum converges to the exact area: <code>&#8747; f(x) dx</code></div>
+      <p>The elongated S symbol <strong>&#8747;</strong> comes from "Summa" (Latin for sum), introduced by Leibniz.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Antiderivatives and indefinite integrals</div>
+      <p>An <strong>antiderivative</strong> F(x) of f(x) is any function whose derivative is f(x): F&#8242;(x) = f(x). The <strong>indefinite integral</strong> collects all such functions:</p>
+      <div class="box box-rule"><div class="box-label">Indefinite integral</div><code>&#8747; f(x) dx = F(x) + C</code><br>C is the <strong>constant of integration</strong> &#8212; any constant differentiates to zero.</div>
+      <ul class="points">
+        <li><strong>Power rule:</strong> <code>&#8747; x<sup>n</sup> dx = x<sup>n+1</sup>/(n+1) + C</code> &nbsp;(n &#8800; &#8722;1)</li>
+        <li><strong>Constant rule:</strong> <code>&#8747; k dx = kx + C</code></li>
+        <li><strong>Sum rule:</strong> <code>&#8747; [f+g] dx = &#8747;f dx + &#8747;g dx</code></li>
+      </ul>
+      <div class="box box-lang"><div class="box-label">Language focus &#127468;&#127463; &#8594; &#127470;&#127481;</div><em>"The indefinite integral of f(x) with respect to x"</em><br>&#8594; <em>"L'integrale indefinito di f(x) rispetto a x"</em><br><br><em>"C is the constant of integration"</em><br>&#8594; <em>"C &#232; la costante di integrazione"</em></div>
+    </div>
+    <div class="exercise-block" id="ex1-block">
+      <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Exercise &#8212; Compute &#8747;(3x&#178;+4x&#8722;5)dx</div></div>
+      <div class="ex-question">Apply the power rule step by step to <strong>&#8747;(3x&#178; + 4x &#8722; 5)dx</strong>.</div>
+      <div class="step-label">Step A &#8212; &#8747;3x&#178; dx = ?</div>
+      <div id="e1a">
+        <div class="step-input"><input type="radio" name="e1a" id="e1a1" value="a"><label for="e1a1">x&#179; + C</label></div>
+        <div class="step-input"><input type="radio" name="e1a" id="e1a2" value="b"><label for="e1a2">3x&#179; + C</label></div>
+        <div class="step-input"><input type="radio" name="e1a" id="e1a3" value="c"><label for="e1a3">6x + C</label></div>
+      </div>
+      <div class="step-label">Step B &#8212; &#8747;4x dx = ?</div>
+      <div id="e1b">
+        <div class="step-input"><input type="radio" name="e1b" id="e1b1" value="a"><label for="e1b1">4x&#178; + C</label></div>
+        <div class="step-input"><input type="radio" name="e1b" id="e1b2" value="b"><label for="e1b2">2x&#178; + C</label></div>
+        <div class="step-input"><input type="radio" name="e1b" id="e1b3" value="c"><label for="e1b3">4 + C</label></div>
+      </div>
+      <div class="step-label">Step C &#8212; Complete antiderivative &#8747;(3x&#178;+4x&#8722;5)dx =</div>
+      <div id="e1c">
+        <div class="step-input"><input type="radio" name="e1c" id="e1c1" value="a"><label for="e1c1">x&#179; + 2x&#178; &#8722; 5x + C</label></div>
+        <div class="step-input"><input type="radio" name="e1c" id="e1c2" value="b"><label for="e1c2">3x&#179; + 4x&#178; &#8722; 5x + C</label></div>
+        <div class="step-input"><input type="radio" name="e1c" id="e1c3" value="c"><label for="e1c3">x&#179; + 2x&#178; + C</label></div>
+      </div>
+      <button class="check-btn" onclick="checkEx(1)">Check answers</button>
+      <div class="fb-box" id="fb-1"></div>
+    </div>
+    <div class="section-check" id="sc-1"><input type="checkbox" id="cb-1" onchange="markSection(1)"><label for="cb-1">I have understood integration basics and completed the exercise.</label></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(0)">&#8592; Glossary</button>
+    <button class="nav-btn primary" onclick="goTo(2)">Module 2: Definite Integrals &#8594;</button>
+  </div>
+</div>
+
+<!-- PAGE 2: DEFINITE INTEGRALS & FTC -->
+<div class="page" id="page-2">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 2</div>
+    <h1>Definite Integrals &amp; The Fundamental Theorem</h1>
+    <p>Open and read both source materials before unlocking the module: the MathIsFun page and the teacher&#8217;s notes by Prof.ssa D. Maiolino (MATESCUOLA.IT).</p>
+  </div>
+  <div class="reading-gate">
+    <div class="reading-gate-header"><div class="reading-gate-icon">&#128214;</div><div class="reading-gate-title">Required reading &#8212; complete before continuing</div></div>
+    <div class="reading-gate-sub">Open both sources, read them fully, then tick the confirmation box to unlock the module.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://www.mathsisfun.com/calculus/integration-definite.html" target="_blank" onclick="markLinkOpened('rl2-1')">Definite Integrals &#8212; MathIsFun <span style="font-size:11px;opacity:0.6">&#8599;</span></a>
+        <span class="reading-link-status" id="rl2-1-status">not opened yet</span>
+      </div>
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://www.matescuola.it/wp-content/uploads/2021/03/INTEGRALE-DEFINITO.pdf" target="_blank" onclick="markLinkOpened('rl2-2')">The Definite Integral &#8212; Prof.ssa D. Maiolino (MATESCUOLA.IT) <span style="font-size:11px;opacity:0.6">&#8599;</span></a>
+        <span class="reading-link-status" id="rl2-2-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-2">
+      <input type="checkbox" id="rcb-2" onchange="confirmReading(2)" disabled>
+      <label for="rcb-2">I have read both sources and I'm ready to study the module.</label>
+    </div>
+  </div>
+  <div class="locked-content" id="lc-2">
+    <div class="locked-overlay"><div class="locked-overlay-icon">&#128274;</div><div class="locked-overlay-text">Open and confirm the required readings above to unlock this module.</div></div>
+    <div class="card">
+      <div class="card-title">1. Geometric meaning &#8212; Riemann sums</div>
+      <p>The mathematical problem that led to integral calculus was determining the area of plane surfaces bounded by curved boundaries.</p>
+      <p>Let y = f(x) be continuous on [a, b]. Divide the interval into n subintervals of width &#916;x&#7522; and draw vertical lines to the curve. Within each subinterval build two rectangles:</p>
+      <ul class="points">
+        <li><strong>Inscribed rectangle</strong> &#8212; height = minimum of f in the subinterval: f(x<sub>m&#7522;</sub>). Located beneath the curve.</li>
+        <li><strong>Circumscribed rectangle</strong> &#8212; height = maximum of f in the subinterval: f(x<sub>M&#7522;</sub>). Located above the curve.</li>
+      </ul>
+      <div class="box box-rule"><div class="box-label">Key definitions</div><strong>Curvilinear trapezoid:</strong> region bounded by x=a, x=b, y=f(x), and the x-axis.<br><br><strong>Plurirectangle:</strong> union of all inscribed or circumscribed rectangles.</div>
+      <div class="box box-rule"><div class="box-label">Area approximations</div><code>S<sub>inscr</sub> = &#8721; f(x<sub>m&#7522;</sub>)&#183;&#916;x&#7522;</code> &nbsp;|&nbsp; <code>S<sub>circ</sub> = &#8721; f(x<sub>M&#7522;</sub>)&#183;&#916;x&#7522;</code><br>True area S: <code>S<sub>inscr</sub> &#8804; S &#8804; S<sub>circ</sub></code></div>
+      <div class="box box-tip"><div class="box-label">Taking the limit</div>As n&#8594;&#8734; (&#916;x&#7522;&#8594;0), by the <strong>Squeeze Theorem</strong> both sums converge to: <code>S = &#8747;<sub>a</sub><sup>b</sup> f(x) dx</code></div>
+    </div>
+    <div class="card">
+      <div class="card-title">2. Sign of the definite integral</div>
+      <ul class="points">
+        <li><strong>f(x) &gt; 0 on [a,b]:</strong> integral is positive &#8212; <code>&#8747;<sub>a</sub><sup>b</sup> f(x)dx &gt; 0</code></li>
+        <li><strong>f(x) &lt; 0 on [a,b]:</strong> integral is negative; geometric area = <code>|&#8747;<sub>a</sub><sup>b</sup> f(x)dx|</code></li>
+        <li><strong>f changes sign:</strong> split at c where f(c)=0 &#8594; <code>S = &#8747;<sub>a</sub><sup>c</sup>f dx + &#8747;<sub>c</sub><sup>b</sup>f dx</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">3. Fundamental Theorem of Calculus (Torricelli&#8211;Barrow)</div>
+      <p>Define the <strong>integral function</strong> S(t) = &#8747;<sub>a</sub><sup>t</sup> f(x)dx. Note: S(a)=0, S(b)=total area.</p>
+      <div class="box box-rule"><div class="box-label">Theorem statement</div><code>S&#8242;(t) = f(t)</code> &#8212; the derivative of the integral function equals the integrand at that point.</div>
+      <div class="box box-tip"><div class="box-label">Proof sketch (from the teacher&#8217;s notes)</div>h&#183;f(t) &#8804; &#916;S &#8804; h&#183;f(t+h) &#8594; divide by h &#8594; as h&#8594;0, Squeeze Theorem &#8594; S&#8242;(t)=f(t) &#8718;</div>
+      <div class="box box-rule"><div class="box-label">Evaluation formula</div>S(a)=0 &#8658; C=&#8722;F(a) &#8658; <code>&#8747;<sub>a</sub><sup>b</sup> f(x)dx = F(b) &#8722; F(a)</code></div>
+      <div class="box box-lang"><div class="box-label">Language focus &#127468;&#127463; &#8594; &#127470;&#127481;</div><em>"Curvilinear trapezoid"</em> &#8594; <em>"Trapezoide curvilineo"</em><br><em>"Plurirectangle"</em> &#8594; <em>"Plurirettangolo inscritto/circoscritto"</em><br><em>"By the Squeeze Theorem"</em> &#8594; <em>"Per il teorema dei carabinieri"</em><br><em>"F is an antiderivative of f"</em> &#8594; <em>"F &#232; una primitiva di f"</em></div>
+    </div>
+    <div class="exercise-block" id="ex2-block">
+      <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Exercise &#8212; Riemann sums and the FTC</div></div>
+      <div class="ex-question">Apply concepts from both source readings.</div>
+      <div class="step-label">Step A &#8212; Inscribed rectangles use the __ value of f per subinterval:</div>
+      <div id="e2a">
+        <div class="step-input"><input type="radio" name="e2a" id="e2a1" value="a"><label for="e2a1">Minimum value (left endpoint for an increasing function)</label></div>
+        <div class="step-input"><input type="radio" name="e2a" id="e2a2" value="b"><label for="e2a2">Maximum value</label></div>
+        <div class="step-input"><input type="radio" name="e2a" id="e2a3" value="c"><label for="e2a3">Midpoint value</label></div>
+      </div>
+      <div class="step-label">Step B &#8212; As n&#8594;&#8734;, which theorem guarantees S<sub>inscr</sub> and S<sub>circ</sub> converge to the same limit?</div>
+      <div id="e2b">
+        <div class="step-input"><input type="radio" name="e2b" id="e2b1" value="a"><label for="e2b1">The Squeeze Theorem (Teorema dei carabinieri)</label></div>
+        <div class="step-input"><input type="radio" name="e2b" id="e2b2" value="b"><label for="e2b2">The Mean Value Theorem</label></div>
+        <div class="step-input"><input type="radio" name="e2b" id="e2b3" value="c"><label for="e2b3">The Intermediate Value Theorem</label></div>
+      </div>
+      <div class="step-label">Step C &#8212; Antiderivative F(x) of x&#178;&#8722;x:</div>
+      <div id="e2c">
+        <div class="step-input"><input type="radio" name="e2c" id="e2c1" value="a"><label for="e2c1">x&#179;/3 &#8722; x&#178;/2</label></div>
+        <div class="step-input"><input type="radio" name="e2c" id="e2c2" value="b"><label for="e2c2">2x &#8722; 1</label></div>
+        <div class="step-input"><input type="radio" name="e2c" id="e2c3" value="c"><label for="e2c3">x&#179; &#8722; x&#178;</label></div>
+      </div>
+      <div class="step-label">Step D &#8212; &#8747;<sub>0</sub><sup>2</sup>(x&#178;&#8722;x)dx = F(2)&#8722;F(0) = ?</div>
+      <div id="e2d">
+        <div class="step-input"><input type="radio" name="e2d" id="e2d1" value="a"><label for="e2d1">2/3</label></div>
+        <div class="step-input"><input type="radio" name="e2d" id="e2d2" value="b"><label for="e2d2">2</label></div>
+        <div class="step-input"><input type="radio" name="e2d" id="e2d3" value="c"><label for="e2d3">4</label></div>
+      </div>
+      <button class="check-btn" onclick="checkEx(2)">Check answers</button>
+      <div class="fb-box" id="fb-2"></div>
+    </div>
+    <div class="section-check" id="sc-2"><input type="checkbox" id="cb-2" onchange="markSection(2)"><label for="cb-2">I have understood Riemann sums, the sign of the integral, the FTC, and completed the exercise.</label></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(1)">&#8592; Module 1</button>
+    <button class="nav-btn primary" onclick="goTo(3)">Module 3: Area Between Curves &#8594;</button>
+  </div>
+</div>
+
+<!-- PAGE 3: AREA BETWEEN CURVES -->
+<div class="page" id="page-3">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 3</div>
+    <h1>Area Between Curves</h1>
+    <p>Open and read the Paul&#8217;s Math Notes source page before unlocking the module content.</p>
+  </div>
+  <div class="reading-gate">
+    <div class="reading-gate-header"><div class="reading-gate-icon">&#128214;</div><div class="reading-gate-title">Required reading &#8212; complete before continuing</div></div>
+    <div class="reading-gate-sub">Open the page, read it fully, then tick the confirmation box to unlock this module.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://tutorial.math.lamar.edu/classes/calci/areabetweencurves.aspx" target="_blank" onclick="markLinkOpened('rl3-1')">Area Between Curves &#8212; Paul&#8217;s Math Notes <span style="font-size:11px;opacity:0.6">&#8599;</span></a>
+        <span class="reading-link-status" id="rl3-1-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-3">
+      <input type="checkbox" id="rcb-3" onchange="confirmReading(3)" disabled>
+      <label for="rcb-3">I have read the page and I'm ready to study the module.</label>
+    </div>
+  </div>
+  <div class="locked-content" id="lc-3">
+    <div class="locked-overlay"><div class="locked-overlay-icon">&#128274;</div><div class="locked-overlay-text">Open and confirm the required reading above to unlock this module.</div></div>
+    <div class="card">
+      <div class="card-title">Area between two curves</div>
+      <p>If f(x) &#8805; g(x) on [a, b], the area of the region enclosed between the two curves is:</p>
+      <div class="box box-rule"><div class="box-label">Formula (integrating with respect to x)</div><code>A = &#8747;<sub>a</sub><sup>b</sup> [f(x) &#8722; g(x)] dx</code><br>Always subtract the <em>lower</em> curve from the <em>upper</em> curve to get a positive area.</div>
+      <ul class="points">
+        <li>Find intersection points by solving f(x) = g(x) &#8212; these become a and b.</li>
+        <li>Test a value inside the interval to confirm which function is on top.</li>
+        <li>If curves cross within [a,b], split the integral at each crossing point.</li>
+        <li>Can also integrate with respect to y: <code>A = &#8747; [right &#8722; left] dy</code></li>
+      </ul>
+      <div class="box box-tip"><div class="box-label">Example</div>Area between f(x)=x and g(x)=x&#178;: intersections at x=0 and x=1.<br>On [0,1]: x &#8805; x&#178;, so A = &#8747;<sub>0</sub><sup>1</sup>(x&#8722;x&#178;)dx = [x&#178;/2&#8722;x&#179;/3]<sub>0</sub><sup>1</sup> = 1/2&#8722;1/3 = 1/6</div>
+      <div class="box box-lang"><div class="box-label">Language focus &#127468;&#127463; &#8594; &#127470;&#127481;</div><em>"The area of the region enclosed by f and g"</em><br>&#8594; <em>"L'area della regione racchiusa da f e g"</em><br><br><em>"Find the points of intersection"</em><br>&#8594; <em>"Trova i punti di intersezione"</em></div>
+    </div>
+    <div class="exercise-block" id="ex3-block">
+      <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Exercise &#8212; Area between f(x)=4&#8722;x&#178; and g(x)=x+2</div></div>
+      <div class="ex-question">Find the area enclosed between <strong>f(x) = 4&#8722;x&#178;</strong> and <strong>g(x) = x+2</strong>.</div>
+      <div class="step-label">Step A &#8212; Intersection points (solve f=g):</div>
+      <div id="e3a">
+        <div class="step-input"><input type="radio" name="e3a" id="e3a1" value="a"><label for="e3a1">x = &#8722;1 and x = 2</label></div>
+        <div class="step-input"><input type="radio" name="e3a" id="e3a2" value="b"><label for="e3a2">x = 0 and x = 3</label></div>
+        <div class="step-input"><input type="radio" name="e3a" id="e3a3" value="c"><label for="e3a3">x = &#8722;2 and x = 1</label></div>
+      </div>
+      <div class="step-label">Step B &#8212; Which function is on top on [&#8722;1, 2]?</div>
+      <div id="e3b">
+        <div class="step-input"><input type="radio" name="e3b" id="e3b1" value="a"><label for="e3b1">f(x) = 4&#8722;x&#178; is above g(x) = x+2</label></div>
+        <div class="step-input"><input type="radio" name="e3b" id="e3b2" value="b"><label for="e3b2">g(x) = x+2 is above f(x) = 4&#8722;x&#178;</label></div>
+      </div>
+      <div class="step-label">Step C &#8212; The integrand [f&#8722;g] simplifies to:</div>
+      <div id="e3c">
+        <div class="step-input"><input type="radio" name="e3c" id="e3c1" value="a"><label for="e3c1">&#8722;x&#178; &#8722; x + 2</label></div>
+        <div class="step-input"><input type="radio" name="e3c" id="e3c2" value="b"><label for="e3c2">x&#178; + x &#8722; 2</label></div>
+        <div class="step-input"><input type="radio" name="e3c" id="e3c3" value="c"><label for="e3c3">&#8722;x&#178; + x + 2</label></div>
+      </div>
+      <div class="step-label">Step D &#8212; A = &#8747;<sub>&#8722;1</sub><sup>2</sup>(&#8722;x&#178;&#8722;x+2)dx = ?</div>
+      <div id="e3d">
+        <div class="step-input"><input type="radio" name="e3d" id="e3d1" value="a"><label for="e3d1">9/2</label></div>
+        <div class="step-input"><input type="radio" name="e3d" id="e3d2" value="b"><label for="e3d2">3</label></div>
+        <div class="step-input"><input type="radio" name="e3d" id="e3d3" value="c"><label for="e3d3">7/2</label></div>
+      </div>
+      <button class="check-btn" onclick="checkEx(3)">Check answers</button>
+      <div class="fb-box" id="fb-3"></div>
+    </div>
+    <div class="section-check" id="sc-3"><input type="checkbox" id="cb-3" onchange="markSection(3)"><label for="cb-3">I have understood area between curves and completed the exercise.</label></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(2)">&#8592; Module 2</button>
+    <button class="nav-btn primary" onclick="goTo(4)">Module 4: Volumes &#8212; Disk Method &#8594;</button>
+  </div>
+</div>
+
+<!-- PAGE 4: VOLUMES — DISKS & WASHERS -->
+<div class="page" id="page-4">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 4</div>
+    <h1>Volumes of Revolution: The Disk Method</h1>
+    <p>Open and read both source pages before unlocking the module content. This module covers the disk method only.</p>
+  </div>
+  <div class="reading-gate">
+    <div class="reading-gate-header"><div class="reading-gate-icon">&#128214;</div><div class="reading-gate-title">Required reading &#8212; complete before continuing</div></div>
+    <div class="reading-gate-sub">Open both pages, read them fully, then tick the confirmation box.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://www.mathsisfun.com/calculus/solids-revolution-disk-washer.html" target="_blank" onclick="markLinkOpened('rl4-1')">Solids of Revolution: Disk &amp; Washer &#8212; MathIsFun <span style="font-size:11px;opacity:0.6">&#8599;</span></a>
+        <span class="reading-link-status" id="rl4-1-status">not opened yet</span>
+      </div>
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://tutorial.math.lamar.edu/classes/calci/volumewithrings.aspx" target="_blank" onclick="markLinkOpened('rl4-2')">Method of Rings/Disks &#8212; Paul&#8217;s Math Notes <span style="font-size:11px;opacity:0.6">&#8599;</span></a>
+        <span class="reading-link-status" id="rl4-2-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-4">
+      <input type="checkbox" id="rcb-4" onchange="confirmReading(4)" disabled>
+      <label for="rcb-4">I have read both pages and I'm ready to study the module.</label>
+    </div>
+  </div>
+  <div class="locked-content" id="lc-4">
+    <div class="locked-overlay"><div class="locked-overlay-icon">&#128274;</div><div class="locked-overlay-text">Open and confirm the required readings above to unlock this module.</div></div>
+    <div class="card">
+      <div class="card-title">The disk method</div>
+      <p>When a region is rotated about an axis, thin <strong>disks</strong> (circular cross-sections) are stacked together. Each disk has radius r = f(x) and thickness dx.</p>
+      <div class="box box-rule"><div class="box-label">Disk formula &#8212; rotation about the x-axis</div><code>V = &#960; &#8747;<sub>a</sub><sup>b</sup> [f(x)]&#178; dx</code></div>
+      <div class="box box-rule"><div class="box-label">Disk formula &#8212; rotation about the y-axis</div><code>V = &#960; &#8747;<sub>c</sub><sup>d</sup> [g(y)]&#178; dy</code></div>
+    </div>
+
+    <div class="exercise-block" id="ex4-block">
+      <div class="ex-header"><div class="ex-num">4</div><div class="ex-title">Exercise &#8212; Disk method: rotate f(x)=&#8730;x about the x-axis on [0,4]</div></div>
+      <div class="ex-question">Use the <strong>disk method</strong> to find the volume obtained by rotating <strong>f(x) = &#8730;x</strong> about the x-axis on <strong>[0, 4]</strong>.</div>
+      <div class="step-label">Step A &#8212; The disk radius is r(x) = &#8730;x. What is [r(x)]&#178;?</div>
+      <div id="e4a">
+        <div class="step-input"><input type="radio" name="e4a" id="e4a1" value="a"><label for="e4a1">x</label></div>
+        <div class="step-input"><input type="radio" name="e4a" id="e4a2" value="b"><label for="e4a2">x&#178;</label></div>
+        <div class="step-input"><input type="radio" name="e4a" id="e4a3" value="c"><label for="e4a3">&#8730;x</label></div>
+      </div>
+      <div class="step-label">Step B &#8212; Evaluate V = &#960; &#8747;<sub>0</sub><sup>4</sup> x dx = &#960; [x&#178;/2]<sub>0</sub><sup>4</sup> = ?</div>
+      <div id="e4b">
+        <div class="step-input"><input type="radio" name="e4b" id="e4b1" value="a"><label for="e4b1">8&#960;</label></div>
+        <div class="step-input"><input type="radio" name="e4b" id="e4b2" value="b"><label for="e4b2">4&#960;</label></div>
+        <div class="step-input"><input type="radio" name="e4b" id="e4b3" value="c"><label for="e4b3">16&#960;</label></div>
+      </div>
+
+      <button class="check-btn" onclick="checkEx(4)">Check answers</button>
+      <div class="fb-box" id="fb-4"></div>
+    </div>
+    <div class="section-check" id="sc-4"><input type="checkbox" id="cb-4" onchange="markSection(4)"><label for="cb-4">I have understood the disk method and completed the exercise.</label></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(3)">&#8592; Module 3</button>
+    <button class="nav-btn primary" onclick="goTo(5)">Module 5: Cylindrical Shells &#8594;</button>
+  </div>
+</div>
+
+<!-- PAGE 5: CYLINDRICAL SHELLS -->
+<div class="page" id="page-5">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 5</div>
+    <h1>Volumes of Revolution: Cylindrical Shells</h1>
+    <p>Open and read the Paul&#8217;s Math Notes source page before unlocking the module content.</p>
+  </div>
+  <div class="reading-gate">
+    <div class="reading-gate-header"><div class="reading-gate-icon">&#128214;</div><div class="reading-gate-title">Required reading &#8212; complete before continuing</div></div>
+    <div class="reading-gate-sub">Open the page, read it fully, then tick the confirmation box.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://tutorial.math.lamar.edu/classes/calci/volumewithcylinder.aspx" target="_blank" onclick="markLinkOpened('rl5-1')">Method of Cylindrical Shells &#8212; Paul&#8217;s Math Notes <span style="font-size:11px;opacity:0.6">&#8599;</span></a>
+        <span class="reading-link-status" id="rl5-1-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-5">
+      <input type="checkbox" id="rcb-5" onchange="confirmReading(5)" disabled>
+      <label for="rcb-5">I have read the page and I'm ready to study the module.</label>
+    </div>
+  </div>
+  <div class="locked-content" id="lc-5">
+    <div class="locked-overlay"><div class="locked-overlay-icon">&#128274;</div><div class="locked-overlay-text">Open and confirm the required reading above to unlock this module.</div></div>
+    <div class="card">
+      <div class="card-title">The shell method</div>
+      <p>Instead of stacking disks, the <strong>shell method</strong> wraps thin cylindrical shells around the axis of rotation. Each shell has radius x, height f(x), thickness dx, and circumference 2&#960;x.</p>
+      <div class="box box-rule"><div class="box-label">Shell formula &#8212; rotation about the y-axis</div><code>V = 2&#960; &#8747;<sub>a</sub><sup>b</sup> x &#183; f(x) dx</code></div>
+      <div class="box box-rule"><div class="box-label">Shell formula &#8212; rotation about the x-axis</div><code>V = 2&#960; &#8747;<sub>c</sub><sup>d</sup> y &#183; g(y) dy</code></div>
+      <ul class="points">
+        <li>The factor <strong>2&#960;</strong> comes from the circumference of the shell (2&#960;r).</li>
+        <li>Shells are easier when the region is given as y=f(x) and rotation is about the <em>y-axis</em>.</li>
+        <li>When rotating about x=k (not the y-axis), the radius becomes |x&#8722;k|.</li>
+      </ul>
+      <div class="box box-tip"><div class="box-label">When to use shells vs disks</div>If the region is y=f(x) and you rotate about the <strong>y-axis</strong>: shells integrate in x (simpler). Disks would require expressing x = f⁻¹(y), which may be complicated.</div>
+      <div class="box box-lang"><div class="box-label">Language focus &#127468;&#127463; &#8594; &#127470;&#127481;</div><em>"The volume generated by rotating about the y-axis"</em><br>&#8594; <em>"Il volume generato dalla rotazione attorno all'asse y"</em><br><em>"Cylindrical shell of radius x and height f(x)"</em><br>&#8594; <em>"Guscio cilindrico di raggio x e altezza f(x)"</em></div>
+    </div>
+    <div class="exercise-block" id="ex5-block">
+      <div class="ex-header"><div class="ex-num">5</div><div class="ex-title">Exercise &#8212; y=x&#178;, y=0, x=2 rotated about the y-axis</div></div>
+      <div class="ex-question">Use the <strong>shell method</strong> to find the volume of the solid obtained by rotating the region bounded by <strong>y=x&#178;</strong>, y=0 and x=2 about the <strong>y-axis</strong>.</div>
+      <div class="step-label">Step A &#8212; Shell formula for rotation about the y-axis:</div>
+      <div id="e5a">
+        <div class="step-input"><input type="radio" name="e5a" id="e5a1" value="a"><label for="e5a1">V = 2&#960; &#8747; x&#183;f(x) dx</label></div>
+        <div class="step-input"><input type="radio" name="e5a" id="e5a2" value="b"><label for="e5a2">V = &#960; &#8747; [f(x)]&#178; dx</label></div>
+        <div class="step-input"><input type="radio" name="e5a" id="e5a3" value="c"><label for="e5a3">V = 2&#960; &#8747; [f(x)]&#178; dx</label></div>
+      </div>
+      <div class="step-label">Step B &#8212; With f(x)=x&#178; and limits [0,2], the integral becomes:</div>
+      <div id="e5b">
+        <div class="step-input"><input type="radio" name="e5b" id="e5b1" value="a"><label for="e5b1">2&#960; &#8747;<sub>0</sub><sup>2</sup> x&#179; dx</label></div>
+        <div class="step-input"><input type="radio" name="e5b" id="e5b2" value="b"><label for="e5b2">2&#960; &#8747;<sub>0</sub><sup>2</sup> x&#178; dx</label></div>
+        <div class="step-input"><input type="radio" name="e5b" id="e5b3" value="c"><label for="e5b3">&#960; &#8747;<sub>0</sub><sup>2</sup> x&#8308; dx</label></div>
+      </div>
+      <div class="step-label">Step C &#8212; Evaluate: 2&#960;[x&#8308;/4]<sub>0</sub><sup>2</sup> = 2&#960;&#183;(16/4&#8722;0) = ?</div>
+      <div id="e5c">
+        <div class="step-input"><input type="radio" name="e5c" id="e5c1" value="a"><label for="e5c1">8&#960;</label></div>
+        <div class="step-input"><input type="radio" name="e5c" id="e5c2" value="b"><label for="e5c2">4&#960;</label></div>
+        <div class="step-input"><input type="radio" name="e5c" id="e5c3" value="c"><label for="e5c3">16&#960;</label></div>
+      </div>
+      <button class="check-btn" onclick="checkEx(5)">Check answers</button>
+      <div class="fb-box" id="fb-5"></div>
+    </div>
+    <div class="section-check" id="sc-5"><input type="checkbox" id="cb-5" onchange="markSection(5)"><label for="cb-5">I have understood the shell method and completed the exercise.</label></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(4)">&#8592; Module 4</button>
+    <button class="nav-btn primary" onclick="goTo(6)">Module 6: Volumes by Cross Sections &#8594;</button>
+  </div>
+</div>
+
+<!-- PAGE 6: VOLUMES — CROSS SECTIONS -->
+<div class="page" id="page-6">
+  <div class="page-header">
+    <div class="page-tag tag-concept">Module 6</div>
+    <h1>Volumes with Known Cross Sections</h1>
+    <p>Open and read the Paul&#8217;s Math Notes source page before unlocking the module content.</p>
+  </div>
+  <div class="reading-gate">
+    <div class="reading-gate-header"><div class="reading-gate-icon">&#128214;</div><div class="reading-gate-title">Required reading &#8212; complete before continuing</div></div>
+    <div class="reading-gate-sub">Open the page, read it fully, then tick the confirmation box.</div>
+    <div class="reading-links">
+      <div class="reading-link-row">
+        <a class="reading-link-btn" href="https://tutorial.math.lamar.edu/classes/calci/morevolume.aspx" target="_blank" onclick="markLinkOpened('rl6-1')">More Volume Problems (Cross Sections) &#8212; Paul&#8217;s Math Notes <span style="font-size:11px;opacity:0.6">&#8599;</span></a>
+        <span class="reading-link-status" id="rl6-1-status">not opened yet</span>
+      </div>
+    </div>
+    <div class="reading-confirm-row" id="rc-6">
+      <input type="checkbox" id="rcb-6" onchange="confirmReading(6)" disabled>
+      <label for="rcb-6">I have read the page and I'm ready to study the module.</label>
+    </div>
+  </div>
+  <div class="locked-content" id="lc-6">
+    <div class="locked-overlay"><div class="locked-overlay-icon">&#128274;</div><div class="locked-overlay-text">Open and confirm the required reading above to unlock this module.</div></div>
+    <div class="card">
+      <div class="card-title">Volumes with known cross-sectional areas</div>
+      <p>Not all solids are solids of revolution. When the cross-sectional area A(x) at each position x is known, the volume is:</p>
+      <div class="box box-rule"><div class="box-label">General formula</div><code>V = &#8747;<sub>a</sub><sup>b</sup> A(x) dx</code><br>A(x) = area of the cross-section perpendicular to the x-axis at position x.<br>This is the most general method &#8212; disks are just the special case where A(x)=&#960;r&#178;.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Common cross-section shapes</div>
+      <ul class="points">
+        <li><strong>Square</strong> with side s: <code>A(x) = s&#178;</code></li>
+        <li><strong>Equilateral triangle</strong> with side s: <code>A(x) = (&#8730;3/4)s&#178;</code></li>
+        <li><strong>Semicircle</strong> with diameter d: <code>A(x) = &#960;d&#178;/8</code></li>
+        <li><strong>Rectangle</strong> with base b and height h: <code>A(x) = bh</code></li>
+      </ul>
+      <div class="box box-tip"><div class="box-label">Example &#8212; square cross sections</div>Base: y=&#8730;x, y=0 on [0,4]. Side s=&#8730;x &#8594; A(x)=x<br>V = &#8747;<sub>0</sub><sup>4</sup> x dx = [x&#178;/2]<sub>0</sub><sup>4</sup> = 8</div>
+      <div class="box box-lang"><div class="box-label">Language focus &#127468;&#127463; &#8594; &#127470;&#127481;</div><em>"Cross-section perpendicular to the x-axis"</em><br>&#8594; <em>"Sezione trasversale perpendicolare all'asse x"</em><br><em>"The solid has square cross sections"</em><br>&#8594; <em>"Il solido ha sezioni trasversali quadrate"</em></div>
+    </div>
+    <div class="exercise-block" id="ex6-block">
+      <div class="ex-header"><div class="ex-num">6</div><div class="ex-title">Exercise &#8212; Solid with semicircular cross sections</div></div>
+      <div class="ex-question">A solid has its base bounded by <strong>y=4&#8722;x&#178;</strong> and y=0 on [&#8722;2,2]. Cross sections perpendicular to the x-axis are <strong>semicircles</strong> with diameter equal to the height of the base region.</div>
+      <div class="step-label">Step A &#8212; The diameter d = 4&#8722;x&#178;. The radius r = ?</div>
+      <div id="e6a">
+        <div class="step-input"><input type="radio" name="e6a" id="e6a1" value="a"><label for="e6a1">r = (4&#8722;x&#178;)/2</label></div>
+        <div class="step-input"><input type="radio" name="e6a" id="e6a2" value="b"><label for="e6a2">r = 4&#8722;x&#178;</label></div>
+        <div class="step-input"><input type="radio" name="e6a" id="e6a3" value="c"><label for="e6a3">r = (4&#8722;x&#178;)&#178;</label></div>
+      </div>
+      <div class="step-label">Step B &#8212; A(x) = &#960;r&#178;/2 with r=(4&#8722;x&#178;)/2:</div>
+      <div id="e6b">
+        <div class="step-input"><input type="radio" name="e6b" id="e6b1" value="a"><label for="e6b1">&#960;(4&#8722;x&#178;)&#178;/8</label></div>
+        <div class="step-input"><input type="radio" name="e6b" id="e6b2" value="b"><label for="e6b2">&#960;(4&#8722;x&#178;)&#178;/4</label></div>
+        <div class="step-input"><input type="radio" name="e6b" id="e6b3" value="c"><label for="e6b3">&#960;(4&#8722;x&#178;)/2</label></div>
+      </div>
+      <div class="step-label">Step C &#8212; (4&#8722;x&#178;)&#178; expands to:</div>
+      <div id="e6c">
+        <div class="step-input"><input type="radio" name="e6c" id="e6c1" value="a"><label for="e6c1">16 &#8722; 8x&#178; + x&#8308;</label></div>
+        <div class="step-input"><input type="radio" name="e6c" id="e6c2" value="b"><label for="e6c2">16 + x&#8308;</label></div>
+        <div class="step-input"><input type="radio" name="e6c" id="e6c3" value="c"><label for="e6c3">16 &#8722; x&#8308;</label></div>
+      </div>
+      <button class="check-btn" onclick="checkEx(6)">Check answers</button>
+      <div class="fb-box" id="fb-6"></div>
+    </div>
+    <div class="section-check" id="sc-6"><input type="checkbox" id="cb-6" onchange="markSection(6)"><label for="cb-6">I have understood volumes by cross sections and completed the exercise.</label></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(5)">&#8592; Module 5</button>
+    <button class="nav-btn primary" onclick="goTo(7)">Quiz &#8594;</button>
+  </div>
+</div>
+
+<!-- PAGE 7: QUIZ -->
+<div class="page" id="page-7">
+  <div class="page-header">
+    <div class="page-tag tag-quiz">Final Quiz</div>
+    <h1>Test your knowledge</h1>
+    <p>Twelve questions covering all six modules and the glossary. Read carefully and select the best answer for each question.</p>
+  </div>
+  <div id="quiz-container"></div>
+  <div id="quiz-result" style="display:none">
+    <div class="card" id="quiz-result-card" style="padding:2rem">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <div class="score-display" id="quiz-score-text"></div>
+        <p style="margin-top:6px;color:var(--ink2);font-size:15px" id="quiz-msg"></p>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:1.25rem;margin-bottom:1.25rem">
+        <div class="box-label" style="margin-bottom:10px">Performance by topic</div>
+        <div id="topic-breakdown"></div>
+      </div>
+      <div class="box box-tip" id="quiz-advice" style="margin-bottom:1rem"></div>
+      <div id="quiz-review-section" style="display:none">
+        <div class="box-label" style="margin-bottom:8px">Questions to review</div>
+        <div id="quiz-review-list"></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-nav" style="margin-top:1.5rem">
+    <button class="nav-btn" onclick="goTo(6)">&#8592; Module 6</button>
+    <button class="nav-btn primary" onclick="goTo(8)">Your Evaluation &#8594;</button>
+  </div>
+</div>
+
+<!-- PAGE 8: EVALUATION -->
+<div class="page" id="page-8">
+  <div class="page-header">
+    <div class="page-tag tag-end">Final evaluation</div>
+    <h1>Your learning evaluation</h1>
+    <p>A complete picture of your performance across the entire path &#8212; based on your quiz answers.</p>
+  </div>
+  <div id="eval-container">
+    <div class="card" style="text-align:center;color:var(--ink2);font-size:14px;padding:2rem">Complete the quiz first to generate your evaluation.</div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="goTo(7)">&#8592; Quiz</button>
+    <button class="nav-btn primary" onclick="goTo(0)">&#8635; Restart from beginning</button>
+  </div>
+</div>
+
+</main>
+</div>
+<script>
+const glossaryData=[
+  {en:'Integration',it:'Integrazione',def:'The process of finding the area under a curve or computing an antiderivative; the inverse of differentiation.'},
+  {en:'Integral sign (∫)',it:'Simbolo di integrale',def:'The elongated S introduced by Leibniz, standing for "Summa" (Latin for sum), representing infinite accumulation of infinitely small quantities.'},
+  {en:'Antiderivative / Primitive',it:'Primitiva',def:'A function F(x) whose derivative is f(x): F′(x)=f(x). There are infinitely many antiderivatives, differing by a constant.'},
+  {en:'Constant of integration (C)',it:'Costante di integrazione',def:'The arbitrary constant added to every indefinite integral, since any constant differentiates to zero.'},
+  {en:'Indefinite integral',it:'Integrale indefinito',def:'The general antiderivative: ∫f(x)dx = F(x)+C. It represents a family of functions, not a specific number.'},
+  {en:'Definite integral',it:'Integrale definito',def:'The signed area under f(x) between limits a and b: ∫[a→b] f(x)dx = F(b) − F(a). It evaluates to a specific number.'},
+  {en:'Limits of integration',it:'Estremi di integrazione',def:'The values a (lower) and b (upper) that define the interval over which a definite integral is computed.'},
+  {en:'Fundamental Theorem of Calculus',it:'Teorema fondamentale del calcolo integrale',def:'Links differentiation and integration. Part 1: S′(t)=f(t). Part 2: ∫[a→b] f(x)dx = F(b) − F(a). Also known as the Torricelli–Barrow theorem.'},
+  {en:'Curvilinear trapezoid',it:'Trapezoide curvilineo',def:'The region bounded by x=a, x=b, the curve y=f(x), and the x-axis segment [a,b]. Its area is computed by the definite integral.'},
+  {en:'Plurirectangle',it:'Plurirettangolo',def:'The union of all inscribed or circumscribed rectangles used to approximate the area under a curve. The Riemann sum is the total area of a plurirectangle.'},
+  {en:'Area between curves',it:'Area tra curve',def:'The area of the region enclosed between f(x) and g(x): ∫[f(x)−g(x)]dx, where f≥g on the interval.'},
+  {en:'Solid of revolution',it:'Solido di rotazione',def:'A 3D solid formed by rotating a 2D region about an axis (typically the x-axis or y-axis).'},
+  {en:'Disk method',it:'Metodo dei dischi',def:'Computes the volume of a solid of revolution by stacking circular disks: V=π∫[f(x)]²dx.'},
+  {en:'Shell method',it:'Metodo dei gusci cilindrici',def:'Computes volumes by wrapping cylindrical shells around the axis: V=2π∫x·f(x)dx. Useful when rotating y=f(x) about the y-axis.'},
+  {en:'Cross-sectional area',it:'Area della sezione trasversale',def:'The area A(x) of a 2D slice of a solid perpendicular to the axis. The volume is V=∫A(x)dx.'},
+  {en:'Volume by cross sections',it:'Volume per sezioni note',def:'Finding the volume of a solid whose cross-sectional shape (square, triangle, semicircle, etc.) is known at every position along an axis.'},
+  {en:'Axis of rotation',it:'Asse di rotazione',def:'The line about which a 2D region is rotated to generate a 3D solid of revolution (e.g. x-axis, y-axis, or any line x=k or y=k).'}
+];
+
+const quizData=[
+  {q:'What is the Italian term for "antiderivative"?',opts:['Derivata','Primitiva','Integrale definito','Costante di integrazione'],correct:1,ok:'Correct! "Primitiva" is the Italian term for antiderivative — a function F whose derivative equals f.',ko:'Not quite. The Italian term is "primitiva". "Derivata" means derivative.'},
+  {q:'What is the Italian term for "curvilinear trapezoid"?',opts:['Trapezoide rettilineo','Plurirettangolo','Trapezoide curvilineo','Solido di rotazione'],correct:2,ok:'Correct! "Trapezoide curvilineo" is the region bounded by x=a, x=b, y=f(x) and the x-axis — the area computed by the definite integral.',ko:'Not quite. The correct term is "trapezoide curvilineo". "Plurirettangolo" refers to the union of approximating rectangles.'},
+  {q:'What does "asse di rotazione" mean in English?',opts:['Cross-sectional area','Axis of symmetry','Axis of rotation','Radius of revolution'],correct:2,ok:'Correct! "Asse di rotazione" = axis of rotation — the line about which a region is rotated to generate a solid.',ko:'Not quite. "Asse di rotazione" translates as "axis of rotation".'},
+  {q:'What is ∫6x² dx?',opts:['3x²+C','2x³+C','6x³+C','x³+C'],correct:1,ok:'Correct! Power rule: ∫6x²dx = 6·x³/3+C = 2x³+C.',ko:'Not quite. ∫6x²dx = 6·x^(2+1)/(2+1)+C = 2x³+C.'},
+  {q:'Which statement about the constant of integration C is correct?',opts:['C equals the lower limit of integration','C is arbitrary because constants differentiate to zero','C is always equal to zero','C equals f(0)'],correct:1,ok:'Correct! C is arbitrary because d/dx(C)=0, so adding any constant to an antiderivative gives another valid antiderivative.',ko:'Not quite. C is arbitrary because any constant differentiates to zero — infinitely many antiderivatives exist.'},
+  {q:'According to the teacher\'s notes (Prof.ssa Maiolino), as n→∞ the inscribed and circumscribed plurirectangles converge because of:',opts:['The Mean Value Theorem','The Intermediate Value Theorem','The Squeeze Theorem (Teorema dei carabinieri)','The Weierstrass Theorem'],correct:2,ok:'Correct! The Squeeze Theorem: since S_inscr ≤ S ≤ S_circ and both sums tend to the same limit, the area S equals that limit.',ko:'Not quite. It is the Squeeze Theorem (teorema dei carabinieri) that forces both sums to the same limit as Δxᵢ→0.'},
+  {q:'FTC Part 2 states that ∫ₐᵇf(x)dx equals:',opts:['F(a) + F(b)','F(b) − F(a)','F′(b) − F′(a)','2 · F((a+b)/2)'],correct:1,ok:'Correct! FTC Part 2: ∫[a→b] f(x)dx = F(b) − F(a), where F is any antiderivative of f.',ko:'Not quite. FTC Part 2: ∫ from a to b of f(x)dx = F(b)−F(a). Note: subtract, not add.'},
+  {q:'To find the area between f(x)=x²+1 and g(x)=x on [0,2], the correct integral is:',opts:['∫₀² (x − x²−1) dx','∫₀² (x²+1−x) dx','∫₀² (x²+x+1) dx','∫₀² |x| dx'],correct:1,ok:'Correct! f(x)=x²+1 ≥ g(x)=x on [0,2], so A = ∫₀²(f−g)dx = ∫₀²(x²+1−x)dx.',ko:'Not quite. Always subtract the lower from the upper curve. On [0,2], x²+1 > x, so the integrand is (x²+1) − x.'},
+  {q:'The shell method for rotation about the y-axis integrates:',opts:['π∫[f(x)]²dx','2π∫x·f(x)dx','π∫([R]²−[r]²)dx','∫ A(y) dy'],correct:1,ok:'Correct! Shell method about y-axis: V=2π∫x·f(x)dx. The 2πx is the circumference of each cylindrical shell.',ko:'Not quite. Shell method about y-axis: V=2π∫x·f(x)dx. The 2π comes from the circumference of the shell.'},
+  {q:'A solid has square cross sections perpendicular to the x-axis. Base: y=x, y=0 on [0,3]. Side = height of base. The volume is:',opts:['∫₀³ x dx = 9/2','∫₀³ x² dx = 9','∫₀³ √x dx = 2√3','∫₀³ 2x dx = 9'],correct:1,ok:'Correct! Side s=x, A(x)=x². V=∫₀³x² dx=[x³/3]₀³=9.',ko:'Not quite. A(x)=s²=x². V=∫₀³x²dx=x³/3|₀³=27/3=9.'},
+  {q:'The formula V=∫ₐᵇA(x)dx for volumes by cross sections is:',opts:['Only valid for solids of revolution','The most general volume formula — disks and shells are special cases of it','Only valid when cross sections are squares','A special case of the shell method'],correct:1,ok:'Correct! V=∫A(x)dx is the most general formula. Disks (A=πr²) and shells are both special cases of it.',ko:'Not quite. V=∫A(x)dx is the most general volume formula — disks, washers, and shells are all special cases of it.'}
+];
+
+let currentPage=0;
+const completed=new Set();
+let quizAnswered=new Array(quizData.length).fill(false);
+let quizCorrect=0;
+
+const readingState={'rl1-1':false,'rl2-1':false,'rl2-2':false,'rl3-1':false,'rl4-1':false,'rl4-2':false,'rl5-1':false,'rl6-1':false};
+const moduleLinks={1:['rl1-1'],2:['rl2-1','rl2-2'],3:['rl3-1'],4:['rl4-1','rl4-2'],5:['rl5-1'],6:['rl6-1']};
+
+function goTo(idx){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+idx).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach((n,i)=>{n.classList.remove('active');if(i===idx)n.classList.add('active');});
+  currentPage=idx;updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProgress(){
+  const total=9,pct=Math.round((completed.size/total)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'% complete';
+  for(let i=0;i<9;i++){
+    const dot=document.getElementById('dot-'+i);
+    const nav=document.getElementById('nav-'+i);
+    if(dot&&nav&&completed.has(i)){dot.textContent='✓';nav.classList.add('done');}
+  }
+}
+function buildGlossary(data){
+  const grid=document.getElementById('gloss-grid');
+  grid.innerHTML=data.map((g,i)=>`<div class="gloss-card" id="gc-${i}" onclick="toggleGloss(${i})"><div class="gloss-en">${g.en}</div><div class="gloss-it">${g.it}</div><div class="gloss-def">${g.def}</div></div>`).join('');
+  document.getElementById('gloss-count').textContent=data.length+' terms';
+}
+function toggleGloss(i){document.getElementById('gc-'+i).classList.toggle('open');}
+function filterGloss(val){
+  const f=val.toLowerCase();
+  buildGlossary(f?glossaryData.filter(g=>g.en.toLowerCase().includes(f)||g.it.toLowerCase().includes(f)||g.def.toLowerCase().includes(f)):glossaryData);
+}
+function markGlossary(){
+  const cb=document.getElementById('cb-gloss'),sc=document.getElementById('sc-gloss');
+  if(cb.checked){sc.classList.add('checked');completed.add(0);}else{sc.classList.remove('checked');completed.delete(0);}
+  updateProgress();
+}
+function markSection(n){
+  const cb=document.getElementById('cb-'+n),sc=document.getElementById('sc-'+n);
+  if(cb.checked){sc.classList.add('checked');completed.add(n);}else{sc.classList.remove('checked');completed.delete(n);}
+  updateProgress();
+}
+function markLinkOpened(id){
+  readingState[id]=true;
+  const el=document.getElementById(id+'-status');
+  if(el){el.textContent='✓ opened';el.classList.add('opened');}
+  const mod=parseInt(id.replace('rl','').split('-')[0]);
+  if(moduleLinks[mod]&&moduleLinks[mod].every(l=>readingState[l])){
+    const cb=document.getElementById('rcb-'+mod),rc=document.getElementById('rc-'+mod);
+    if(cb){cb.disabled=false;rc.style.borderColor='var(--gold)';}
+  }
+}
+function confirmReading(mod){
+  const cb=document.getElementById('rcb-'+mod),rc=document.getElementById('rc-'+mod),lc=document.getElementById('lc-'+mod);
+  if(cb.checked){rc.classList.add('confirmed');lc.classList.add('unlocked');}
+  else{rc.classList.remove('confirmed');lc.classList.remove('unlocked');}
+}
+
+const exAnswers={1:{a:'a',b:'b',c:'a'},2:{a:'a',b:'a',c:'a',d:'a'},3:{a:'a',b:'a',c:'a',d:'a'},4:{a:'a',b:'a'},5:{a:'a',b:'a',c:'a'},6:{a:'a',b:'a',c:'a'}};
+const exFeedback={
+  1:{ok:'✓ Perfect! ∫3x²dx=x³, ∫4x dx=2x², ∫(−5)dx=−5x. Complete: x³+2x²−5x+C.',ko:'✗ Power rule: ∫3x²dx=3·x³/3=x³; ∫4x dx=4·x²/2=2x²; ∫(−5)dx=−5x. Answer: x³+2x²−5x+C.'},
+  2:{ok:'✓ Excellent! Inscribed rectangles use the minimum value. The Squeeze Theorem guarantees convergence. F(x)=x³/3−x²/2. F(2)=8/3−2=2/3. F(0)=0. Result: 2/3.',ko:'✗ Inscribed rectangles use the minimum value of f per subinterval. The Squeeze Theorem forces both sums to the same limit. F=x³/3−x²/2; F(2)=2/3; F(0)=0. Answer: 2/3.'},
+  3:{ok:'✓ Well done! 4−x²=x+2 → x²+x−2=0 → x=−1, x=2. At x=0: f(0)=4>g(0)=2 ✓. Integrand: (4−x²)−(x+2)=−x²−x+2. ∫₋₁²(−x²−x+2)dx=9/2.',ko:'✗ Set 4−x²=x+2: x²+x−2=0 → x=−1,x=2. At x=0: f=4>g=2, so f is on top. Integrand=−x²−x+2. ∫₋₁²(−x²−x+2)dx=9/2.'},
+  4:{ok:'✓ Correct! r(x)=√x so [r(x)]² = x. V = π·∫₀⁴ x dx = π·[x²/2] from 0 to 4 = π·(16/2 − 0) = 8π.',ko:'✗ The disk radius is r=√x, so [r(x)]² = (√x)² = x. Apply the disk formula: V = π∫₀⁴ x dx = π[x²/2] from 0 to 4 = 8π.'},
+  5:{ok:'✓ Perfect! V=2π∫x·f(x)dx. With f=x²: 2π∫₀²x³dx=2π[x⁴/4]₀²=2π·4=8π.',ko:'✗ Shell about y-axis: V=2π∫x·f(x)dx. Integrand: x·x²=x³. V=2π∫₀²x³dx=2π·4=8π.'},
+  6:{ok:'✓ Excellent! r=(4−x²)/2. A=πr²/2=π(4−x²)²/8. (4−x²)²=16−8x²+x⁴ ✓.',ko:'✗ Semicircle: A=πr²/2. r=(4−x²)/2 → A=π(4−x²)²/8. Expand: (4−x²)²=16−8x²+x⁴.'}
+};
+
+function checkEx(n){
+  const ans=exAnswers[n];
+  const steps=Object.keys(ans);
+  let allAnswered=true,allOk=true;
+  steps.forEach(step=>{
+    const sel=document.querySelector('input[name="e'+n+step+'"]:checked');
+    if(!sel){allAnswered=false;return;}
+    document.querySelectorAll('input[name="e'+n+step+'"]').forEach(inp=>{
+      const wrap=inp.closest('.step-input');
+      if(inp.value===ans[step])wrap.classList.add('correct-highlight');
+      else if(inp.checked)wrap.classList.add('wrong-highlight');
+    });
+    if(sel.value!==ans[step])allOk=false;
+  });
+  if(!allAnswered){alert('Please answer all steps before checking.');return;}
+  const fb=document.getElementById('fb-'+n);
+  fb.style.display='block';fb.className='fb-box '+(allOk?'fb-ok':'fb-ko');
+  fb.textContent=allOk?exFeedback[n].ok:exFeedback[n].ko;
+  document.querySelector('#ex'+n+'-block .check-btn').disabled=true;
+}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,qi)=>`
+    <div class="card" id="qcard-${qi}">
+      <div class="quiz-num">Question ${qi+1} of ${quizData.length}</div>
+      <div class="quiz-q">${q.q}</div>
+      ${q.opts.map((o,oi)=>`<button class="quiz-opt" id="qopt-${qi}-${oi}" onclick="answerQuiz(${qi},${oi})">${o}</button>`).join('')}
+      <div class="quiz-fb" id="qfb-${qi}"></div>
+    </div>`).join('');
+}
+function answerQuiz(qi,oi){
+  if(quizAnswered[qi])return;
+  quizAnswered[qi]=true;
+  const q=quizData[qi];
+  for(let i=0;i<q.opts.length;i++){
+    const btn=document.getElementById('qopt-'+qi+'-'+i);
+    btn.disabled=true;
+    if(i===q.correct)btn.classList.add('correct');
+    else if(i===oi)btn.classList.add('wrong');
+  }
+  const fb=document.getElementById('qfb-'+qi);
+  const isOk=oi===q.correct;
+  if(isOk)quizCorrect++;
+  fb.className='quiz-fb '+(isOk?'ok':'ko');
+  fb.textContent=isOk?q.ok:q.ko;
+  fb.style.display='block';
+  if(quizAnswered.every(Boolean)){setTimeout(showQuizResult,600);completed.add(7);updateProgress();}
+}
+function isCorrectAnswer(qi){
+  const btn=document.getElementById('qopt-'+qi+'-'+quizData[qi].correct);
+  if(!btn)return false;
+  return btn.classList.contains('correct')&&!document.querySelector('#qcard-'+qi+' .quiz-opt.wrong');
+}
+function showQuizResult(){
+  const res=document.getElementById('quiz-result');
+  res.style.display='block';
+  const pct=Math.round((quizCorrect/quizData.length)*100);
+  const emoji=pct>=90?'🏆':pct>=70?'🎯':pct>=50?'📘':'🔄';
+  const msg=pct>=90?'Outstanding! You have mastered all the topics.':pct>=70?'Very good! A few questions to revisit below.':pct>=50?'Good effort — review the highlighted topics before retrying.':'Keep going — revisit the modules and glossary, then try again.';
+  document.getElementById('quiz-score-text').textContent=emoji+'  '+quizCorrect+' / '+quizData.length+'  —  '+pct+'%';
+  document.getElementById('quiz-msg').textContent=msg;
+  const topics=[
+    {label:'Glossary & Terminology',qs:[0,1,2]},{label:'Introduction to Integration',qs:[3,4]},
+    {label:'Definite Integrals & FTC',qs:[5,6]},{label:'Area Between Curves',qs:[7]},
+    {label:'Disk Method',qs:[8]},{label:'Cylindrical Shells',qs:[9]},{label:'Volumes by Cross Sections',qs:[10]}
+  ];
+  document.getElementById('topic-breakdown').innerHTML=topics.map(t=>{
+    const ok=t.qs.filter(qi=>isCorrectAnswer(qi)).length,tot=t.qs.length,tpct=Math.round((ok/tot)*100);
+    const col=tpct>=80?'var(--accent2)':tpct>=50?'var(--gold)':'var(--red)';
+    return '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="color:var(--ink);font-weight:500">'+t.label+'</span><span style="color:var(--ink2)">'+ok+'/'+tot+'</span></div><div style="background:var(--surface2);border-radius:4px;height:5px"><div style="width:'+tpct+'%;height:5px;border-radius:4px;background:'+col+';transition:width 0.6s ease"></div></div></div>';
+  }).join('');
+  const weak=topics.filter(t=>t.qs.filter(qi=>isCorrectAnswer(qi)).length/t.qs.length<0.67).map(t=>t.label);
+  document.getElementById('quiz-advice').innerHTML=weak.length===0?'<div class="box-label">Advice</div>Excellent performance across all topics! You are ready for more advanced integral calculus.':'<div class="box-label">Advice</div>Focus your revision on: <strong>'+weak.join(', ')+'</strong>. Return to the relevant modules and re-read the required source pages.';
+  const wrongQs=quizData.map((q,qi)=>({q,qi})).filter(({qi})=>!isCorrectAnswer(qi));
+  if(wrongQs.length>0){
+    document.getElementById('quiz-review-section').style.display='block';
+    document.getElementById('quiz-review-list').innerHTML=wrongQs.map(({q,qi})=>'<div style="padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;font-size:13px;color:var(--ink2)"><span style="font-weight:500;color:var(--ink)">Q'+(qi+1)+'.</span> '+q.q+'</div>').join('');
+  }
+  res.scrollIntoView({behavior:'smooth'});
+  buildEvaluation();
+}
+function buildEvaluation(){
+  const container=document.getElementById('eval-container');if(!container)return;
+  const pct=Math.round((quizCorrect/quizData.length)*100);
+  const grade=pct>=90?{label:'Excellent',color:'#0F6E56',bg:'#E1F5EE',desc:'You have demonstrated thorough and confident mastery of all integral calculus topics.'}
+    :pct>=75?{label:'Good',color:'#2B4E8C',bg:'#E8EEF7',desc:'You have a solid understanding of the material with only minor gaps to address.'}
+    :pct>=60?{label:'Satisfactory',color:'#C4973A',bg:'#FAF3E3',desc:'You have grasped the core concepts but need to consolidate some areas before moving on.'}
+    :pct>=40?{label:'Needs improvement',color:'#B94040',bg:'#FAEDED',desc:'Several key concepts need further study. Revisit the modules and required readings carefully.'}
+    :{label:'Insufficient',color:'#7A1A1A',bg:'#FAEDED',desc:'The foundational concepts have not yet been acquired. Please restart the path from the glossary.'};
+  const topics=[
+    {label:'Glossary & Terminology',qs:[0,1,2],idx:0},{label:'Introduction to Integration',qs:[3,4],idx:1},
+    {label:'Definite Integrals & FTC',qs:[5,6],idx:2},{label:'Area Between Curves',qs:[7],idx:3},
+    {label:'Disk Method',qs:[8],idx:4},{label:'Cylindrical Shells',qs:[9],idx:5},{label:'Volumes by Cross Sections',qs:[10],idx:6}
+  ];
+  const comments=['Review the glossary cards — pay attention to Italian equivalents and precise mathematical definitions.','Go back to MathIsFun: Introduction to Integration. Focus on the power rule and the meaning of C.','Revisit Module 2. Study the Riemann sum construction and the Torricelli–Barrow theorem from the teacher\'s notes.','Return to Paul\'s Notes on Area Between Curves. Practice finding intersection points and identifying the upper curve.','Revisit Module 4. Focus on the disk vs washer distinction and how to set up R(x) and r(x).','Return to Paul\'s Notes on Cylindrical Shells. Focus on the 2πx factor and when shells are preferable to disks.','Revisit Module 6. Practice identifying A(x) for different cross-section shapes.'];
+  const topicRows=topics.map((t,i)=>{
+    const ok=t.qs.filter(qi=>isCorrectAnswer(qi)).length,tot=t.qs.length,tpct=Math.round((ok/tot)*100);
+    const level=tpct===100?{txt:'Mastered',col:'#0F6E56',bg:'#E1F5EE'}:tpct>=67?{txt:'Adequate',col:'#2B4E8C',bg:'#E8EEF7'}:tpct>=34?{txt:'Partial',col:'#C4973A',bg:'#FAF3E3'}:{txt:'To review',col:'#B94040',bg:'#FAEDED'};
+    return {ok,tot,tpct,level,label:t.label,comment:tpct>=67?'Good understanding of '+t.label+'.':comments[i]};
+  });
+  const strong=topicRows.filter(t=>t.tpct>=67).map(t=>t.label);
+  const weak=topicRows.filter(t=>t.tpct<67).map(t=>t.label);
+  const notes=[];
+  if(pct===100)notes.push('Answered all 12 questions correctly — outstanding preparation and attention.');
+  if(weak.length===0)notes.push('Consistent performance across all seven topic areas — no significant gaps detected.');
+  if(weak.length>=4)notes.push('Widespread difficulties suggest the required readings should be revisited more carefully before re-attempting the quiz.');
+  if(strong.length>0&&weak.length>0)notes.push('Shows a selective profile: strong in '+strong.slice(0,2).join(' and ')+', but needs consolidation in '+weak.slice(0,2).join(' and ')+'.');
+  container.innerHTML=
+    '<div style="background:'+grade.bg+';border:1.5px solid '+grade.color+';border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem">'
+    +'<div style="text-align:center;flex-shrink:0"><div style="font-family:\'Fraunces\',serif;font-size:40px;font-weight:700;color:'+grade.color+';line-height:1">'+pct+'%</div>'
+    +'<div style="font-size:11px;color:'+grade.color+';text-transform:uppercase;letter-spacing:1px;margin-top:2px">'+quizCorrect+' / '+quizData.length+' correct</div></div>'
+    +'<div><div style="font-family:\'Fraunces\',serif;font-size:20px;font-weight:700;color:'+grade.color+';margin-bottom:4px">'+grade.label+'</div>'
+    +'<div style="font-size:14px;color:var(--ink2);line-height:1.6">'+grade.desc+'</div></div></div>'
+    +'<div class="card"><div class="card-title">Performance by topic</div>'
+    +topicRows.map(t=>'<div style="margin-bottom:1.1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
+      +'<span style="font-size:14px;font-weight:500;color:var(--ink)">'+t.label+'</span>'
+      +'<span style="font-size:12px;font-weight:500;padding:3px 10px;border-radius:12px;background:'+t.level.bg+';color:'+t.level.col+'">'+t.level.txt+' — '+t.ok+'/'+t.tot+'</span></div>'
+      +'<div style="background:var(--surface2);border-radius:4px;height:5px;margin-bottom:8px"><div style="width:'+t.tpct+'%;height:5px;border-radius:4px;background:'+t.level.col+';transition:width 0.7s ease"></div></div>'
+      +'<div style="font-size:13px;color:var(--ink2);line-height:1.6">'+t.comment+'</div></div>').join('')+'</div>'
+    +(notes.length>0?'<div class="card"><div class="card-title">Observations</div>'+notes.map(n=>'<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink2)"><span style="color:var(--accent2);flex-shrink:0">→</span>'+n+'</div>').join('')+'</div>':'')
+    +'<div class="card"><div class="card-title">Recommended next steps</div>'
+    +(weak.length===0?'<p style="font-size:14px;color:var(--ink2)">All topics mastered. You are ready to move on to techniques of integration (substitution, integration by parts), improper integrals, and applications to physics and engineering.</p>'
+    :'<ul class="points">'+weak.map(w=>'<li>Return to the <strong>'+w+'</strong> module, re-read the required source page, and redo the exercise before retrying the quiz.</li>').join('')+'<li>Use the glossary to reinforce any terminology you are unsure about.</li></ul>')
+    +'</div>';
+  completed.add(8);updateProgress();
+}
+
+buildGlossary(glossaryData);
+buildQuiz();
+updateProgress();
+</script>
+</body>
+</html>
