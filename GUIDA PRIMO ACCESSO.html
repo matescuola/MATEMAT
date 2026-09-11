@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guida Interattiva al Primo Accesso - Google Workspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        google: {
+                            blue: '#1a73e8',
+                            hover: '#1557b0',
+                            red: '#ea4335',
+                            yellow: '#fbbc04',
+                            green: '#34a853',
+                            surface: '#f8fafc',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .pulse-subtle {
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+        }
+        .step-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-break { page-break-after: always; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased flex flex-col justify-between">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    M
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Google Workspace for Education</h1>
+                    <p class="text-xs text-slate-500 font-medium">I.I.S. Mapelli Monza • Guida Studenti e Genitori</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button onclick="window.print()" class="no-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors">
+                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                    </svg>
+                    Stampa
+                </button>
+                <a href="#supporto" class="no-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-semibold hover:bg-blue-100 transition-colors">
+                    Assistenza
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full flex-grow">
+        
+        <!-- Parents Notice Banner -->
+        <div class="mb-6 bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 shadow-sm">
+            <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <div>
+                <span class="inline-block bg-amber-200/70 text-amber-900 text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md mb-1">
+                    Nota per i Genitori (Studenti Minorenni)
+                </span>
+                <p class="text-xs sm:text-sm text-amber-900 leading-relaxed font-medium">
+                    Per partecipare ai <strong>colloqui a distanza scuola-famiglia su Google Meet</strong> con i docenti, è necessario accedere utilizzando esclusivamente questo account scolastico dello studente. Conservate queste credenziali con cura!
+                </p>
+            </div>
+        </div>
+
+        <!-- Stepper Indicators -->
+        <div class="no-print mb-8 bg-white border border-slate-200 rounded-2xl p-3 sm:p-4 shadow-sm">
+            <div class="flex items-center justify-between relative">
+                <!-- Background connecting line -->
+                <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-slate-100 z-0"></div>
+                <div id="progress-bar-fill" class="absolute left-6 top-1/2 -translate-y-1/2 h-1 bg-blue-600 transition-all duration-500 z-0" style="width: 0%;"></div>
+
+                <!-- Step Button 1 -->
+                <button onclick="goToStep(1)" id="step-nav-1" class="relative z-10 flex flex-col items-center group">
+                    <div class="step-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-blue-600 text-white shadow-md ring-4 ring-blue-100 transition-all">
+                        1
+                    </div>
+                    <span class="text-[11px] sm:text-xs font-semibold mt-1.5 text-blue-600 hidden sm:block">Browser Chrome</span>
+                </button>
+
+                <!-- Step Button 2 -->
+                <button onclick="goToStep(2)" id="step-nav-2" class="relative z-10 flex flex-col items-center group">
+                    <div class="step-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-white border-2 border-slate-300 text-slate-500 transition-all">
+                        2
+                    </div>
+                    <span class="text-[11px] sm:text-xs font-semibold mt-1.5 text-slate-500 hidden sm:block">Login Iniziale</span>
+                </button>
+
+                <!-- Step Button 3 -->
+                <button onclick="goToStep(3)" id="step-nav-3" class="relative z-10 flex flex-col items-center group">
+                    <div class="step-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-white border-2 border-slate-300 text-slate-500 transition-all">
+                        3
+                    </div>
+                    <span class="text-[11px] sm:text-xs font-semibold mt-1.5 text-slate-500 hidden sm:block">Password & Sicurezza</span>
+                </button>
+
+                <!-- Step Button 4 -->
+                <button onclick="goToStep(4)" id="step-nav-4" class="relative z-10 flex flex-col items-center group">
+                    <div class="step-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-white border-2 border-slate-300 text-slate-500 transition-all">
+                        4
+                    </div>
+                    <span class="text-[11px] sm:text-xs font-semibold mt-1.5 text-slate-500 hidden sm:block">App & Meet</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 1 CONTENT -->
+        <section id="step-content-1" class="step-panel bg-white border border-slate-200 rounded-2xl p-5 sm:p-8 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-extrabold uppercase rounded-full tracking-wider">Passaggio 1 di 4</span>
+                <span class="text-xs font-medium text-slate-400">Configurazione browser</span>
+            </div>
+            
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-3">
+                Usa Google Chrome e accedi al tuo profilo dedicato
+            </h2>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
+                Si raccomanda di utilizzare <strong>Google Chrome</strong> come browser predefinito. Effettuando l'accesso con il profilo scolastico, Chrome caricherà in automatico tutte le <strong>estensioni didattiche</strong> scelte dalla scuola per lo studente!
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <!-- Left: Action instructions -->
+                <div class="lg:col-span-6 space-y-4">
+                    <div class="bg-blue-50/70 border border-blue-200/80 rounded-xl p-4">
+                        <h4 class="text-xs font-bold text-blue-900 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            Cosa fare sul computer:
+                        </h4>
+                        <ol class="text-sm text-slate-700 space-y-2.5 list-decimal list-inside pl-1">
+                            <li>Avvia <strong>Google Chrome</strong>.</li>
+                            <li>Clicca sull'<strong>icona circolare del Profilo</strong> in alto a destra (a fianco dei 3 pallini).</li>
+                            <li>Clicca su <strong>"+ Aggiungi"</strong> oppure su <strong>"Attiva la sincronizzazione..."</strong>.</li>
+                            <li>In alternativa, puoi anche andare direttamente sul sito <span class="font-mono bg-white px-1.5 py-0.5 rounded border border-blue-200 text-xs">mail.google.com</span> e premere <strong>Accedi</strong>.</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs text-slate-600 flex items-center gap-2">
+                        <span class="text-lg">💡</span>
+                        <span><strong>Prova interattiva:</strong> Clicca sull'icona circolare o sulla freccia nel simulatore qui a fianco per vedere cosa accade su Chrome!</span>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive Chrome Mockup -->
+                <div class="lg:col-span-6">
+                    <div class="bg-slate-900 rounded-2xl p-2 sm:p-3 shadow-xl border border-slate-800">
+                        <!-- Browser Window Frame -->
+                        <div class="bg-slate-100 rounded-xl overflow-hidden shadow-inner">
+                            <!-- Browser tab bar -->
+                            <div class="bg-slate-200 px-3 py-2 flex items-center justify-between border-b border-slate-300">
+                                <div class="flex items-center space-x-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                                </div>
+                                <div class="bg-white px-4 py-1 rounded-md text-[11px] text-slate-600 font-mono flex items-center gap-1.5 shadow-sm">
+                                    <svg class="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    google.it
+                                </div>
+                                <!-- Clickable profile trigger with pulse -->
+                                <button onclick="toggleMockupDropdown()" class="relative p-1 rounded-full hover:bg-slate-300 transition-colors focus:outline-none" title="Clicca qui per simulare">
+                                    <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold ring-2 ring-white shadow">
+                                        M
+                                    </div>
+                                    <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                    </span>
+                                </button>
+                            </div>
+
+                            <!-- Page Content Mockup -->
+                            <div class="p-6 text-center relative min-h-[190px] flex flex-col items-center justify-center bg-white">
+                                <!-- Guided Red Pointer -->
+                                <div onclick="toggleMockupDropdown()" class="cursor-pointer absolute top-3 right-8 flex items-center gap-1 text-red-600 animate-bounce">
+                                    <span class="text-[11px] font-bold bg-red-50 border border-red-200 px-1.5 py-0.5 rounded shadow-sm">1. Clicca qui!</span>
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+
+                                <div class="text-3xl font-bold tracking-tight text-blue-600 mb-3">Google</div>
+                                <div class="w-48 sm:w-60 h-7 bg-slate-100 rounded-full border border-slate-300 flex items-center px-3 text-[10px] text-slate-400">
+                                    Cerca o digita un URL
+                                </div>
+
+                                <!-- Simulated Dropdown Menu -->
+                                <div id="chrome-mockup-menu" class="hidden absolute top-2 right-3 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 p-3 text-left z-20 transition-all">
+                                    <div class="flex items-center gap-2.5 pb-2.5 border-b border-slate-100">
+                                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                                            ST
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-bold text-slate-900">Profilo Chrome</div>
+                                            <div class="text-[10px] text-slate-400">Scuola / Personale</div>
+                                        </div>
+                                    </div>
+                                    <div class="pt-2.5 space-y-1.5">
+                                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 flex items-center justify-between">
+                                            <span class="text-[11px] font-bold text-blue-700">Attiva Sincronizzazione</span>
+                                            <span class="text-xs">👉</span>
+                                        </div>
+                                        <p class="text-[9.5px] text-slate-500 leading-tight">
+                                            Cliccando qui potrai inserire la mail fornita da Mapelli Monza!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2 CONTENT -->
+        <section id="step-content-2" class="step-panel hidden bg-white border border-slate-200 rounded-2xl p-5 sm:p-8 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-extrabold uppercase rounded-full tracking-wider">Passaggio 2 di 4</span>
+                <span class="text-xs font-medium text-slate-400">Inserimento credenziali</span>
+            </div>
+            
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-3">
+                Inserisci l'Email dell'Istituto e la Password Provvisoria
+            </h2>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
+                Tutti gli account degli studenti terminano obbligatoriamente con il dominio dell'istituto <strong>@mapelli-monza.edu.it</strong>.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <!-- Left: Interactive Email Generator -->
+                <div class="lg:col-span-6 space-y-4">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">
+                            Simula il formato della tua email scolastica:
+                        </label>
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <input type="text" id="sim-nome" placeholder="Nome (es. Mario)" oninput="updateSimEmail()" class="px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="text" id="sim-cognome" placeholder="Cognome (es. Rossi)" oninput="updateSimEmail()" class="px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+                        <div class="bg-white p-2.5 rounded-lg border border-slate-200 flex items-center justify-between">
+                            <span id="sim-result-email" class="text-xs sm:text-sm font-mono font-semibold text-blue-700">
+                                mario.rossi@mapelli-monza.edu.it
+                            </span>
+                            <span class="text-[10px] bg-blue-100 text-blue-800 font-bold px-1.5 py-0.5 rounded">Formato Scuola</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs text-amber-900 flex items-start gap-2.5">
+                        <span class="text-base mt-0.5">⚠️</span>
+                        <span><strong>Attenzione al dominio:</strong> Non dimenticare la parte dopo la chiocciola (<code class="bg-amber-100 px-1 py-0.5 rounded font-mono font-bold">@mapelli-monza.edu.it</code>), altrimenti Google dirà che l'account non esiste.</span>
+                    </div>
+                </div>
+
+                <!-- Right: Google Sign-in Mockup Card -->
+                <div class="lg:col-span-6">
+                    <div class="max-w-xs mx-auto bg-white border border-slate-300 rounded-2xl p-5 shadow-lg relative">
+                        <!-- Arrow Helper -->
+                        <div class="absolute -left-3 top-28 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md hidden sm:flex items-center gap-1 pulse-subtle">
+                            <span>Digita qui</span>
+                            <span class="text-xs">➔</span>
+                        </div>
+
+                        <div class="text-center mb-5">
+                            <span class="text-xl font-bold tracking-tight text-blue-600">Google</span>
+                            <h3 class="text-sm font-bold text-slate-800 mt-1">Accedi</h3>
+                            <p class="text-[11px] text-slate-500">Utilizza il tuo account scolastico</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-600 mb-1">Email o telefono</label>
+                                <div class="relative">
+                                    <input type="text" readonly id="mockup-display-email" value="mario.rossi@mapelli-monza.edu.it" class="w-full text-xs font-mono px-3 py-2 border-2 border-blue-500 rounded-lg bg-blue-50/30 text-slate-800 focus:outline-none">
+                                    <div class="absolute right-2.5 top-2.5 w-2 h-2 rounded-full bg-blue-600"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-600 mb-1">Password provvisoria fornita</label>
+                                <input type="password" value="••••••••••••" readonly class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-500">
+                            </div>
+
+                            <button type="button" class="w-full py-2 bg-blue-600 text-white font-bold text-xs rounded-lg shadow-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-1">
+                                <span>Avanti</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3 CONTENT -->
+        <section id="step-content-3" class="step-panel hidden bg-white border border-slate-200 rounded-2xl p-5 sm:p-8 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-extrabold uppercase rounded-full tracking-wider">Passaggio 3 di 4</span>
+                <span class="text-xs font-medium text-slate-400">Sicurezza e Nuova Password</span>
+            </div>
+            
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-3">
+                Imposta la Nuova Password e Regole di Sicurezza
+            </h2>
+
+            <!-- CRITICAL CALLOUT BANNER FOR 2FA & SMARTPHONE BAN -->
+            <div class="bg-red-50 border-2 border-red-500 rounded-2xl p-4 sm:p-5 mb-6 shadow-md flex items-start gap-3.5">
+                <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-black text-xl shrink-0">
+                    ⛔
+                </div>
+                <div>
+                    <h3 class="text-sm sm:text-base font-extrabold text-red-900 uppercase tracking-wide">
+                        NON ATTIVARE LA VERIFICA IN DUE PASSAGGI (2FA)!
+                    </h3>
+                    <p class="text-xs sm:text-sm text-red-800 font-medium mt-1 leading-relaxed">
+                        A scuola gli studenti <strong>non possono utilizzare il telefono cellulare</strong> durante le lezioni per ricevere codici SMS o notifiche di conferma. <strong>Se attivi la verifica in due passaggi, l'account rimarrà bloccato a scuola!</strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Interactive Password Tester -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+                            Testa i requisiti della nuova password:
+                        </label>
+                        <p class="text-xs text-slate-500 mb-3">
+                            La password definitiva deve avere almeno 8 caratteri ed essere facile da ricordare per lo studente.
+                        </p>
+
+                        <div class="relative mb-3">
+                            <input type="text" id="pwd-tester" placeholder="Scrivi una password di prova..." oninput="checkPasswordStrength()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+
+                        <!-- Checklist Requirements -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                            <div id="rule-len" class="flex items-center gap-1.5 text-slate-500 font-medium">
+                                <span class="rule-icon">⚪</span> 8+ caratteri
+                            </div>
+                            <div id="rule-num" class="flex items-center gap-1.5 text-slate-500 font-medium">
+                                <span class="rule-icon">⚪</span> Almeno 1 numero
+                            </div>
+                            <div id="rule-sym" class="flex items-center gap-1.5 text-slate-500 font-medium">
+                                <span class="rule-icon">⚪</span> Lettere / Simboli
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- What to do if password is lost -->
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3 text-xs text-amber-900">
+                        <span class="text-xl mt-0.5">🔑</span>
+                        <div>
+                            <strong class="block text-sm font-bold text-amber-950 mb-1">Cosa succede se lo studente perde la password?</strong>
+                            <span>Non è possibile recuperarla online autonomamente. Lo studente dovrà rivolgersi <strong>di persona a scuola all'Animatore Digitale</strong> per farsi reimpostare una password provvisoria.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Advice Card -->
+                <div class="lg:col-span-5">
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-2xl p-5 shadow-lg">
+                        <h4 class="text-sm font-bold flex items-center gap-2 mb-3">
+                            <span>📝</span> Promemoria per lo Studente
+                        </h4>
+                        <ul class="text-xs space-y-2.5 text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span>Trascrivi la password definitiva sul diario scolastico o in un posto sicuro a casa.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span>Non comunicare mai la tua password ai compagni di classe.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span>Non appena confermata, la password temporanea ricevuta all'inizio cesserà di funzionare.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 4 CONTENT -->
+        <section id="step-content-4" class="step-panel hidden bg-white border border-slate-200 rounded-2xl p-5 sm:p-8 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-extrabold uppercase rounded-full tracking-wider">Passaggio 4 di 4</span>
+                <span class="text-xs font-medium text-slate-400">Le Applicazioni Scolastiche</span>
+            </div>
+            
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-3">
+                Accedi alle App Scolastiche e a Google Meet
+            </h2>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
+                In alto a destra nel browser troverai l'icona con i <strong>9 quadratini (Waffle Menu)</strong>. Da qui potrai accedere a tutti gli strumenti di Google per la scuola.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <!-- Interactive 9-Dots Grid -->
+                <div class="lg:col-span-6 space-y-3">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Clicca su un'icona per vedere a cosa serve:
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Classroom -->
+                        <div onclick="showAppDetail('classroom')" class="app-card cursor-pointer p-3 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                                📚
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-900">Classroom</div>
+                                <div class="text-[10px] text-slate-500">Compiti e lezioni</div>
+                            </div>
+                        </div>
+
+                        <!-- Meet -->
+                        <div onclick="showAppDetail('meet')" class="app-card cursor-pointer p-3 rounded-xl border-2 border-blue-500 bg-blue-50/40 hover:bg-blue-50 transition-all flex items-center gap-3 shadow-sm">
+                            <div class="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                                📹
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-blue-900 flex items-center gap-1">
+                                    Meet <span class="bg-blue-200 text-blue-900 text-[9px] px-1 py-0.2 rounded">Colloqui</span>
+                                </div>
+                                <div class="text-[10px] text-blue-700 font-medium">Videolezioni & Genitori</div>
+                            </div>
+                        </div>
+
+                        <!-- Drive -->
+                        <div onclick="showAppDetail('drive')" class="app-card cursor-pointer p-3 rounded-xl border border-slate-200 hover:border-amber-500 hover:bg-amber-50/30 transition-all flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                                📁
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-900">Google Drive</div>
+                                <div class="text-[10px] text-slate-500">Documenti e file</div>
+                            </div>
+                        </div>
+
+                        <!-- Gmail -->
+                        <div onclick="showAppDetail('gmail')" class="app-card cursor-pointer p-3 rounded-xl border border-slate-200 hover:border-red-500 hover:bg-red-50/30 transition-all flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                                ✉️
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-900">Gmail</div>
+                                <div class="text-[10px] text-slate-500">Posta elettronica</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic App Description Box -->
+                    <div id="app-detail-box" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
+                        <strong class="text-slate-900 font-bold block mb-1">📹 Google Meet per i Colloqui Genitori-Docenti:</strong>
+                        Quando viene prenotato un colloquio scuola-famiglia, basterà aprire Google Meet con le credenziali di vostro/a figlio/a e cliccare sul link della riunione all'orario stabilito.
+                    </div>
+                </div>
+
+                <!-- Right: Visual Simulation of Waffle -->
+                <div class="lg:col-span-6 flex justify-center">
+                    <div class="w-full max-w-sm bg-white border border-slate-200 rounded-2xl p-4 shadow-lg">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+                            <span class="text-xs font-bold text-slate-700">Barra Superiore di Google</span>
+                            <!-- 9 Dots & Profile -->
+                            <div class="flex items-center gap-2">
+                                <div class="grid grid-cols-3 gap-1 p-1 rounded hover:bg-slate-100">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                                </div>
+                                <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
+                                    M
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-3 border border-blue-200 text-center">
+                            <span class="text-2xl block mb-1">🎉</span>
+                            <h4 class="text-xs font-bold text-blue-950">Sei pronto per iniziare!</h4>
+                            <p class="text-[11px] text-blue-800 mt-1">
+                                L'account scolastico è ora attivo e pronto per le attività didattiche e i colloqui.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stepper Controller Buttons -->
+        <div class="no-print mt-6 flex items-center justify-between gap-4">
+            <button id="btn-prev" onclick="changeStep(-1)" class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-700 font-semibold text-xs sm:text-sm hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1.5 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Passaggio precedente
+            </button>
+
+            <span id="step-counter-label" class="text-xs font-bold text-slate-400">
+                1 / 4
+            </span>
+
+            <button id="btn-next" onclick="changeStep(1)" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm hover:bg-blue-700 transition-colors flex items-center gap-1.5 shadow-md hover:shadow-lg">
+                Passaggio successivo
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Footer Support Card -->
+        <section id="supporto" class="mt-10 bg-slate-900 text-white rounded-2xl p-6 sm:p-7 shadow-lg">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-1">
+                        Hai bisogno di aiuto?
+                    </h3>
+                    <p class="text-slate-300 text-xs sm:text-sm">
+                        Rivolgiti all'animatore digitale: 
+                        <a href="mailto:animatore.digitale@mapelli-monza.edu.it" class="text-blue-400 underline hover:text-blue-300 font-mono font-semibold">
+                            animatore.digitale@mapelli-monza.edu.it
+                        </a>
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="copySupportEmail()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-md flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                        </svg>
+                        <span id="copy-btn-text">Copia Email Assistenza</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+        <p>I.I.S. Mapelli Monza • Piattaforma Google Workspace for Education</p>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function updateStepperUI() {
+            // Update panels
+            for (let i = 1; i <= totalSteps; i++) {
+                const panel = document.getElementById(`step-content-${i}`);
+                const navBtn = document.getElementById(`step-nav-${i}`);
+                const circle = navBtn.querySelector('.step-circle');
+                const label = navBtn.querySelector('span');
+
+                if (i === currentStep) {
+                    panel.classList.remove('hidden');
+                    circle.className = 'step-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-blue-600 text-white shadow-md ring-4 ring-blue-100 transition-all';
+                    if (label) label.className = 'text-[11px] sm:text-xs font-semibold mt-1.5 text-blue-600 hidden sm:block';
+                } else if (i < currentStep) {
+                    panel.classList.add('hidden');
+                    circle.className = 'step-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-emerald-600 text-white transition-all';
+                    circle.innerHTML = '✓';
+                    if (label) label.className = 'text-[11px] sm:text-xs font-semibold mt-1.5 text-emerald-600 hidden sm:block';
+                } else {
+                    panel.classList.add('hidden');
+                    circle.className = 'step-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-white border-2 border-slate-300 text-slate-500 transition-all';
+                    circle.innerHTML = i;
+                    if (label) label.className = 'text-[11px] sm:text-xs font-semibold mt-1.5 text-slate-500 hidden sm:block';
+                }
+            }
+
+            // Progress line fill
+            const fillPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-bar-fill').style.width = fillPercentage + '%';
+
+            // Buttons state
+            document.getElementById('btn-prev').disabled = (currentStep === 1);
+            const btnNext = document.getElementById('btn-next');
+            if (currentStep === totalSteps) {
+                btnNext.innerHTML = `<span>Fine</span> 🎉`;
+            } else {
+                btnNext.innerHTML = `Passaggio successivo <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
+            }
+
+            document.getElementById('step-counter-label').innerText = `${currentStep} / ${totalSteps}`;
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        function changeStep(delta) {
+            const next = currentStep + delta;
+            if (next >= 1 && next <= totalSteps) {
+                currentStep = next;
+                updateStepperUI();
+            }
+        }
+
+        function goToStep(step) {
+            if (step >= 1 && step <= totalSteps) {
+                currentStep = step;
+                updateStepperUI();
+            }
+        }
+
+        // Toggle Mockup dropdown on Step 1
+        function toggleMockupDropdown() {
+            const menu = document.getElementById('chrome-mockup-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Step 2 interactive email generator
+        function updateSimEmail() {
+            const nome = document.getElementById('sim-nome').value.trim().toLowerCase().replace(/\s+/g, '') || 'nome';
+            const cognome = document.getElementById('sim-cognome').value.trim().toLowerCase().replace(/\s+/g, '') || 'cognome';
+            const email = `${nome}.${cognome}@mapelli-monza.edu.it`;
+            document.getElementById('sim-result-email').innerText = email;
+            document.getElementById('mockup-display-email').value = email;
+        }
+
+        // Step 3 password strength checker
+        function checkPasswordStrength() {
+            const pwd = document.getElementById('pwd-tester').value;
+            const lenEl = document.getElementById('rule-len');
+            const numEl = document.getElementById('rule-num');
+            const symEl = document.getElementById('rule-sym');
+
+            // 8 chars
+            if (pwd.length >= 8) {
+                lenEl.className = 'flex items-center gap-1.5 text-emerald-600 font-semibold';
+                lenEl.querySelector('.rule-icon').innerText = '✅';
+            } else {
+                lenEl.className = 'flex items-center gap-1.5 text-slate-500 font-medium';
+                lenEl.querySelector('.rule-icon').innerText = '⚪';
+            }
+
+            // Has number
+            if (/\d/.test(pwd)) {
+                numEl.className = 'flex items-center gap-1.5 text-emerald-600 font-semibold';
+                numEl.querySelector('.rule-icon').innerText = '✅';
+            } else {
+                numEl.className = 'flex items-center gap-1.5 text-slate-500 font-medium';
+                numEl.querySelector('.rule-icon').innerText = '⚪';
+            }
+
+            // Has letter or symbol
+            if (/[a-zA-Z]/.test(pwd) && /[^a-zA-Z0-9]/.test(pwd)) {
+                symEl.className = 'flex items-center gap-1.5 text-emerald-600 font-semibold';
+                symEl.querySelector('.rule-icon').innerText = '✅';
+            } else {
+                symEl.className = 'flex items-center gap-1.5 text-slate-500 font-medium';
+                symEl.querySelector('.rule-icon').innerText = '⚪';
+            }
+        }
+
+        // Step 4 App Detail display
+        function showAppDetail(app) {
+            const box = document.getElementById('app-detail-box');
+            if (app === 'classroom') {
+                box.innerHTML = `<strong class="text-emerald-700 font-bold block mb-1">📚 Google Classroom:</strong> Il cuore delle attività scolastiche: qui i professori pubblicano le lezioni, assegnano compiti ed esercitazioni e valutano gli elaborati inviati.`;
+            } else if (app === 'meet') {
+                box.innerHTML = `<strong class="text-blue-700 font-bold block mb-1">📹 Google Meet (Colloqui Scuola-Famiglia):</strong> I genitori utilizzano questa applicazione con l'account dello studente per effettuare i colloqui a distanza prenotati con i docenti.`;
+            } else if (app === 'drive') {
+                box.innerHTML = `<strong class="text-amber-700 font-bold block mb-1">📁 Google Drive:</strong> Il tuo spazio cloud sicuro dove salvare quaderni digitali, ricerche, PDF e presentazioni. Accessibile ovunque da PC, tablet o smartphone.`;
+            } else if (app === 'gmail') {
+                box.innerHTML = `<strong class="text-red-700 font-bold block mb-1">✉️ Gmail Scolastica:</strong> La casella postale istituzionale per ricevere comunicazioni ufficiali della scuola, inviti alle lezioni e messaggi dai professori.`;
+            }
+        }
+
+        // Copy support email fallback
+        function copySupportEmail() {
+            const email = 'animatore.digitale@mapelli-monza.edu.it';
+            const tempInput = document.createElement('input');
+            tempInput.value = email;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                const btnText = document.getElementById('copy-btn-text');
+                const originalText = btnText.innerText;
+                btnText.innerText = 'Email Copiata!';
+                setTimeout(() => {
+                    btnText.innerText = originalText;
+                }, 2500);
+            } catch (err) {
+                console.error('Errore copia:', err);
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // Initialize state
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStepperUI();
+        });
+    </script>
+</body>
+</html>
