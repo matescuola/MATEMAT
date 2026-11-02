@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda Valutazione IA - Google NotebookLM (Conformità AI Act & GDPR)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm 15mm 12mm 15mm;
+        }
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break-inside-avoid {
+                break-inside: avoid;
+            }
+            .page-break-before {
+                break-before: page;
+            }
+            .shadow-lg, .shadow-md, .shadow-sm {
+                box-shadow: none !important;
+            }
+            .border-slate-300 {
+                border-color: #cbd5e1 !important;
+            }
+            input[type="text"] {
+                border: none !important;
+                border-bottom: 1px solid #94a3b8 !important;
+                background: transparent !important;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .checkbox-custom {
+            width: 1rem;
+            height: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #475569;
+            border-radius: 0.15rem;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-right: 0.35rem;
+        }
+        .checkbox-checked {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+        .input-fillable {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1.5px dashed #94a3b8;
+            padding: 2px 4px;
+            font-size: 0.75rem;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+        .input-fillable:focus {
+            outline: none;
+            border-bottom: 2px solid #4f46e5;
+            background-color: #eeef2;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- BARRA D'AZIONE PER STAMPA / SALVATAGGIO IN PDF (Nascosta durante la stampa) -->
+    <div class="no-print max-w-4xl mx-auto mb-6 bg-slate-900 text-white p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-indigo-600 rounded-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-base">Esportazione Documento di Conformità IA (Google NotebookLM)</h1>
+                <p class="text-xs text-slate-300">Compila i dati dell'istituto, poi clicca su <strong>"Stampa / Salva PDF"</strong> per archiviare la scheda.</p>
+            </div>
+        </div>
+        <button onclick="window.print()" class="bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-bold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Stampa / Salva PDF
+        </button>
+    </div>
+
+    <!-- DOCUMENTO A4 STAMPABILE -->
+    <div class="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-slate-200">
+
+        <!-- INTESTAZIONE ISTITUZIONALE -->
+        <div class="border-b-2 border-indigo-900 pb-4 mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <p class="text-xs font-semibold text-indigo-900 uppercase tracking-wider">Ministero dell'Istruzione e del Merito</p>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight uppercase">Scheda di Valutazione Strumenti IA</h1>
+                    <p class="text-xs font-bold text-slate-600 mt-0.5">Presidio di Conformità al Regolamento UE 2024/1689 (AI Act) & Regolamento UE 2016/679 (GDPR)</p>
+                </div>
+                <div class="text-right">
+                    <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-950 font-bold text-xs rounded-full border border-indigo-300">
+                        VALUTAZIONE PRE-ASSESSMENT
+                    </span>
+                </div>
+            </div>
+            <p class="text-xs italic text-slate-500">Documento di istruttoria tecnica per la verifica di adeguatezza prima dell'adozione e sottoposizione al DPO e al Dirigente Scolastico.</p>
+        </div>
+
+        <!-- ANAGRAFICA ISTITUTO (CAMPI COMPILABILI) -->
+        <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Istituto Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Liceo Statale Carlo Porta - Cod. Mecc. MBPM06000E" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Dirigente Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Maurizio Primo Carandini" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Responsabile Protezione Dati (DPO):</label>
+                <input type="text" class="input-fillable" placeholder="Es. Dott. Luca Corbellini / Studio AG.I.COM. S.r.l." />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Referente IA / Proponente:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Stefano Bianchi - Animatore Digitale" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Numero di Protocollo / Riferimento:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prot. n. 0008124/2026" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Data Istruttoria:</label>
+                <input type="text" class="input-fillable" placeholder="Es. 22 Ottobre 2026" />
+            </div>
+        </div>
+
+        <!-- SEZIONE 1 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 1 - Anagrafica dello Strumento e Finalità d'Uso
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Denominazione e Versione</td>
+                        <td class="p-2 font-semibold text-indigo-950">Google NotebookLM <span class="font-normal text-slate-600">(Ambiente di ricerca, sintesi e analisi documentale assistito da IA basato su modelli Google Gemini)</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Fornitore / Sviluppatore</td>
+                        <td class="p-2">Google LLC / Google Ireland Limited (Unione Europea)</td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Modalità di Erogazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> SaaS Cloud Web Browser (interfaccia integrata con Google Workspace) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Offline &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> App Desktop locale
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Ambito Funzionale Previsto</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> Ricerca, analisi critica e sintesi guidata di documenti didattici (PDF, Google Docs, Slide) &nbsp;&nbsp;&nbsp;<br>
+                            <span class="checkbox-custom checkbox-checked">✓</span> Generazione di domande di ripasso, schemi, mappe concettuali e panoramiche audio didattiche (Audio Overview) &nbsp;&nbsp;&nbsp;<br>
+                            <span class="checkbox-custom checkbox-checked">✓</span> Supporto allo studio individuale e per alunni con BES/DSA (semplificazione testuale e ascolto)
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Destinatari dell'Uso</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom"></span> Solo Docenti/ATA &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Studenti (supervisionati) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Studenti e Docenti (con account d'istituto SSO Google Workspace for Education)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Età Minima e Licenza d'Uso</td>
+                        <td class="p-2">
+                            Età minima prevista dai ToS Google Workspace: <strong>Fascia K-12 (Tutte le età con consenso e gestione dell'Istituzione Scolastica)</strong>.<br>
+                            Compatibile con la fascia d'età degli studenti? 
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> NO
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 2 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 2 - Verifica AI Act: Conformità e Livello di Rischio (Reg. UE 2024/1689)
+            </h2>
+            <div class="border border-slate-300 rounded-b-md p-3 text-xs space-y-3">
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.1 Controllo Pratiche Vietate (Articolo 5 AI Act)</h3>
+                    <ul class="space-y-1.5 pl-1">
+                        <li>
+                            <strong>• Riconoscimento Emozioni (Art. 5.1.f):</strong> Deduction o inferenza dello stato emotivo o psicologico degli studenti dai testi o audio inseriti?  
+                            <span class="ml-2 font-bold text-indigo-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme - Assenza di moduli di profilazione emotivo-comportamentale)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Tecniche Subliminali / Manipolazione (Art. 5.1.a):</strong> Tecniche ingannevoli o subliminali che condizionano il comportamento?  
+                            <span class="ml-2 font-bold text-indigo-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Punteggio Sociale / Social Scoring (Art. 5.1.c):</strong> Assegnazione di punteggi reputazionali o profili sociali?  
+                            <span class="ml-2 font-bold text-indigo-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.2 Classificazione del Livello di Rischio e Obblighi Correlati</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Alto Rischio (Art. 6 e Allegato III):</span>
+                            Proctoring, esami automatizzati vincolanti o determinazione di ammissioni scolastiche senza intervento umano?  
+                            <div class="mt-1 font-bold text-indigo-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> NO (Piattaforma di ricerca, sintesi e analisi di documenti didattici specifici indicati dall'utente)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Obblighi di Trasparenza (Art. 50):</span>
+                            Generazione di sintesi testuali o conversazioni audio sintetiche (Audio Overview)?  
+                            <div class="mt-1 font-bold text-indigo-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Sussiste l'obbligo di avviso esplicito della natura sintetica delle risposte e dei riassunti audio)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Sistema di IA Generativa (GPAI):</span>
+                            Utilizzo di modelli di grandi dimensioni (LLM Google Gemini integrato)?  
+                            <div class="mt-1 font-bold text-indigo-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ &nbsp;&nbsp;&nbsp;
+                                <span class="font-normal text-slate-400"><span class="checkbox-custom"></span> NO</span>
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Supervisione Umana (Human Oversight):</span>
+                            Elaborati e citazioni delle fonti soggetti a verifica e controllo dell'operatore umano?  
+                            <div class="mt-1 font-bold text-indigo-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Human-in-the-Loop: le risposte sono ancorate ai documenti forniti e verificabili tramite citazione diretta)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 3 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 3 - Conformità GDPR e Protezione Dati Personali (Reg. UE 2016/679)
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Tipologia Dati Trattati</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>Dati personali comuni:</strong> Email e nome dell'account d'istituto via SSO Google Workspace for Education, note di studio.<br>
+                            <span class="checkbox-custom"></span> Dati particolari ex Art. 9 GDPR (Disabilità, salute, PEI, PDP) <strong>(VIETATI NEI DOCUMENTI E NEI PROMPT SENZA PREVIA PSEUDONIMIZZAZIONE RIGOROSA)</strong>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Gestione Fonti e Prompt Caricati</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Il Regolamento d'Istituto vieta l'upload di documenti contenenti dati identificativi riservati di minori, verbali di classe o diagnosi cliniche nei taccuini di NotebookLM.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Uso dei Dati per Addestramento IA</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>NO</strong> — Google garantisce per gli account Google Workspace for Education ed Enterprise che i file sorgente caricati (PDF, Google Docs), i prompt e i taccuini privati <strong>NON vengono utilizzati per l'addestramento dei modelli di IA pubblici</strong>.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Account e Autenticazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> Account Istituzionali gestiti via Single Sign-On (SSO Google Workspace for Education con DPA e aggiuntivi di protezione attivi).
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Contratto e Nomina ex Art. 28 GDPR</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Google Workspace Data Processing Amendment (DPA) / Clausole Contrattuali Standard (SCC) ed adesione all'<strong>EU-US Data Privacy Framework</strong>.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 4 & 5 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 page-break-inside-avoid">
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 4 - Requisiti Tecnici e Sicurezza
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• Certificazioni:</strong> <span class="checkbox-custom checkbox-checked">✓</span> ISO/IEC 27001, 27017, 27018, SOC 2/3, FERPA, COPPA, EU-US DPF</p>
+                    <p><strong>• Server/Infrastruttura:</strong> Infrastruttura Google Cloud protetta con rigorosa separazione logica dei dati di tenancy.</p>
+                    <p><strong>• Cifratura:</strong> TLS 1.3 in transito e AES-256 a riposo sui server di storage di Google Workspace.</p>
+                    <p><strong>• Ancoraggio alle Fonti:</strong> L'architettura di NotebookLM limita le allucinazioni ancorando le risposte esclusivamente ai documenti caricati dall'utente (Source Grounding).</p>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 5 - Governance Didattica ed Etica
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• AI Literacy (Art. 4 AI Act):</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Promozione delle competenze di sintesi critica, verifica delle fonti e prompting didattico)</p>
+                    <p><strong>• Verifica Citazioni:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Istruire gli studenti a verificare le citazioni numerate restituite da NotebookLM risalendo al testo originale)</p>
+                    <p><strong>• Segnalazione Errori:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Canale di contatto attivo con il Referente IA / Animatore Digitale d'Istituto)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 6 - PROPOSTA REFERENTE IA -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 6 - Esito della Valutazione e Proposta del Referente IA
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-indigo-50 border border-indigo-300 rounded font-semibold text-indigo-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> OPZIONE A - APPROVABILE PER USO GENERALE CON PRESCRIZIONI:
+                    <span class="font-normal text-indigo-900 block mt-0.5">Google NotebookLM opera nell'ambiente sicuro di Google Workspace for Education, ancora le risposte alle fonti fornite dall'utente e disabilita l'addestramento dei modelli pubblici sui dati scolastici. Idoneo per il potenziamento dello studio e della ricerca.</span>
+                </div>
+                <div>
+                    <strong class="text-slate-800 block mb-1">Prescrizioni Operative Proposte per Google NotebookLM:</strong>
+                    <ol class="list-decimal list-inside space-y-1 text-slate-700 pl-1">
+                        <li><strong>Autenticazione Istituzionale:</strong> L'accesso deve avvenire esclusivamente tramite Single Sign-On (SSO) dell'account Google Workspace d'Istituto (<code class="bg-slate-100 px-1 rounded">@scuola.edu.it</code>). Vietato l'uso di account personali privati per attività scolastiche.</li>
+                        <li><strong>Divieto Dati Sensibili nelle Fonti:</strong> Fatto divieto assoluto di caricare come fonte o inserire nei prompt: dati identificativi di studenti, diagnosi BES/DSA/PEI, o verbali riservati privi di integrale anonimizzazione/pseudonimizzazione.</li>
+                        <li><strong>Verifica delle Citazioni:</strong> Gli studenti devono sempre risalire ai passaggi evidenziati nel documento originale per verificare l'esattezza della sintesi o dell'audio generato.</li>
+                        <li><strong>Trasparenza Output:</strong> Dichiarare nei lavori finali l'ausilio di NotebookLM per la strutturazione o la sintesi delle fonti (Art. 50 AI Act).</li>
+                    </ol>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Referente IA / Proponente:</span>
+                        <div class="w-48 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 7 - PARERE DPO -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-indigo-950 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 7 - Parere Formale del Responsabile Protezione Dati (DPO / RPD)
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-indigo-50 border border-indigo-300 rounded font-bold text-indigo-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> PARERE FAVOREVOLE CON PRESCRIZIONI
+                </div>
+                <p class="text-slate-700 text-justify">
+                    <strong>Motivazione:</strong> Google NotebookLM soddisfa le garanzie richieste dal GDPR e dall'AI Act quando fruito tramite l'ecosistema istituzionale Google Workspace for Education. Il fornitore assicura il rispetto dei principi di minimizzazione e la non utilizzazione dei file sorgente o delle annotazioni per l'addestramento di modelli di intelligenza artificiale pubblici esterni al perimetro scolastico.
+                </p>
+                <div>
+                    <strong class="text-slate-800">Prescrizioni Vincolanti DPO:</strong>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-700 pl-1 mt-0.5">
+                        <li>Fruizione legata tassativamente al dominio scolastico gestito da amministratori IT d'Istituto (con DPA ex Art. 28 GDPR attivo).</li>
+                        <li>Rigorosa astensione dall'immissione di dati particolari ex Art. 9 GDPR o foto/verbali identificativi nei taccuini.</li>
+                        <li>Conservazione del controllo docente sui materiali prodotti o sintetizzati dagli alunni tramite NotebookLM.</li>
+                    </ul>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Responsabile Protezione Dati (DPO):</span>
+                        <div class="w-56 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 8 - DECRETO DIRIGENZIALE -->
+        <div class="border-2 border-slate-800 rounded-md p-3 text-xs bg-slate-50 page-break-inside-avoid">
+            <h2 class="font-extrabold text-slate-900 uppercase tracking-wide border-b border-slate-300 pb-1 mb-2">
+                SEZIONE 8 - Decreto di Autorizzazione e Inclusione nell'Elenco d'Istituto
+            </h2>
+            <p class="text-slate-800 mb-2">
+                Visto l'esito favorevole della valutazione tecnica e acquisito il parere favorevole con prescrizioni del DPO:
+            </p>
+            <div class="p-2 bg-white border border-slate-300 rounded font-bold text-slate-900 mb-3">
+                <span class="checkbox-custom checkbox-checked">✓</span> SI AUTORIZZA l'inserimento dello strumento <u>Google NotebookLM</u> nell'Elenco d'Istituto degli Strumenti IA Approvati per le attività di studio, ricerca didattica e sintesi documentale.
+            </div>
+            <div class="flex justify-between items-end mt-6 pt-2 border-t border-slate-300">
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Timbro della Scuola & Firma del Dirigente Scolastico:</span>
+                    <div class="w-64 border-b border-slate-400 h-8"></div>
+                </div>
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Data Decreto:</span>
+                    <div class="w-28 border-b border-slate-400 h-8"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER DI CONFORMITA -->
+        <div class="mt-6 pt-3 border-t border-slate-200 text-[9px] text-slate-400 flex justify-between items-center">
+            <span>Presidio di Conformità Governance IA Scolastica | AI Act (UE 2024/1689) & GDPR (UE 2016/679)</span>
+            <span>Pagina 1 di 1</span>
+        </div>
+
+    </div>
+
+</body>
+</html>

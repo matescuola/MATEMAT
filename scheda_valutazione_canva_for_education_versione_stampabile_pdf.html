@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda Valutazione IA - Canva for Education (Conformità AI Act & GDPR)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm 15mm 12mm 15mm;
+        }
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break-inside-avoid {
+                break-inside: avoid;
+            }
+            .page-break-before {
+                break-before: page;
+            }
+            .shadow-lg, .shadow-md, .shadow-sm {
+                box-shadow: none !important;
+            }
+            .border-slate-300 {
+                border-color: #cbd5e1 !important;
+            }
+            input[type="text"] {
+                border: none !important;
+                border-bottom: 1px solid #94a3b8 !important;
+                background: transparent !important;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .checkbox-custom {
+            width: 1rem;
+            height: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #475569;
+            border-radius: 0.15rem;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-right: 0.35rem;
+        }
+        .checkbox-checked {
+            background-color: #0d9488;
+            color: white;
+            border-color: #0d9488;
+        }
+        .input-fillable {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1.5px dashed #94a3b8;
+            padding: 2px 4px;
+            font-size: 0.75rem;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+        .input-fillable:focus {
+            outline: none;
+            border-bottom: 2px solid #0d9488;
+            background-color: #f0fdf4;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- BARRA D'AZIONE PER STAMPA / SALVATAGGIO IN PDF (Nascosta durante la stampa) -->
+    <div class="no-print max-w-4xl mx-auto mb-6 bg-slate-900 text-white p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-teal-600 rounded-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-base">Esportazione Documento di Conformità IA (Canva for Education)</h1>
+                <p class="text-xs text-slate-300">Compila i dati dell'istituto, poi usa <strong>"Stampa / Salva PDF"</strong> per archiviare il documento.</p>
+            </div>
+        </div>
+        <button onclick="window.print()" class="bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Stampa / Salva PDF
+        </button>
+    </div>
+
+    <!-- DOCUMENTO A4 STAMPABILE -->
+    <div class="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-slate-200">
+
+        <!-- INTESTAZIONE ISTITUZIONALE -->
+        <div class="border-b-2 border-teal-800 pb-4 mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <p class="text-xs font-semibold text-teal-800 uppercase tracking-wider">Ministero dell'Istruzione e del Merito</p>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight uppercase">Scheda di Valutazione Strumenti IA</h1>
+                    <p class="text-xs font-bold text-slate-600 mt-0.5">Presidio di Conformità al Regolamento UE 2024/1689 (AI Act) & Regolamento UE 2016/679 (GDPR)</p>
+                </div>
+                <div class="text-right">
+                    <span class="inline-block px-3 py-1 bg-teal-100 text-teal-900 font-bold text-xs rounded-full border border-teal-300">
+                        VALUTAZIONE PRE-ASSESSMENT
+                    </span>
+                </div>
+            </div>
+            <p class="text-xs italic text-slate-500">Documento di istruttoria tecnica per la verifica di adeguatezza prima dell'adozione e sottoposizione al DPO e al Dirigente Scolastico.</p>
+        </div>
+
+        <!-- ANAGRAFICA ISTITUTO (CAMPI COMPILABILI) -->
+        <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Istituto Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Liceo Statale Carlo Porta - Cod. Mecc. MBPM06000E" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Dirigente Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Maurizio Primo Carandini" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Responsabile Protezione Dati (DPO):</label>
+                <input type="text" class="input-fillable" placeholder="Es. Dott. Marco Rossi - dpo@istituto.it" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Referente IA / Proponente:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Stefano Bianchi - Animatore Digitale" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Numero di Protocollo / Riferimento:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prot. n. 0007919/2026" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Data Istruttoria:</label>
+                <input type="text" class="input-fillable" placeholder="Es. 22 Ottobre 2026" />
+            </div>
+        </div>
+
+        <!-- SEZIONE 1 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 1 - Anagrafica dello Strumento e Finalità d'Uso
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Denominazione e Versione</td>
+                        <td class="p-2 font-semibold text-teal-900">Canva for Education <span class="font-normal text-slate-600">(Piattaforma grafica e di comunicazione visiva con suite IA "Canva Magic Studio")</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Fornitore / Sviluppatore</td>
+                        <td class="p-2">Canva Pty Ltd (Australia) / Canva UK Operations Ltd</td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Modalità di Erogazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> SaaS Cloud Web Browser &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> App Desktop & Mobile &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Installazione Locale &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> API
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Ambito Funzionale Previsto</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> Progettazione di presentazioni, infografiche, schede didattiche e contenuti multimediali &nbsp;&nbsp;&nbsp;<br>
+                            <span class="checkbox-custom checkbox-checked">✓</span> Funzionalità IA: Scrittura Magica (Magic Write), Generazione Immagini/Video (Magic Media), Modifica Grafica Magica &nbsp;&nbsp;&nbsp;<br>
+                            <span class="checkbox-custom checkbox-checked">✓</span> Supporto all'inclusione, BES/DSA e semplificazione visiva e testuale
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Destinatari dell'Uso</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom"></span> Solo Docenti / ATA &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Studenti (supervisionati) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Studenti e Docenti (Account istituzionali gestiti tramite Single Sign-On)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Età Minima e Licenza d'Uso</td>
+                        <td class="p-2">
+                            Età minima prevista dai ToS Canva for Education: <strong>K-12 (Tutte le fasce d'età con consenso/gestione scolastica SSO Google/Microsoft)</strong>.<br>
+                            Compatibile con la fascia d'età degli studenti? 
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> NO
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 2 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 2 - Verifica AI Act: Conformità e Livello di Rischio (Reg. UE 2024/1689)
+            </h2>
+            <div class="border border-slate-300 rounded-b-md p-3 text-xs space-y-3">
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.1 Controllo Pratiche Vietate (Articolo 5 AI Act)</h3>
+                    <ul class="space-y-1.5 pl-1">
+                        <li>
+                            <strong>• Riconoscimento Emozioni (Art. 5.1.f):</strong> Lo strumento deduce o inferisce lo stato emotivo o psicologico degli studenti?  
+                            <span class="ml-2 font-bold text-teal-800"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme - Nessun modulo di analisi bio-emotiva attivo)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Tecniche Subliminali / Manipolazione (Art. 5.1.a):</strong> Lo strumento adotta tecniche subliminali o ingannevoli che alterano il comportamento?  
+                            <span class="ml-2 font-bold text-teal-800"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Punteggio Sociale / Social Scoring (Art. 5.1.c):</strong> Lo strumento assegna punteggi reputazionali o sociali agli individui?  
+                            <span class="ml-2 font-bold text-teal-800"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.2 Classificazione del Livello di Rischio e Obblighi Correlati</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Alto Rischio (Art. 6 e Allegato III):</span>
+                            Valutazione automatizzata apprendimenti, ammissioni o proctoring?  
+                            <div class="mt-1 font-bold text-teal-800">
+                                <span class="checkbox-custom checkbox-checked">✓</span> NO (Utilizzato come piattaforma di produttività grafica, comunicazione visiva e creazione di contenuti didattici sotto supervisione docente)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Obblighi di Trasparenza (Art. 50):</span>
+                            Generazione di contenuti sintetici (immagini, testi, grafica IA)?  
+                            <div class="mt-1 font-bold text-teal-800">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Sussiste l'obbligo di avviso chiaro e marcatura/dichiarazione della natura sintetica degli elementi creati con Magic Studio)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Integratori Modelli Generativi (GPAI):</span>
+                            Avvalimento di modelli di IA generativa (LLM/Diffusion Models)?  
+                            <div class="mt-1 font-bold text-teal-800">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Canva Magic Studio integrato con partner tecnologici qualificati ex Art. 53 AI Act)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Supervisione Umana (Human Oversight):</span>
+                            Elaborati soggetti a revisione e validazione del docente?  
+                            <div class="mt-1 font-bold text-teal-800">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Sempre garantita la presenza del docente / "Human-in-the-Loop")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 3 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 3 - Conformità GDPR e Protezione Dati Personali (Reg. UE 2016/679)
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Tipologia Dati Trattati</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom"></span> Nessun dato personale (Anonimato assoluto)<br>
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>Dati personali comuni</strong> (Nome, cognome, email dell'account istituzionale della scuola via SSO Google/Microsoft, progetti grafici)<br>
+                            <span class="checkbox-custom"></span> Dati particolari ex Art. 9 GDPR (Disabilità, PEI, PDP, salute) <strong>(VIETATI NEI PROMPT E NEI PROGETTI CANVA)</strong>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Gestione Prompt e Immagini Caricate</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Il Regolamento d'Istituto vieta espressamente l'upload di fotografie non autorizzate di studenti o dati sensibili nei prompt di Scrittura Magica/Magic Media.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Uso Dati per Addestramento IA</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>NO</strong> — Le Condizioni Privacy di <strong>Canva for Education</strong> stabiliscono espressamente che i progetti, i prompt e i file degli account scolastici <strong>non vengono utilizzati per l'addestramento dei modelli IA pubblici</strong>.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Account e Autenticazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> Account Istituzionali gestiti tramite SSO (Single Sign-On Google Workspace for Education / Microsoft 365 Education con DPA attivo).
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Contratto e Nomina ex Art. 28 GDPR</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Canva Education DPA / Clausole Contrattuali Standard (SCC) sottoscritte e attive.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 4 & 5 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 page-break-inside-avoid">
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 4 - Requisiti Tecnici e Sicurezza
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• Certificazioni:</strong> <span class="checkbox-custom checkbox-checked">✓</span> ISO/IEC 27001, SOC 2 Type II, SOC 3, FERPA, COPPA, GDPR</p>
+                    <p><strong>• Server/Infrastruttura:</strong> Infrastruttura Cloud (AWS / Google Cloud) protetta. Trasferimenti Extra-UE coperti da EU-US Data Privacy Framework e SCC.</p>
+                    <p><strong>• Cifratura:</strong> TLS 1.3 in transito e AES-256 a riposo per tutti i dati e file di progetto.</p>
+                    <p><strong>• Controllo Accessi & Moderazione:</strong> Controllo SSO e filtri automatici di sicurezza sui contenuti (Content Moderation & SafeSearch).</p>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 5 - Governance Didattica ed Etica
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• AI Literacy (Art. 4 AI Act):</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Modulo formativo d'istituto sul corretto utilizzo della grafica e scrittura IA, sul copyright e sui media sintetici)</p>
+                    <p><strong>• Prevenzione Bias/Allucinazioni:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Linee guida d'Istituto per la validazione critica delle immagini e dei testi generati)</p>
+                    <p><strong>• Segnalazione Anomalie:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Canale di contatto verso il Referente IA attivo via email o modulo d'istituto)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 6 - PROPOSTA REFERENTE IA -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 6 - Esito della Valutazione e Proposta del Referente IA
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-emerald-50 border border-emerald-300 rounded font-semibold text-emerald-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> OPZIONE A - APPROVABILE PER USO GENERALE:
+                    <span class="font-normal text-emerald-900 block mt-0.5">Canva for Education opera in un ambiente protetto gestito da SSO d'istituto, non utilizza i progetti degli utenti per addestrare i modelli pubblici di IA e garantisce un utilizzo didattico e creativo sicuro.</span>
+                </div>
+                <div>
+                    <strong class="text-slate-800 block mb-1">Prescrizioni Operative Proposte per Canva for Education:</strong>
+                    <ol class="list-decimal list-inside space-y-1 text-slate-700 pl-1">
+                        <li><strong>Autenticazione Istituzionale:</strong> L'accesso deve avvenire esclusivamente tramite il Single Sign-On (SSO) dell'account scolastico istituzionale (Google Workspace / Microsoft 365). Vietato l'uso di account personali privati per attività didattiche o con minori.</li>
+                        <li><strong>Divieto Dati Riservati:</strong> Divieto assoluto di caricare o inserire nei prompt: dati personali identificativi di studenti, diagnosi BES/DSA, verbali o foto di minori senza formale liberatoria/consenso privacy.</li>
+                        <li><strong>Supervisione Docente:</strong> Istruire gli studenti a segnalare immediatamente al docente eventuali output di immagini o testi generati dall'IA che risultino inappropriati o fuorvianti.</li>
+                        <li><strong>Trasparenza:</strong> Esplicitare nei lavori finali (presentazioni/elaborati) la presenza di elementi grafici o testi generati tramite intelligenza artificiale (Art. 50 AI Act).</li>
+                    </ol>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Referente IA / Proponente:</span>
+                        <div class="w-48 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 7 - PARERE DPO -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-teal-900 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 7 - Parere Formale del Responsabile Protezione Dati (DPO / RPD)
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-teal-50 border border-teal-300 rounded font-bold text-teal-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> PARERE FAVOREVOLE CON PRESCRIZIONI
+                </div>
+                <p class="text-slate-700 text-justify">
+                    <strong>Motivazione:</strong> Canva for Education offre garanzie adeguate ai sensi del GDPR e dell'AI Act in virtù delle tutele contrattuali previste per il settore Education, delle certificazioni di sicurezza in possesso del fornitore e dell'assenza di addestramento dei modelli pubblici sui dati e progetti scolastici.
+                </p>
+                <div>
+                    <strong class="text-slate-800">Prescrizioni Vincolanti DPO:</strong>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-700 pl-1 mt-0.5">
+                        <li>Utilizzo vincolato agli account d'istituto SSO Google Workspace / Microsoft 365 con DPA attivo.</li>
+                        <li>Divieto assoluto di inserimento di foto di studenti minori privi di liberatoria o di dati personali nei prompt di Magic Write / Magic Media.</li>
+                        <li>Verifica del mantenimento delle impostazioni di privacy centralizzate da parte degli amministratori IT della scuola.</li>
+                    </ul>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Responsabile Protezione Dati (DPO):</span>
+                        <div class="w-56 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 8 - DECRETO DIRIGENZIALE -->
+        <div class="border-2 border-slate-800 rounded-md p-3 text-xs bg-slate-50 page-break-inside-avoid">
+            <h2 class="font-extrabold text-slate-900 uppercase tracking-wide border-b border-slate-300 pb-1 mb-2">
+                SEZIONE 8 - Decreto di Autorizzazione e Inclusione nell'Elenco d'Istituto
+            </h2>
+            <p class="text-slate-800 mb-2">
+                Visto l'esito della valutazione tecnica ed acquisito il parere favorevole con prescrizioni del DPO:
+            </p>
+            <div class="p-2 bg-white border border-slate-300 rounded font-bold text-slate-900 mb-3">
+                <span class="checkbox-custom checkbox-checked">✓</span> SI AUTORIZZA l'inserimento dello strumento <u>Canva for Education</u> (inclusi gli strumenti IA della suite <em>Magic Studio</em>) nell'Elenco d'Istituto degli Strumenti IA Approvati per le attività didattiche e di comunicazione visiva.
+            </div>
+            <div class="flex justify-between items-end mt-6 pt-2 border-t border-slate-300">
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Timbro della Scuola & Firma del Dirigente Scolastico:</span>
+                    <div class="w-64 border-b border-slate-400 h-8"></div>
+                </div>
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Data Decreto:</span>
+                    <div class="w-28 border-b border-slate-400 h-8"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER DI CONFORMITA -->
+        <div class="mt-6 pt-3 border-t border-slate-200 text-[9px] text-slate-400 flex justify-between items-center">
+            <span>Presidio di Conformità Governance IA Scolastica | AI Act (UE 2024/1689) & GDPR (UE 2016/679)</span>
+            <span>Pagina 1 di 1</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
