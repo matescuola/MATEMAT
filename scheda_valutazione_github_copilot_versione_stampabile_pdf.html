@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda Valutazione IA - GitHub & Copilot (Conformità AI Act & GDPR)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm 15mm 12mm 15mm;
+        }
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break-inside-avoid {
+                break-inside: avoid;
+            }
+            .page-break-before {
+                break-before: page;
+            }
+            .shadow-lg, .shadow-md, .shadow-sm {
+                box-shadow: none !important;
+            }
+            .border-slate-300 {
+                border-color: #cbd5e1 !important;
+            }
+            input[type="text"] {
+                border: none !important;
+                border-bottom: 1px solid #94a3b8 !important;
+                background: transparent !important;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .checkbox-custom {
+            width: 1rem;
+            height: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #475569;
+            border-radius: 0.15rem;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-right: 0.35rem;
+        }
+        .checkbox-checked {
+            background-color: #0284c7;
+            color: white;
+            border-color: #0284c7;
+        }
+        .input-fillable {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1.5px dashed #94a3b8;
+            padding: 2px 4px;
+            font-size: 0.75rem;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+        .input-fillable:focus {
+            outline: none;
+            border-bottom: 2px solid #0284c7;
+            background-color: #f0f9ff;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- BARRA D'AZIONE PER STAMPA / SALVATAGGIO IN PDF (Nascosta durante la stampa) -->
+    <div class="no-print max-w-4xl mx-auto mb-6 bg-slate-900 text-white p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-sky-600 rounded-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-base">Esportazione Documento di Conformità IA (GitHub & Copilot)</h1>
+                <p class="text-xs text-slate-300">Compila i dati dell'istituto, poi clicca su <strong>"Stampa / Salva PDF"</strong> per archiviare la scheda.</p>
+            </div>
+        </div>
+        <button onclick="window.print()" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Stampa / Salva PDF
+        </button>
+    </div>
+
+    <!-- DOCUMENTO A4 STAMPABILE -->
+    <div class="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-slate-200">
+
+        <!-- INTESTAZIONE ISTITUZIONALE -->
+        <div class="border-b-2 border-sky-900 pb-4 mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <p class="text-xs font-semibold text-sky-900 uppercase tracking-wider">Ministero dell'Istruzione e del Merito</p>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight uppercase">Scheda di Valutazione Strumenti IA</h1>
+                    <p class="text-xs font-bold text-slate-600 mt-0.5">Presidio di Conformità al Regolamento UE 2024/1689 (AI Act) & Regolamento UE 2016/679 (GDPR)</p>
+                </div>
+                <div class="text-right">
+                    <span class="inline-block px-3 py-1 bg-sky-100 text-sky-950 font-bold text-xs rounded-full border border-sky-300">
+                        VALUTAZIONE PRE-ASSESSMENT
+                    </span>
+                </div>
+            </div>
+            <p class="text-xs italic text-slate-500">Documento di istruttoria tecnica per la verifica di adeguatezza prima dell'adozione e sottoposizione al DPO e al Dirigente Scolastico.</p>
+        </div>
+
+        <!-- ANAGRAFICA ISTITUTO (CAMPI COMPILABILI) -->
+        <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Istituto Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. I.T.T. Guglielmo Marconi - Cod. Mecc. MITT01000E" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Dirigente Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Roberto Rossi" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Responsabile Protezione Dati (DPO):</label>
+                <input type="text" class="input-fillable" placeholder="Es. Dott. Franco Bianchi - dpo@agicomstudio.it" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Referente IA / Proponente:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Giovanni Neri - Animatore Digitale / Docente Dipartimento Informatica" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Numero di Protocollo / Riferimento:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prot. n. 0005892/2026" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Data Istruttoria:</label>
+                <input type="text" class="input-fillable" placeholder="Es. 22 Ottobre 2026" />
+            </div>
+        </div>
+
+        <!-- SEZIONE 1 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 1 - Anagrafica dello Strumento e Finalità d'Uso
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Denominazione e Versione</td>
+                        <td class="p-2 font-semibold text-sky-950">GitHub <span class="font-normal text-slate-600">(con GitHub Copilot, GitHub Classroom & GitHub Education)</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Fornitore / Sviluppatore</td>
+                        <td class="p-2">GitHub, Inc. (Gruppo Microsoft Corporation - Sede: San Francisco, CA, USA / Microsoft Ireland Operations Ltd)</td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Modalità di Erogazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> SaaS in Cloud (Web App) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Estensione IDE (VS Code, JetBrains) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Offline &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> API / CLI
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Ambito Funzionale Previsto</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> Didattica Informatica / Coding &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Sviluppo Software e Controllo Versione &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Assistenza IA alla Programmazione (GitHub Copilot)
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Destinatari dell'Uso</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom"></span> Solo Docenti/ATA &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Studenti (supervisionati) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Studenti e Docenti (Riconosciuti via GitHub Student Developer Pack / Education)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Età Minima e Licenza d'Uso</td>
+                        <td class="p-2">
+                            Età minima ToS: <strong>13 anni</strong> (16 anni nell'UE o con autorizzazione scolastica/genitoriale).<br>
+                            Compatibile con minori? 
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> (tramite organizzazioni GitHub Classroom o account gestiti sotto la supervisione del docente)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 2 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 2 - Verifica AI Act: Conformità e Livello di Rischio (Reg. UE 2024/1689)
+            </h2>
+            <div class="border border-slate-300 rounded-b-md p-3 text-xs space-y-3">
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.1 Controllo Pratiche Vietate (Articolo 5 AI Act)</h3>
+                    <ul class="space-y-1.5 pl-1">
+                        <li>
+                            <strong>• Riconoscimento Emozioni (Art. 5.1.f):</strong> Deduction/inferenza dello stato emotivo degli studenti dal codice o dai commit?  
+                            <span class="ml-2 font-bold text-sky-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Tecniche Subliminali / Manipolazione (Art. 5.1.a):</strong> Tecniche ingannevoli per alterare il comportamento?  
+                            <span class="ml-2 font-bold text-sky-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Punteggio Sociale / Social Scoring (Art. 5.1.c):</strong> Assegnazione di profili reputazionali o sociali sugli sviluppatori/studenti?  
+                            <span class="ml-2 font-bold text-sky-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.2 Classificazione del Livello di Rischio e Obblighi Correlati</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Alto Rischio (Art. 6 e Allegato III):</span>
+                            Proctoring, esami automatizzati vinculanti o valutazione sommativa senza intervento umano?  
+                            <div class="mt-1 font-bold text-sky-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> NO (Integrazione e supporto alla didattica/laboratorio di programmazione)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Obblighi di Trasparenza (Art. 50):</span>
+                            Generazione automatica o autocompletamento di codice sorgente e commenti via IA?  
+                            <div class="mt-1 font-bold text-sky-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Trasparenza + Obbligo di dichiarazione d'uso nei file o nei commit)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Sistema di IA Generativa (GPAI):</span>
+                            Utilizzo di LLM/Codex per il completamento e la spiegazione di algoritmi?  
+                            <div class="mt-1 font-bold text-sky-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ &nbsp;&nbsp;&nbsp;
+                                <span class="font-normal text-slate-400"><span class="checkbox-custom"></span> NO</span>
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Supervisione Umana (Human Oversight):</span>
+                            Revisione obbligatoria del docente e comprensione del codice da parte dello studente?  
+                            <div class="mt-1 font-bold text-sky-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (L'output è una proposta di codice soggetti a test, debug e validazione)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 3 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 3 - Conformità GDPR e Protezione Dati Personali (Reg. UE 2016/679)
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Tipologia Dati Trattati</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>Dati personali comuni:</strong> Username, email istituzionale, sorgenti di codice nei repository scolastici.<br>
+                            <span class="checkbox-custom"></span> Dati particolari ex Art. 9 GDPR (Assolutamente vietati nei file di codice o nei prompt).
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Gestione Prompt e Codice Sorgente</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Divieto tassativo da regolamento interno di inserire dati identificativi, credenziali, API Key o dati sensibili nei repository o nei prompt inviati a Copilot.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Addestramento Modelli IA (Telemetry / Snippets)</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>DISATTIVATO / NO</strong> — Nelle licenze GitHub Business/Education/Enterprise o tramite le impostazioni dell'organizzazione scolastica, l'opzione di trattenere gli snippet di codice per l'addestramento dei modelli pubblici è disattivabile/disattivata di default.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Account e Registrazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>GitHub Classroom / Organizzazione Istituzionale Gestita</strong> con associazione ad email d'istituto (es. <code class="bg-slate-100 px-1 rounded">@scuola.edu.it</code>) tramite GitHub Student Developer Pack.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Contratto e Garanzie Trasferimento (Art. 28 & 46)</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Accordo sul Trattamento Dati (DPA Microsoft/GitHub) con Clausole Contrattuali Standard (SCC) ed adesione di Microsoft/GitHub all'<strong>EU-US Data Privacy Framework</strong>.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 4 & 5 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 page-break-inside-avoid">
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 4 - Requisiti Tecnici e Sicurezza
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• Certificazioni:</strong> <span class="checkbox-custom checkbox-checked">✓</span> ISO/IEC 27001, SOC 1/2/3, EU-US DPF</p>
+                    <p><strong>• Sicurezza Codice:</strong> GitHub Secret Scanning & Dependabot per la rilevazione automatica di chiavi o vulnerabilità.</p>
+                    <p><strong>• Cifratura:</strong> Cifratura SSL/TLS 1.3 in transito, AES-256 a riposo sui repository.</p>
+                    <p><strong>• Audit Log:</strong> Registro tracciabile degli accessi e delle modifiche nell'organizzazione scolastica.</p>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 5 - Governance Didattica ed Etica
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• AI Literacy (Art. 4 AI Act):</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Educazione alla programmazione consapevole e al debug)</p>
+                    <p><strong>• Prevenzione Allucinazioni/Bug:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Obbligo di test unitari e comprensione teorica dell'algoritmo generato)</p>
+                    <p><strong>• Trasparenza & Plagio:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Dichiarazione dell'uso di Copilot e commenti esplicativi obbligatori)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 6 - PROPOSTA REFERENTE IA -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 6 - Esito della Valutazione e Proposta del Referente IA
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-sky-50 border border-sky-300 rounded font-semibold text-sky-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> OPZIONE A - APPROVABILE PER USO GENERALE CON PRESCRIZIONI:
+                    <span class="font-normal text-sky-900 block mt-0.5">Strumento idoneo per l'insegnamento dell'informatica, della programmazione e della gestione di progetti software, previo rispetto delle prescrizioni sulla protezione dei dati e sulla comprensione del codice.</span>
+                </div>
+                <div>
+                    <strong class="text-slate-800 block mb-1">Prescrizioni Operative Proposte:</strong>
+                    <ol class="list-decimal list-inside space-y-1 text-slate-700 pl-1">
+                        <li><strong>Dichiarazione d'Uso:</strong> Lo studente deve indicare nel commit o nei commenti del codice quali porzioni sono state generate tramite GitHub Copilot.</li>
+                        <li><strong>Verifica delle Competenze:</strong> Il docente accerta sempre la capacità dello studente di spiegare e modificare il codice prodotto dall'IA.</li>
+                        <li><strong>Divieto Dati Riservati:</strong> Vietato inserire password, API key, dati personali di studenti o verbali nei repository o nei prompt di Copilot.</li>
+                        <li><strong>Configurazione Privacy:</strong> Verificare che l'organizzazione scolastica su GitHub disabiliti la condivisione degli snippet di codice con modelli pubblici.</li>
+                    </ol>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Referente IA / Proponente:</span>
+                        <div class="w-48 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 7 - PARERE DPO -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-sky-950 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 7 - Parere Formale del Responsabile Protezione Dati (DPO / RPD)
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-sky-50 border border-sky-300 rounded font-bold text-sky-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> PARERE FAVOREVOLE CON PRESCRIZIONI
+                </div>
+                <p class="text-slate-700 text-justify">
+                    <strong>Motivazione:</strong> L'infrastruttura GitHub / Microsoft garantisce elevati standard di sicurezza informatica (ISO 27001, DPF) ed offre una cornice contrattuale idonea (DPA con SCC). L'uso di GitHub Classroom e GitHub Copilot in ambito scolastico presenta un profilo di rischio contenuto per la privacy degli interessati, a condizione di operare all'interno dell'organizzazione d'istituto e di disattivare il tracciamento/riuso degli snippet per il training di modelli esterni.
+                </p>
+                <div>
+                    <strong class="text-slate-800">Prescrizioni Vincolanti DPO:</strong>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-700 pl-1 mt-0.5">
+                        <li>Utilizzo esclusivo di account agganciati ad email istituzionali e gestiti nell'ambito di GitHub Classroom / GitHub Education.</li>
+                        <li>Verifica ed attuazione dell'impostazione "Do not allow GitHub to use my code snippets for product improvements" nelle policy d'istituto.</li>
+                        <li>Divieto assoluto di memorizzare dati personali, file con valutazioni o segreti tecnici nei repository pubblici o privati.</li>
+                    </ul>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Responsabile Protezione Dati (DPO):</span>
+                        <div class="w-56 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 8 - DECRETO DIRIGENZIALE -->
+        <div class="border-2 border-slate-800 rounded-md p-3 text-xs bg-slate-50 page-break-inside-avoid">
+            <h2 class="font-extrabold text-slate-900 uppercase tracking-wide border-b border-slate-300 pb-1 mb-2">
+                SEZIONE 8 - Decreto di Autorizzazione e Inclusione nell'Elenco d'Istituto
+            </h2>
+            <p class="text-slate-800 mb-2">
+                Visto l'esito della valutazione tecnica ed acquisito il parere favorevole con prescrizioni del DPO:
+            </p>
+            <div class="p-2 bg-white border border-slate-300 rounded font-bold text-slate-900 mb-3">
+                <span class="checkbox-custom checkbox-checked">✓</span> SI AUTORIZZA l'inserimento dello strumento <u>GitHub</u> (inclusi GitHub Copilot e GitHub Classroom) nell'Elenco d'Istituto degli Strumenti IA Approvati per le attività didattiche e di laboratorio.
+            </div>
+            <div class="flex justify-between items-end mt-6 pt-2 border-t border-slate-300">
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Timbro della Scuola & Firma del Dirigente Scolastico:</span>
+                    <div class="w-64 border-b border-slate-400 h-8"></div>
+                </div>
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Data Decreto:</span>
+                    <div class="w-28 border-b border-slate-400 h-8"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER DI CONFORMITA -->
+        <div class="mt-6 pt-3 border-t border-slate-200 text-[9px] text-slate-400 flex justify-between items-center">
+            <span>Presidio di Conformità Governance IA Scolastica | AI Act (UE 2024/1689) & GDPR (UE 2016/679)</span>
+            <span>Pagina 1 di 1</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
