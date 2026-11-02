@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda Valutazione IA - Google Gemini (Conformità AI Act & GDPR)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm 15mm 12mm 15mm;
+        }
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break-inside-avoid {
+                break-inside: avoid;
+            }
+            .page-break-before {
+                break-before: page;
+            }
+            .shadow-lg, .shadow-md, .shadow-sm {
+                box-shadow: none !important;
+            }
+            .border-slate-300 {
+                border-color: #cbd5e1 !important;
+            }
+            input[type="text"] {
+                border: none !important;
+                border-bottom: 1px solid #94a3b8 !important;
+                background: transparent !important;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .checkbox-custom {
+            width: 1rem;
+            height: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #475569;
+            border-radius: 0.15rem;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-right: 0.35rem;
+        }
+        .checkbox-checked {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        .input-fillable {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1.5px dashed #94a3b8;
+            padding: 2px 4px;
+            font-size: 0.75rem;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+        .input-fillable:focus {
+            outline: none;
+            border-bottom: 2px solid #2563eb;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- BARRA D'AZIONE PER STAMPA / SALVATAGGIO IN PDF (Nascosta durante la stampa) -->
+    <div class="no-print max-w-4xl mx-auto mb-6 bg-slate-900 text-white p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-blue-600 rounded-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-base">Esportazione Documento di Conformità IA (Google Gemini)</h1>
+                <p class="text-xs text-slate-300">Compila i dati dell'istituto, poi clicca su <strong>"Stampa / Salva PDF"</strong> per archiviare la scheda.</p>
+            </div>
+        </div>
+        <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-400 text-slate-950 font-bold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Stampa / Salva PDF
+        </button>
+    </div>
+
+    <!-- DOCUMENTO A4 STAMPABILE -->
+    <div class="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-slate-200">
+
+        <!-- INTESTAZIONE ISTITUZIONALE -->
+        <div class="border-b-2 border-blue-900 pb-4 mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <p class="text-xs font-semibold text-blue-900 uppercase tracking-wider">Ministero dell'Istruzione e del Merito</p>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight uppercase">Scheda di Valutazione Strumenti IA</h1>
+                    <p class="text-xs font-bold text-slate-600 mt-0.5">Presidio di Conformità al Regolamento UE 2024/1689 (AI Act) & Regolamento UE 2016/679 (GDPR)</p>
+                </div>
+                <div class="text-right">
+                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-950 font-bold text-xs rounded-full border border-blue-300">
+                        VALUTAZIONE PRE-ASSESSMENT
+                    </span>
+                </div>
+            </div>
+            <p class="text-xs italic text-slate-500">Documento di istruttoria tecnica per la verifica di adeguatezza prima dell'adozione e sottoposizione al DPO e al Dirigente Scolastico.</p>
+        </div>
+
+        <!-- ANAGRAFICA ISTITUTO (CAMPI COMPILABILI) -->
+        <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Istituto Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Liceo Statale Carlo Porta - Cod. Mecc. MBPM06000E" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Dirigente Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Maurizio Primo Carandini" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Responsabile Protezione Dati (DPO):</label>
+                <input type="text" class="input-fillable" placeholder="Es. Dott. Luca Corbellini / Studio AG.I.COM. S.r.l." />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Referente IA / Proponente:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Stefano Bianchi - Animatore Digitale" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Numero di Protocollo / Riferimento:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prot. n. 0007919/2026" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Data Istruttoria:</label>
+                <input type="text" class="input-fillable" placeholder="Es. 2 Novembre 2026" />
+            </div>
+        </div>
+
+        <!-- SEZIONE 1 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 1 - Anagrafica dello Strumento e Finalità d'Uso
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Denominazione e Versione</td>
+                        <td class="p-2 font-semibold text-blue-950">Google Gemini <span class="font-normal text-slate-600">(Assistente di Intelligenza Artificiale Generativa e Multimodale integrato nell'ecosistema Google Workspace for Education)</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Fornitore / Sviluppatore</td>
+                        <td class="p-2">Google LLC / Google Ireland Limited (Unione Europea)</td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Modalità di Erogazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> SaaS Cloud Web Browser (interfaccia gemini.google.com & Workspace for Education) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Offline &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> App Desktop locale
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Ambito Funzionale Previsto</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> Supporto alla ricerca guidata, ideazione didattica, stesura e strutturazione di testi &nbsp;&nbsp;&nbsp;<br>
+                            <span class="checkbox-custom checkbox-checked">✓</span> Generazione di esempi, schemi sinteti, traduzioni ed esercitazioni didattiche in ambiente protetto &nbsp;&nbsp;&nbsp;<br>
+                            <span class="checkbox-custom checkbox-checked">✓</span> Personalizzazione dei materiali per l'inclusione (BES/DSA) mediante riscrittura e semplificazione testuale
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Destinatari dell'Uso</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom"></span> Solo Docenti/ATA &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Studenti (supervisionati) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Studenti e Docenti (con account d'istituto SSO Google Workspace for Education e in classi pilota)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Età Minima e Licenza d'Uso</td>
+                        <td class="p-2">
+                            Età minima prevista dai ToS Google Workspace: <strong>Fascia K-12 (Tutte le età sotto la responsabilità e la gestione dell'Istituzione Scolastica)</strong>.<br>
+                            Compatibile con la fascia d'età degli studenti? 
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> NO
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 2 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 2 - Verifica AI Act: Conformità e Livello di Rischio (Reg. UE 2024/1689)
+            </h2>
+            <div class="border border-slate-300 rounded-b-md p-3 text-xs space-y-3">
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.1 Controllo Pratiche Vietate (Articolo 5 AI Act)</h3>
+                    <ul class="space-y-1.5 pl-1">
+                        <li>
+                            <strong>• Riconoscimento Emozioni (Art. 5.1.f):</strong> Deduction o inferenza dello stato emotivo o psicologico degli studenti dai prompt o testi?  
+                            <span class="ml-2 font-bold text-blue-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme - Assenza di moduli di profilazione emotiva o biometrica)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Tecniche Subliminali / Manipolazione (Art. 5.1.a):</strong> Tecniche ingannevoli o subliminali per condizionare il comportamento?  
+                            <span class="ml-2 font-bold text-blue-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Punteggio Sociale / Social Scoring (Art. 5.1.c):</strong> Assegnazione di punteggi reputazionali o profili sociali?  
+                            <span class="ml-2 font-bold text-blue-900"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.2 Classificazione del Livello di Rischio e Obblighi Correlati</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Alto Rischio (Art. 6 e Allegato III):</span>
+                            Proctoring, esami automatizzati vincolanti, attribuzione formale di voti o ammissioni scolastiche senza intervento umano?  
+                            <div class="mt-1 font-bold text-blue-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> NO (Strumento di ausilio didattico, ricerca e supporto alla produttività)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Obblighi di Trasparenza (Art. 50):</span>
+                            Generazione di testi, codice o risposte sintetiche conversazionali?  
+                            <div class="mt-1 font-bold text-blue-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Sussiste l'obbligo di dichiarazione esplicita d'uso dell'IA in calce agli elaborati e nei materiali)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Sistema di IA Generativa (GPAI):</span>
+                            Utilizzo di modelli linguistici di grande dimensione (LLM Google Gemini integrato)?  
+                            <div class="mt-1 font-bold text-blue-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ &nbsp;&nbsp;&nbsp;
+                                <span class="font-normal text-slate-400"><span class="checkbox-custom"></span> NO</span>
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Supervisione Umana (Human Oversight):</span>
+                            Revisione obbligatoria del docente e rielaborazione critica da parte dell'utente?  
+                            <div class="mt-1 font-bold text-blue-900">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Human-in-the-Loop: risposte intese come bozza da sottoporre a verifica critica e controllo fonti)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 3 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 3 - Conformità GDPR e Protezione Dati Personali (Reg. UE 2016/679)
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Tipologia Dati Trattati</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>Dati personali comuni:</strong> Email e nome dell'account d'istituto via SSO Google Workspace for Education, log tecnici di sessione.<br>
+                            <span class="checkbox-custom"></span> Dati particolari ex Art. 9 GDPR (Disabilità, salute, PEI, PDP, voti o giudizi individuali) <strong>(RIGOROSAMENTE VIETATI NEI PROMPT E NEGLI ALLEGATI)</strong>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Gestione dei Prompt e Input</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Il Regolamento d'Istituto sancisce il divieto tassativo di immissione nei prompt di dati identificativi di studenti, foto, verbali di classe o diagnosi sanitarie riservate.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Uso dei Dati per Addestramento IA</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>NO</strong> — Google garantisce per gli account <strong>Google Workspace for Education</strong> (Core Services) che i testi inviati, i prompt e le conversazioni con Gemini <strong>NON vengono utilizzati per l'addestramento dei modelli di IA pubblici</strong>.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Account e Autenticazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> Account Istituzionali gestiti via Single Sign-On (SSO Google Workspace for Education con DPA d'Istituto e aggiuntivi di protezione attivi). Vietato l'uso di account personali privati.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Contratto e Nomina ex Art. 28 GDPR</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Google Workspace Data Processing Amendment (DPA) / Clausole Contrattuali Standard (SCC) ed adesione di Google all'<strong>EU-US Data Privacy Framework</strong>.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 4 & 5 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 page-break-inside-avoid">
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 4 - Requisiti Tecnici e Sicurezza
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• Certificazioni:</strong> <span class="checkbox-custom checkbox-checked">✓</span> ISO/IEC 27001, 27017, 27018, SOC 2/3, FERPA, COPPA, EU-US DPF</p>
+                    <p><strong>• Server/Infrastruttura:</strong> Infrastruttura Google Cloud Enterprise con rigoroso isolamento dei tenant d'istituto.</p>
+                    <p><strong>• Cifratura:</strong> TLS 1.3 in transito e AES-256 a riposo sui server di storage di Google Cloud.</p>
+                    <p><strong>• Configurazione Privacy:</strong> Possibilità di disattivare la conservazione della cronologia e gestire il controllo centralizzato via Admin Console.</p>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 5 - Governance Didattica ed Etica
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• AI Literacy (Art. 4 AI Act):</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Promozione del pensiero critico, prompting etico e verifica delle fonti)</p>
+                    <p><strong>• Verifica Allucinazioni/Bias:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Obbligo di riesame e validazione del docente sui suggerimenti o testi generati dall'IA)</p>
+                    <p><strong>• Segnalazione Errori:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Canale di contatto attivo con il Referente IA / Animatore Digitale d'Istituto)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 6 - PROPOSTA REFERENTE IA -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 6 - Esito della Valutazione e Proposta del Referente IA
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-blue-50 border border-blue-300 rounded font-semibold text-blue-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> OPZIONE A - APPROVABILE PER USO GENERALE CON PRESCRIZIONI:
+                    <span class="font-normal text-blue-900 block mt-0.5">Google Gemini opera nell'ambiente controllato di Google Workspace for Education, disabilita il riuso dei dati scolastici per l'addestramento dei modelli pubblici e garantisce alti standard etici e di sicurezza. Idoneo per il potenziamento delle attività didattiche e della ricerca.</span>
+                </div>
+                <div>
+                    <strong class="text-slate-800 block mb-1">Prescrizioni Operative Proposte per Google Gemini:</strong>
+                    <ol class="list-decimal list-inside space-y-1 text-slate-700 pl-1">
+                        <li><strong>Autenticazione Istituzionale:</strong> L'accesso deve avvenire esclusivamente tramite credenziali Single Sign-On (SSO) del dominio scolastico (<code class="bg-slate-100 px-1 rounded">@scuola.edu.it</code>). Vietato l'uso di account personali privati per attività scolastiche.</li>
+                        <li><strong>Divieto Dati Riservati nei Prompt:</strong> Fatto assoluto divieto di inserire nei prompt o negli allegati: dati identificativi di minori, diagnosi BES/DSA/PEI, o verbali riservati privi di integrale anonimizzazione.</li>
+                        <li><strong>Dichiarazione d'Uso (Art. 50 AI Act):</strong> Studenti e docenti sono tenuti a dichiarare l'impiego dell'IA in calce agli elaborati (compilazione della Scheda di Trasparenza) indicando la quota di rielaborazione critica personale.</li>
+                        <li><strong>Verifica delle Allucinazioni:</strong> Gli utenti devono verificare criticamente tutte le informazioni o citazioni fornite da Gemini prima di utilizzarle in ambito didattico.</li>
+                    </ol>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Referente IA / Proponente:</span>
+                        <div class="w-48 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 7 - PARERE DPO -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-blue-950 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 7 - Parere Formale del Responsabile Protezione Dati (DPO / RPD)
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-blue-50 border border-blue-300 rounded font-bold text-blue-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> PARERE FAVOREVOLE CON PRESCRIZIONI
+                </div>
+                <p class="text-slate-700 text-justify">
+                    <strong>Motivazione:</strong> L'utilizzo di Google Gemini nell'ambito del perimetro Google Workspace for Education soddisfa le garanzie prescritte dal GDPR e dall'AI Act. Il fornitore assicura la tutela della riservatezza dei dati istituzionali ed esclude l'impiego dei prompt e dei contenuti inseriti per l'addestramento dei modelli di intelligenza artificiale pubblici. Il livello di rischio per la protezione dei dati è ritenuto contenuto e compatibile con l'interesse pubblico istituzionale.
+                </p>
+                <div>
+                    <strong class="text-slate-800">Prescrizioni Vincolanti DPO:</strong>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-700 pl-1 mt-0.5">
+                        <li>Fruizione legata esclusivamente al dominio d'istituto gestito dagli amministratori IT (con DPA ex Art. 28 GDPR attivo).</li>
+                        <li>Rigorosa astensione dall'immissione di dati particolari ex Art. 9 GDPR o identificativi dei minori nei prompt di conversazione.</li>
+                        <li>Mantenimento del controllo e della sorveglianza docente sull'utilizzo della piattaforma in classe e a casa.</li>
+                    </ul>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Responsabile Protezione Dati (DPO):</span>
+                        <div class="w-56 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 8 - DECRETO DIRIGENZIALE -->
+        <div class="border-2 border-slate-800 rounded-md p-3 text-xs bg-slate-50 page-break-inside-avoid">
+            <h2 class="font-extrabold text-slate-900 uppercase tracking-wide border-b border-slate-300 pb-1 mb-2">
+                SEZIONE 8 - Decreto di Autorizzazione e Inclusione nell'Elenco d'Istituto
+            </h2>
+            <p class="text-slate-800 mb-2">
+                Visto l'esito favorevole della valutazione tecnica e acquisito il parere favorevole con prescrizioni del DPO:
+            </p>
+            <div class="p-2 bg-white border border-slate-300 rounded font-bold text-slate-900 mb-3">
+                <span class="checkbox-custom checkbox-checked">✓</span> SI AUTORIZZA l'inserimento dello strumento <u>Google Gemini</u> nell'Elenco d'Istituto degli Strumenti IA Approvati per le attività di studio, ricerca didattica e supporto alla produzione di contenuti.
+            </div>
+            <div class="flex justify-between items-end mt-6 pt-2 border-t border-slate-300">
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Timbro della Scuola & Firma del Dirigente Scolastico:</span>
+                    <div class="w-64 border-b border-slate-400 h-8"></div>
+                </div>
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Data Decreto:</span>
+                    <div class="w-28 border-b border-slate-400 h-8"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER DI CONFORMITA -->
+        <div class="mt-6 pt-3 border-t border-slate-200 text-[9px] text-slate-400 flex justify-between items-center">
+            <span>Presidio di Conformità Governance IA Scolastica | AI Act (UE 2024/1689) & GDPR (UE 2016/679)</span>
+            <span>Pagina 1 di 1</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
