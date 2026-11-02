@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda Valutazione IA - Panquiz (Conformità AI Act & GDPR)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm 15mm 12mm 15mm;
+        }
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break-inside-avoid {
+                break-inside: avoid;
+            }
+            .page-break-before {
+                break-before: page;
+            }
+            .shadow-lg, .shadow-md, .shadow-sm {
+                box-shadow: none !important;
+            }
+            .border-slate-300 {
+                border-color: #cbd5e1 !important;
+            }
+            input[type="text"] {
+                border: none !important;
+                border-bottom: 1px solid #94a3b8 !important;
+                background: transparent !important;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .checkbox-custom {
+            width: 1rem;
+            height: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #475569;
+            border-radius: 0.15rem;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-right: 0.35rem;
+        }
+        .checkbox-checked {
+            background-color: #0d9488;
+            color: white;
+            border-color: #0d9488;
+        }
+        .input-fillable {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1.5px dashed #94a3b8;
+            padding: 2px 4px;
+            font-size: 0.75rem;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+        .input-fillable:focus {
+            outline: none;
+            border-bottom: 2px solid #0d9488;
+            background-color: #f0fdf4;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- BARRA D'AZIONE PER STAMPA / SALVATAGGIO IN PDF (Nascosta durante la stampa) -->
+    <div class="no-print max-w-4xl mx-auto mb-6 bg-slate-900 text-white p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-teal-600 rounded-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-base">Esportazione Documento di Conformità IA (Panquiz)</h1>
+                <p class="text-xs text-slate-300">Compila i dati dell'istituto, poi usa <strong>"Stampa / Salva PDF"</strong> per archiviare il documento.</p>
+            </div>
+        </div>
+        <button onclick="window.print()" class="bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Stampa / Salva PDF
+        </button>
+    </div>
+
+    <!-- DOCUMENTO A4 STAMPABILE -->
+    <div class="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-slate-200">
+
+        <!-- INTESTAZIONE ISTITUZIONALE -->
+        <div class="border-b-2 border-teal-800 pb-4 mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <p class="text-xs font-semibold text-teal-800 uppercase tracking-wider">Ministero dell'Istruzione e del Merito</p>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight uppercase">Scheda di Valutazione Strumenti IA</h1>
+                    <p class="text-xs font-bold text-slate-600 mt-0.5">Presidio di Conformità al Regolamento UE 2024/1689 (AI Act) & Regolamento UE 2016/679 (GDPR)</p>
+                </div>
+                <div class="text-right">
+                    <span class="inline-block px-3 py-1 bg-teal-100 text-teal-900 font-bold text-xs rounded-full border border-teal-300">
+                        VALUTAZIONE PRE-ASSESSMENT
+                    </span>
+                </div>
+            </div>
+            <p class="text-xs italic text-slate-500">Documento di istruttoria tecnica per la verifica di adeguatezza prima dell'adozione e sottoposizione al DPO e al Dirigente Scolastico.</p>
+        </div>
+
+        <!-- ANAGRAFICA ISTITUTO (CAMPI COMPILABILI) -->
+        <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Istituto Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. I.I.S. Galileo Galilei - Cod. Mecc. MIIS012345" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Dirigente Scolastico:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Marco Bianchi" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Responsabile Protezione Dati (DPO):</label>
+                <input type="text" class="input-fillable" placeholder="Es. Dott. Andrea Rossi - dpo@agicomstudio.it" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Referente IA / Proponente:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prof. Stefano Verdi - Animatore Digitale" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Numero di Protocollo / Riferimento:</label>
+                <input type="text" class="input-fillable" placeholder="Es. Prot. n. 0004567/2026" />
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Data Istruttoria:</label>
+                <input type="text" class="input-fillable" placeholder="Es. 22 Ottobre 2026" />
+            </div>
+        </div>
+
+        <!-- SEZIONE 1 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 1 - Anagrafica dello Strumento e Finalità d'Uso
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Denominazione e Versione</td>
+                        <td class="p-2 font-semibold text-teal-900">Panquiz <span class="font-normal text-slate-600">(con modulo integrato Panquiz AI per la generazione automatica di domande e test)</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Fornitore / Sviluppatore</td>
+                        <td class="p-2">Panquiz / Paolo Capriotti (Sede e Sviluppo: Italia, Unione Europea)</td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Modalità di Erogazione</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> SaaS in Cloud (Web App) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Offline &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Estensione/Plugin &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> API
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Ambito Funzionale Previsto</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> Didattica / Valutazione Formativa &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Supporto BES/DSA/PEI/PDP (Personalizzazione test) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Amministrazione
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Destinatari dell'Uso</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom"></span> Solo Docenti/ATA &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom"></span> Studenti (supervisionati) &nbsp;&nbsp;&nbsp;
+                            <span class="checkbox-custom checkbox-checked">✓</span> Studenti e Docenti
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Età Minima e Acceso Studenti</td>
+                        <td class="p-2">
+                            Gli studenti possono accedere tramite <strong>Codice PIN/Link della sessione</strong> senza registrarsi (zero dati personali) o con account istituzionali gestiti.<br>
+                            Compatibile con minori d'età? 
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> (garantita massima minimizzazione dati e privacy by default)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 2 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 2 - Verifica AI Act: Conformità e Livello di Rischio (Reg. UE 2024/1689)
+            </h2>
+            <div class="border border-slate-300 rounded-b-md p-3 text-xs space-y-3">
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.1 Controllo Pratiche Vietate (Articolo 5 AI Act)</h3>
+                    <ul class="space-y-1.5 pl-1">
+                        <li>
+                            <strong>• Riconoscimento Emozioni (Art. 5.1.f):</strong> Deduction/inferenza dello stato emotivo degli studenti?  
+                            <span class="ml-2 font-bold text-teal-800"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Tecniche Subliminali / Manipolazione (Art. 5.1.a):</strong> Alterazione ingannevole del comportamento degli studenti?  
+                            <span class="ml-2 font-bold text-teal-800"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                        <li>
+                            <strong>• Social Scoring / Punteggio Sociale (Art. 5.1.c):</strong> Assegnazione di profili reputazionali o sociali?  
+                            <span class="ml-2 font-bold text-teal-800"><span class="checkbox-custom checkbox-checked">✓</span> NO (Conforme)</span>
+                            <span class="ml-2 text-slate-400"><span class="checkbox-custom"></span> SÌ (VIETATO)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">2.2 Classificazione del Livello di Rischio e Obblighi Correlati</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Alto Rischio (Art. 6 e Allegato III):</span>
+                            Proctoring invasivo, ammissioni o valutazione automatica con valore legale vincolante?  
+                            <div class="mt-1 font-bold text-teal-800">
+                                <span class="checkbox-custom checkbox-checked">✓</span> NO (Uso per valutazione formativa/didattica guidata)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Obblighi di Trasparenza (Art. 50):</span>
+                            Generazione automatica di quesiti o contenuti sintetici?  
+                            <div class="mt-1 font-bold text-teal-800">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Informativa all'utente e revisione del docente)
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Sistema di IA Generativa (GPAI):</span>
+                            Utilizzo di modelli generativi per creare domande da testi/prompt?  
+                            <div class="mt-1 font-bold text-teal-800">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ &nbsp;&nbsp;&nbsp;
+                                <span class="font-normal text-slate-400"><span class="checkbox-custom"></span> NO</span>
+                            </div>
+                        </div>
+                        <div class="p-2 bg-slate-50 border border-slate-200 rounded">
+                            <span class="font-bold block text-slate-800">Supervisione Umana (Human Oversight):</span>
+                            Controllo e validazione vincolante del docente sul quiz generato?  
+                            <div class="mt-1 font-bold text-teal-800">
+                                <span class="checkbox-custom checkbox-checked">✓</span> SÌ (L'output è sempre modificabile dal docente prima dell'uso)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 3 -->
+        <div class="mb-6 page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 3 - Conformità GDPR e Protezione Dati Personali (Reg. UE 2016/679)
+            </h2>
+            <table class="w-full text-xs border-collapse border border-slate-300">
+                <tbody>
+                    <tr class="border-b border-slate-300">
+                        <td class="w-1/3 p-2 font-bold bg-slate-100 border-r border-slate-300">Tipologia Dati Trattati</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>Modalità Anonima (PIN):</strong> Nessun dato personale memorizzato per gli studenti.<br>
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>Modalità Registrata:</strong> Dati comuni (Email istituzionale docente/studente, nome/nickname).<br>
+                            <span class="checkbox-custom"></span> Dati particolari ex Art. 9 GDPR (Assenti nei quiz e vietati nei prompt).
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Gestione Prompt e Input IA</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Divieto da regolamento interno di inserire dati identificativi o personali di studenti nei documenti allegati o nei prompt inviati a Panquiz AI.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Addestramento Modelli IA</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>NO</strong> — Panquiz utilizza API aziendali riservate che <strong>NON utilizzano</strong> i testi, i prompt o i documenti inviati per addestrare modelli di IA pubblici.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-300">
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Account e Accesso Minori</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>Accesso tramite PIN/QR (senza registrazione)</strong> oppure <strong>Single Sign-On Istituzionale (Google/Microsoft 365)</strong>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-bold bg-slate-100 border-r border-slate-300">Contratto e Nomina Art. 28</td>
+                        <td class="p-2">
+                            <span class="checkbox-custom checkbox-checked">✓</span> <strong>SÌ</strong> — Data Processing Agreement (DPA) sottoscrivibile / conforme alla normativa vigente.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE 4 & 5 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 page-break-inside-avoid">
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 4 - Requisiti Tecnici e Sicurezza
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• Certificazioni:</strong> <span class="checkbox-custom checkbox-checked">✓</span> Sviluppatore/Fornitore UE &nbsp; <span class="checkbox-custom checkbox-checked">✓</span> Conforme GDPR</p>
+                    <p><strong>• Server/Datacenter:</strong> <span class="checkbox-custom checkbox-checked">✓</span> Unione Europea (Italia / UE)</p>
+                    <p><strong>• Cifratura e Sicurezza:</strong> Connessione protetta HTTPS/TLS 1.3, cifratura a riposo, possibilità di svolgimento quiz in modalità totalmente anonima.</p>
+                    <p><strong>• Continuità:</strong> Infrastruttura cloud resiliente e scalabile.</p>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-xs font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                    SEZIONE 5 - Governance Didattica ed Etica
+                </h2>
+                <div class="border border-slate-300 rounded-b-md p-2.5 text-xs space-y-1.5">
+                    <p><strong>• Formazione (Art. 4 AI Act):</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Guida all'uso consapevole dell'IA per i test)</p>
+                    <p><strong>• Prevenzione Allucinazioni/Bias:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Verifica obbligatoria delle opzioni di risposta da parte del docente)</p>
+                    <p><strong>• Segnalazione Errori:</strong> <span class="checkbox-custom checkbox-checked">✓</span> SÌ (Canale interno con Referente IA d'Istituto)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 6 - PROPOSTA REFERENTE IA -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-slate-800 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 6 - Esito della Valutazione e Proposta del Referente IA
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-emerald-50 border border-emerald-300 rounded font-semibold text-emerald-900">
+                    <span class="checkbox-custom checkbox-checked">✓</span> OPZIONE A - APPROVABILE PER USO GENERALE:
+                    <span class="font-normal text-emerald-800 block mt-0.5">Strumento a rischio minimo/nullo, privo di impatto sulla privacy se utilizzato con codici PIN o account gestiti e sotto la costante supervisione del docente.</span>
+                </div>
+                <div>
+                    <strong class="text-slate-800 block mb-1">Prescrizioni Operative Proposte:</strong>
+                    <ol class="list-decimal list-inside space-y-1 text-slate-700 pl-1">
+                        <li><strong>Verifica dell'Output:</strong> Il docente è tenuto a revisionare integralmente le domande generate dall'IA prima della somministrazione.</li>
+                        <li><strong>Minimizzazione Dati:</strong> Privilegiare la modalità di accesso via PIN/QR Code per gli studenti senza registrazione di dati personali.</li>
+                        <li><strong>Divieto Dati Riservati:</strong> Non inserire verbali, valutazioni personali o dati di studenti con BES/DSA nei prompt di generazione test.</li>
+                        <li><strong>Trasparenza:</strong> Segnalare agli studenti quando un test o quiz è stato generato con il supporto di Panquiz AI.</li>
+                    </ol>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Referente IA / Proponente:</span>
+                        <div class="w-48 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 7 - PARERE DPO -->
+        <div class="mb-6 border border-slate-300 rounded-md page-break-inside-avoid">
+            <h2 class="text-sm font-bold text-white bg-teal-900 px-3 py-1.5 rounded-t-md uppercase tracking-wide">
+                SEZIONE 7 - Parere Formale del Responsabile Protezione Dati (DPO / RPD)
+            </h2>
+            <div class="p-3 text-xs space-y-2">
+                <div class="p-2 bg-teal-50 border border-teal-300 rounded font-bold text-teal-950">
+                    <span class="checkbox-custom checkbox-checked">✓</span> PARERE FAVOREVOLE CON PRESCRIZIONI
+                </div>
+                <p class="text-slate-700 text-justify">
+                    <strong>Motivazione:</strong> Lo strumento Panquiz presenta eccellenti garanzie di conformità, essendo fornito da sviluppatore italiano/UE e consentendo la fruizione dei quiz tramite modalità completamente anonima (PIN/QR Code). Le API IA utilizzate disabilitano il riuso dei dati scolastici per l'addestramento di modelli pubblici. Il rischio per i diritti e le libertà degli interessati è classificabile come minimo.
+                </p>
+                <div>
+                    <strong class="text-slate-800">Prescrizioni Vincolanti DPO:</strong>
+                    <ul class="list-disc list-inside space-y-0.5 text-slate-700 pl-1 mt-0.5">
+                        <li>Fruizione preferenziale per gli studenti tramite sessione anonima (PIN di gioco/test) senza creazione di account personali non gestiti.</li>
+                        <li>Assoluto divieto di inserire dati identificativi o sensibili degli alunni nei testi allegati a Panquiz AI.</li>
+                        <li>Perfezionamento del DPA ex Art. 28 GDPR con il fornitore in caso di utilizzo di account nominali.</li>
+                    </ul>
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex justify-between items-end mt-4">
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Firma del Responsabile Protezione Dati (DPO):</span>
+                        <div class="w-56 border-b border-slate-400 h-6"></div>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 text-[10px]">Data:</span>
+                        <div class="w-28 border-b border-slate-400 h-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 8 - DECRETO DIRIGENZIALE -->
+        <div class="border-2 border-slate-800 rounded-md p-3 text-xs bg-slate-50 page-break-inside-avoid">
+            <h2 class="font-extrabold text-slate-900 uppercase tracking-wide border-b border-slate-300 pb-1 mb-2">
+                SEZIONE 8 - Decreto di Autorizzazione e Inclusione nell'Elenco d'Istituto
+            </h2>
+            <p class="text-slate-800 mb-2">
+                Visto l'esito favorevole dell'istruttoria tecnica e acquisito il parere favorevole con prescrizioni del DPO:
+            </p>
+            <div class="p-2 bg-white border border-slate-300 rounded font-bold text-slate-900 mb-3">
+                <span class="checkbox-custom checkbox-checked">✓</span> SI AUTORIZZA l'inserimento dello strumento <u>Panquiz</u> (con funzionalità Panquiz AI) nell'Elenco d'Istituto degli Strumenti IA Approvati e l'uso didattico e valutativo formativo nel rispetto delle prescrizioni fissate.
+            </div>
+            <div class="flex justify-between items-end mt-6 pt-2 border-t border-slate-300">
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Timbro della Scuola & Firma del Dirigente Scolastico:</span>
+                    <div class="w-64 border-b border-slate-400 h-8"></div>
+                </div>
+                <div>
+                    <span class="block text-slate-500 text-[10px]">Data Decreto:</span>
+                    <div class="w-28 border-b border-slate-400 h-8"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER DI CONFORMITA -->
+        <div class="mt-6 pt-3 border-t border-slate-200 text-[9px] text-slate-400 flex justify-between items-center">
+            <span>Presidio di Conformità Governance IA Scolastica | AI Act (UE 2024/1689) & GDPR (UE 2016/679)</span>
+            <span>Pagina 1 di 1</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
